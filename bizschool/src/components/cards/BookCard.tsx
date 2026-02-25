@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 import type { Book } from "@/types";
 
 const badgeStyles: Record<string, string> = {
-  primary: "bg-[--color-primary]/10 text-[--color-primary]",
+  primary: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
   green: "bg-emerald-50 text-emerald-600",
   red: "bg-red-50 text-red-500",
   blue: "bg-blue-50 text-blue-500",
@@ -28,37 +28,37 @@ export default function BookCard({ book }: { book: Book }) {
 
       {/* Info */}
       <div className="pt-3">
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-[--color-dark]">
+        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-[var(--color-dark)]">
           {book.title}
         </h3>
 
-        <p className="mt-1 text-sm text-[--color-muted]">{book.author}</p>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">{book.author}</p>
 
         {/* Price */}
         <div className="mt-2">
           {hasDiscount ? (
             <>
-              <span className="text-sm text-[--color-muted] line-through">
+              <span className="text-sm text-[var(--color-muted)] line-through">
                 ₩{book.originalPrice!.toLocaleString()}
               </span>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[--color-red]">
+                <span className="font-bold text-[var(--color-red)]">
                   {book.discountRate}%
                 </span>
-                <span className="font-bold text-[--color-dark]">
+                <span className="font-bold text-[var(--color-dark)]">
                   ₩{book.price.toLocaleString()}
                 </span>
               </div>
             </>
           ) : (
-            <span className="font-bold text-[--color-dark]">
+            <span className="font-bold text-[var(--color-dark)]">
               ₩{book.price.toLocaleString()}
             </span>
           )}
         </div>
 
         {/* Rating */}
-        <div className="mt-2 flex items-center gap-1 text-sm text-[--color-muted]">
+        <div className="mt-2 flex items-center gap-1 text-sm text-[var(--color-muted)]">
           <Star size={14} className="fill-yellow-400 text-yellow-400" />
           {book.rating}
           <span className="text-xs">({book.reviewCount})</span>

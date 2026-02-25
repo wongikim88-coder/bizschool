@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function HeroBanner() {
   return (
     <section className="mx-auto max-w-[1200px] px-4 pt-2">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[--color-primary] to-[--color-dark-navy] px-8 py-12 md:px-16 md:py-16">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-dark-navy)] px-8 py-12 md:px-16 md:py-16">
         {/* Background decoration */}
         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5" />
         <div className="pointer-events-none absolute -bottom-10 right-20 h-40 w-40 rounded-full bg-white/5" />
@@ -22,7 +22,7 @@ export default function HeroBanner() {
           </p>
           <Link
             href="/courses"
-            className="mt-8 inline-block rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[--color-primary] transition-colors hover:bg-gray-100"
+            className="mt-8 inline-block rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:bg-gray-100"
           >
             무료로 시작하기
           </Link>

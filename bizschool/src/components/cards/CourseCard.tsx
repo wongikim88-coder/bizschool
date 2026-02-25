@@ -2,7 +2,7 @@ import { Star, Users } from "lucide-react";
 import type { Course } from "@/types";
 
 const badgeStyles: Record<string, string> = {
-  primary: "bg-[--color-primary]/10 text-[--color-primary]",
+  primary: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
   green: "bg-emerald-50 text-emerald-600",
   red: "bg-red-50 text-red-500",
   blue: "bg-blue-50 text-blue-500",
@@ -16,7 +16,7 @@ export default function CourseCard({ course }: { course: Course }) {
     <article className="group cursor-pointer">
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-100">
-        <div className="flex h-full items-center justify-center bg-gradient-to-br from-[--color-primary]/20 to-[--color-dark-navy]/30 transition-all group-hover:brightness-95">
+        <div className="flex h-full items-center justify-center bg-gradient-to-br from-[var(--color-primary)]/20 to-[var(--color-dark-navy)]/30 transition-all group-hover:brightness-95">
           <span className="text-xs font-medium text-white/80">
             {course.title.slice(0, 8)}...
           </span>
@@ -25,37 +25,37 @@ export default function CourseCard({ course }: { course: Course }) {
 
       {/* Info */}
       <div className="pt-3">
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-[--color-dark]">
+        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-[var(--color-dark)]">
           {course.title}
         </h3>
 
-        <p className="mt-1 text-sm text-[--color-muted]">{course.instructor}</p>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">{course.instructor}</p>
 
         {/* Price */}
         <div className="mt-2">
           {hasDiscount ? (
             <>
-              <span className="text-sm text-[--color-muted] line-through">
+              <span className="text-sm text-[var(--color-muted)] line-through">
                 ₩{course.originalPrice!.toLocaleString()}
               </span>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[--color-red]">
+                <span className="font-bold text-[var(--color-red)]">
                   {course.discountRate}%
                 </span>
-                <span className="font-bold text-[--color-dark]">
+                <span className="font-bold text-[var(--color-dark)]">
                   ₩{course.price.toLocaleString()}
                 </span>
               </div>
             </>
           ) : (
-            <span className="font-bold text-[--color-dark]">
+            <span className="font-bold text-[var(--color-dark)]">
               ₩{course.price.toLocaleString()}
             </span>
           )}
         </div>
 
         {/* Meta */}
-        <div className="mt-2 flex items-center gap-3 text-sm text-[--color-muted]">
+        <div className="mt-2 flex items-center gap-3 text-sm text-[var(--color-muted)]">
           <span className="flex items-center gap-1">
             <Star size={14} className="fill-yellow-400 text-yellow-400" />
             {course.rating}
