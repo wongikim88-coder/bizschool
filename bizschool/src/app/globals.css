@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  /* BIZSCHOOL Color Tokens */
+  --color-primary: #155dfc;
+  --color-primary-dark: #1447e6;
+  --color-primary-light: #eff6ff;
+
+  --color-dark: #282c34;
+  --color-dark-navy: #101828;
+  --color-dark-deep: #1e2839;
+  --color-dark-charcoal: #282c34;
+
+  --color-body: #4a5565;
+  --color-muted: #6a7282;
+  --color-border: #e5e7eb;
+  --color-light-bg: #f8f9fa;
+
+  --color-red: #fa5252;
+  --color-blue-accent: #2b7fff;
+
+  --background: #ffffff;
+  --foreground: #282c34;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Noto Sans KR", sans-serif;
+  --font-logo: "Squada One", cursive;
+}
+
+body {
+  background: var(--background);
+  color: var(--color-body);
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* Utility: line-clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Font logo utility */
+.font-logo {
+  font-family: "Squada One", cursive;
+}

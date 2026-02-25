@@ -1,0 +1,24 @@
+# Claude Code
+.claude/
+
+# bkit plugin
+.bkit/
+.pdca-status.json
+
+# Playwright MCP
+.playwright-mcp/
+
+# Screenshots / Images
+*.png
+
+# bkit auto-generated
+docs/.pdca-snapshots/
+docs/.pdca-status.json
+docs/.bkit-memory.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
