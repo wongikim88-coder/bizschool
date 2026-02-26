@@ -23,6 +23,11 @@ export interface Book {
   rating: number;
   reviewCount: number;
   badges?: Badge[];
+  publisher?: string;
+  publishDate?: string;
+  description?: string;
+  category?: string;
+  isSoldOut?: boolean;
 }
 
 export interface Badge {
@@ -33,4 +38,29 @@ export interface Badge {
 export interface MenuItem {
   label: string;
   href: string;
+}
+
+// ── AI 전문가 상담 ──
+
+export interface ConsultationSession {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: ChatMessage[];
+}
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  createdAt: string;
+  expertVerification?: ExpertVerification;
+}
+
+export interface ExpertVerification {
+  status: "none" | "pending" | "verified";
+  expertName?: string;
+  verifiedAt?: string;
+  comment?: string;
 }
