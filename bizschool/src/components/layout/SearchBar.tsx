@@ -34,6 +34,16 @@ export default function SearchBar() {
     setShowPanel(false);
   }, [pathname]);
 
+  // Sync input with URL search param (books page only)
+  useEffect(() => {
+    if (isBooks) {
+      const urlSearch = searchParams.get("search") || "";
+      setValue(urlSearch);
+    } else {
+      setValue("");
+    }
+  }, [isBooks, searchParams]);
+
   const handleSearch = () => {
     if (!value.trim()) return;
     if (isBooks) {
@@ -79,7 +89,12 @@ export default function SearchBar() {
         />
         {value && (
           <button
-            onClick={() => setValue("")}
+            onClick={() => {
+              setValue("");
+              if (isBooks && searchParams.has("search")) {
+                router.push("/books");
+              }
+            }}
             className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-[var(--color-muted)] hover:text-[var(--color-dark)]"
             aria-label="검색어 지우기"
           >
