@@ -4,10 +4,10 @@ const footerLinks = [
   {
     title: "강의",
     links: [
-      { label: "전체강의", href: "/courses" },
-      { label: "추천강의", href: "/courses?filter=recommended" },
-      { label: "신규강의", href: "/courses?filter=new" },
-      { label: "무료강의", href: "/courses?filter=free" },
+      { label: "전체강의", href: "/" },
+      { label: "추천강의", href: "/?filter=recommended" },
+      { label: "신규강의", href: "/?filter=new" },
+      { label: "무료강의", href: "/?filter=free" },
     ],
   },
   {

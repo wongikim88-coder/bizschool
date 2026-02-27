@@ -6,6 +6,7 @@
 | ai-expert-consultation | 97% | 2026-02-26 | plan, design, analysis, report |
 | community-page | 96% | 2026-02-27 | plan, design, analysis, report |
 | community-home-revamp | 100% | 2026-02-27 | plan, design, analysis, report |
+| ux-improvements-v1 | 100% | 2026-02-27 | plan, design, analysis, report |
 
 ## book-page
 
@@ -42,3 +43,12 @@
 - **Duration**: 2026-02-27 (1 day)
 - **Files**: 6 files modified (types, CSS, data, PostCard, HomeTab, page)
 - **Path**: `docs/archive/2026-02/community-home-revamp/`
+
+## ux-improvements-v1
+
+- **Description**: UX 개선 V1 — 홈=강의 카탈로그, 헤더 링크 수정, 도서 검색 UI 개선 (인프런 스타일), 전문가상담 공통 헤더 통합, 사이드바 기본 열림
+- **PDCA Cycle**: #1
+- **Match Rate**: 100% (PASS)
+- **Duration**: 2026-02-27 (1 day)
+- **Files**: 8 files modified (page.tsx, Header, Footer, SearchBar, books/page, layout, consulting/page, Sidebar)
+- **Path**: `docs/archive/2026-02/ux-improvements-v1/`

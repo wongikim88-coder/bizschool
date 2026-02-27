@@ -36,9 +36,9 @@ export default function Sidebar({
       {/* Sidebar panel */}
       <aside
         className={`
-          fixed left-0 top-14 z-50 flex h-[calc(100vh-56px)] w-[280px] flex-col border-r border-[var(--color-border)] bg-white transition-transform duration-200
-          md:static md:z-auto md:h-auto md:w-[260px] md:translate-x-0
-          ${isOpen ? "translate-x-0" : "-translate-x-full md:hidden"}
+          fixed left-0 top-0 z-50 flex h-full w-[280px] flex-col border-r border-[var(--color-border)] bg-white transition-transform duration-200
+          md:static md:z-auto md:flex md:h-auto md:w-[260px] md:translate-x-0
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
         {/* Header */}

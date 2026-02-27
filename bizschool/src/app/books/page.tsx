@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { allBooks, BOOKS_PER_PAGE } from "@/data/books";
 import BookBanner from "@/components/books/BookBanner";
 import CategoryFilter from "@/components/books/CategoryFilter";
-import BookSearch from "@/components/books/BookSearch";
+
 import BookListCard from "@/components/books/BookListCard";
 import Pagination from "@/components/books/Pagination";
 
@@ -54,10 +54,6 @@ function BooksContent({
       <Suspense>
         <CategoryFilter currentCategory={category} />
       </Suspense>
-      <Suspense>
-        <BookSearch currentSearch={search} />
-      </Suspense>
-
       {/* Result count */}
       <div className="mt-6 text-sm text-[var(--color-muted)]">
         총 <span className="font-semibold text-[var(--color-dark)]">{filtered.length}</span>권
