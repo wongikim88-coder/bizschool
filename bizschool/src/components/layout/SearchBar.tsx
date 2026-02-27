@@ -3,17 +3,27 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
-import { bookCategories } from "@/data/books";
+import { allBooks, bookCategories } from "@/data/books";
+import SearchAutocomplete from "@/components/books/SearchAutocomplete";
 
 export default function SearchBar() {
   const [value, setValue] = useState("");
   const [showPanel, setShowPanel] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const isBooks = pathname === "/books";
+
+  // Debounce: 300ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(value.trim());
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [value]);
 
   // Outside click handler
   useEffect(() => {
@@ -44,15 +54,41 @@ export default function SearchBar() {
     }
   }, [isBooks, searchParams]);
 
-  const handleSearch = () => {
-    if (!value.trim()) return;
+  // 자동완성: title + author 매칭, 최대 5개
+  const filteredBooks =
+    isBooks && debouncedQuery.length >= 1
+      ? allBooks
+          .filter((book) => {
+            const q = debouncedQuery.toLowerCase();
+            return (
+              book.title.toLowerCase().includes(q) ||
+              book.author.toLowerCase().includes(q)
+            );
+          })
+          .slice(0, 5)
+      : [];
+
+  const showAutocomplete =
+    showPanel && isBooks && debouncedQuery.length >= 1 && filteredBooks.length > 0;
+  const showBrowse =
+    showPanel && isBooks && debouncedQuery.length === 0;
+
+  const handleSearch = (searchValue?: string) => {
+    const searchTerm = searchValue ?? value.trim();
+    if (!searchTerm) return;
     if (isBooks) {
       const params = new URLSearchParams(searchParams.toString());
-      params.set("search", value.trim());
+      params.set("search", searchTerm);
       params.set("page", "1");
       router.push(`/books?${params.toString()}`);
     }
     setShowPanel(false);
+  };
+
+  const handleSelect = (title: string) => {
+    setValue(title);
+    setShowPanel(false);
+    handleSearch(title);
   };
 
   const handleCategoryClick = (key: string) => {
@@ -78,10 +114,16 @@ export default function SearchBar() {
         <input
           type="text"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            setShowPanel(true);
+          }}
           onFocus={() => isBooks && setShowPanel(true)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
+            if (e.key === "Enter") {
+              handleSearch();
+              setShowPanel(false);
+            }
             if (e.key === "Escape") setShowPanel(false);
           }}
           placeholder={placeholder}
@@ -102,8 +144,17 @@ export default function SearchBar() {
           </button>
         )}
 
-        {/* Browse Panel — 도서 페이지에서만 표시 */}
-        {showPanel && isBooks && (
+        {/* 자동완성 드롭다운 — 검색어 입력 시 */}
+        {showAutocomplete && (
+          <SearchAutocomplete
+            books={filteredBooks}
+            query={debouncedQuery}
+            onSelect={handleSelect}
+          />
+        )}
+
+        {/* Browse Panel — 검색어 없을 때 카테고리 둘러보기 */}
+        {showBrowse && (
           <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-[var(--color-border)] bg-white p-4 shadow-lg">
             <p className="mb-3 text-xs font-semibold text-[var(--color-muted)]">
               둘러보기
