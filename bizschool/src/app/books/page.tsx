@@ -29,20 +29,29 @@ function BooksContent({
   category: string;
   search: string;
 }) {
-  // Filter by category
-  let filtered = category === "all"
-    ? allBooks
-    : allBooks.filter((book) => book.category === category);
+  // Step 1: Filter by search (across all categories)
+  const searchFiltered = search
+    ? allBooks.filter((book) => {
+        const query = search.toLowerCase();
+        return (
+          book.title.toLowerCase().includes(query) ||
+          book.author.toLowerCase().includes(query)
+        );
+      })
+    : allBooks;
 
-  // Filter by search
-  if (search) {
-    const query = search.toLowerCase();
-    filtered = filtered.filter(
-      (book) =>
-        book.title.toLowerCase().includes(query) ||
-        book.author.toLowerCase().includes(query)
-    );
+  // Step 2: Calculate per-category counts
+  const categoryCounts: Record<string, number> = { all: searchFiltered.length };
+  for (const book of searchFiltered) {
+    if (book.category) {
+      categoryCounts[book.category] = (categoryCounts[book.category] ?? 0) + 1;
+    }
   }
+
+  // Step 3: Filter by selected category
+  const filtered = category === "all"
+    ? searchFiltered
+    : searchFiltered.filter((book) => book.category === category);
 
   const totalPages = Math.ceil(filtered.length / BOOKS_PER_PAGE);
   const safePage = Math.max(1, Math.min(page, totalPages || 1));
@@ -52,7 +61,7 @@ function BooksContent({
   return (
     <>
       <Suspense>
-        <CategoryFilter currentCategory={category} />
+        <CategoryFilter currentCategory={category} categoryCounts={categoryCounts} />
       </Suspense>
       {/* Result count */}
       <div className="mt-6 text-sm text-[var(--color-muted)]">

@@ -7,6 +7,7 @@
 | community-page | 96% | 2026-02-27 | plan, design, analysis, report |
 | community-home-revamp | 100% | 2026-02-27 | plan, design, analysis, report |
 | ux-improvements-v1 | 100% | 2026-02-27 | plan, design, analysis, report |
+| book-search-tabs | 100% | 2026-02-27 | plan, design, analysis, report |
 
 ## book-page
 
@@ -52,3 +53,12 @@
 - **Duration**: 2026-02-27 (1 day)
 - **Files**: 8 files modified (page.tsx, Header, Footer, SearchBar, books/page, layout, consulting/page, Sidebar)
 - **Path**: `docs/archive/2026-02/ux-improvements-v1/`
+
+## book-search-tabs
+
+- **Description**: 도서 페이지 카테고리 탭 UI 개선 — 교보문고 스타일 세그먼트 탭 + 카테고리별 검색 건수 표시
+- **PDCA Cycle**: #1
+- **Match Rate**: 100% (PASS)
+- **Duration**: 2026-02-27 (1 day)
+- **Files**: 2 files modified (page.tsx, CategoryFilter.tsx)
+- **Path**: `docs/archive/2026-02/book-search-tabs/`

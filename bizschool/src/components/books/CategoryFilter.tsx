@@ -5,9 +5,10 @@ import { bookCategories } from "@/data/books";
 
 interface CategoryFilterProps {
   currentCategory: string;
+  categoryCounts: Record<string, number>;
 }
 
-export default function CategoryFilter({ currentCategory }: CategoryFilterProps) {
+export default function CategoryFilter({ currentCategory, categoryCounts }: CategoryFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -24,22 +25,26 @@ export default function CategoryFilter({ currentCategory }: CategoryFilterProps)
 
   return (
     <div className="mt-6 overflow-x-auto" role="tablist" aria-label="도서 카테고리">
-      <div className="flex gap-2">
-        {bookCategories.map((cat) => (
-          <button
-            key={cat.key}
-            role="tab"
-            aria-selected={currentCategory === cat.key}
-            onClick={() => handleCategoryChange(cat.key)}
-            className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              currentCategory === cat.key
-                ? "bg-[var(--color-primary)] text-white"
-                : "border border-[var(--color-border)] text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
+      <div className="flex border-b border-[var(--color-border)]">
+        {bookCategories.map((cat) => {
+          const count = categoryCounts[cat.key] ?? 0;
+          const isActive = currentCategory === cat.key;
+          return (
+            <button
+              key={cat.key}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => handleCategoryChange(cat.key)}
+              className={`shrink-0 px-5 py-3 text-sm transition-colors ${
+                isActive
+                  ? "mb-[-1px] border-b-2 border-[var(--color-primary)] font-semibold text-[var(--color-dark)]"
+                  : "text-[var(--color-muted)] hover:bg-[var(--color-light-bg)] hover:text-[var(--color-dark)]"
+              }`}
+            >
+              {cat.label} ({count})
+            </button>
+          );
+        })}
       </div>
     </div>
   );
