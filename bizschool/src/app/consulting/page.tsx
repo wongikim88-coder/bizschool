@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Menu } from "lucide-react";
+import { Menu, SquarePen } from "lucide-react";
 import Sidebar from "@/components/consultation/Sidebar";
 import ChatArea from "@/components/consultation/ChatArea";
 import ChatInput from "@/components/consultation/ChatInput";
 import SuggestChips from "@/components/consultation/SuggestChips";
+import ChatSearchModal from "@/components/consultation/ChatSearchModal";
 import {
   getMockResponse,
   generateId,
@@ -18,6 +19,7 @@ export default function ConsultingPage() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const currentSession = sessions.find((s) => s.id === currentSessionId);
   const messages = currentSession?.messages ?? [];
@@ -35,7 +37,6 @@ export default function ConsultingPage() {
       let sessionId = currentSessionId;
 
       if (!sessionId) {
-        // Create new session
         const newSession: ConsultationSession = {
           id: generateId(),
           title: getSessionTitle(content),
@@ -47,7 +48,6 @@ export default function ConsultingPage() {
         setCurrentSessionId(newSession.id);
         sessionId = newSession.id;
       } else {
-        // Add to existing session
         setSessions((prev) =>
           prev.map((s) =>
             s.id === sessionId
@@ -57,7 +57,6 @@ export default function ConsultingPage() {
         );
       }
 
-      // Mock AI response
       setIsLoading(true);
       const capturedSessionId = sessionId;
       setTimeout(() => {
@@ -99,7 +98,6 @@ export default function ConsultingPage() {
     (messageId: string) => {
       if (!currentSessionId) return;
 
-      // Set to pending
       setSessions((prev) =>
         prev.map((s) =>
           s.id === currentSessionId
@@ -115,7 +113,6 @@ export default function ConsultingPage() {
         )
       );
 
-      // Simulate verification completion after 2s
       setTimeout(() => {
         setSessions((prev) =>
           prev.map((s) =>
@@ -152,7 +149,33 @@ export default function ConsultingPage() {
   );
 
   return (
-    <div className="flex bg-[var(--color-light-bg)]" style={{ height: "calc(100vh - 120px)" }}>
+    <div
+      className="flex bg-[var(--color-light-bg)]"
+      style={{ height: "calc(100vh - 64px)" }}
+    >
+      {/* Icon Rail - desktop only, when sidebar closed */}
+      {!sidebarOpen && (
+        <div
+          className="hidden shrink-0 flex-col items-center gap-2 border-r border-[var(--color-border)] bg-white py-3 md:flex"
+          style={{ width: "52px" }}
+        >
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="rounded-lg p-2 text-[var(--color-dark)] transition-colors hover:bg-gray-100"
+            aria-label="메뉴 열기"
+          >
+            <Menu size={20} />
+          </button>
+          <button
+            onClick={handleNewChat}
+            className="rounded-lg p-2 text-[var(--color-dark)] transition-colors hover:bg-gray-100"
+            aria-label="새 채팅"
+          >
+            <SquarePen size={20} />
+          </button>
+        </div>
+      )}
+
       {/* Sidebar */}
       <Sidebar
         sessions={sessions}
@@ -161,21 +184,25 @@ export default function ConsultingPage() {
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         onNewChat={handleNewChat}
         onSelectSession={handleSelectSession}
+        onSearchOpen={() => setSearchModalOpen(true)}
       />
 
       {/* Chat Column */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Mobile-only top bar */}
-        <div className="flex h-12 shrink-0 items-center gap-3 border-b border-[var(--color-border)] bg-white px-4 md:hidden">
+        {/* Top bar */}
+        <div className="flex h-12 shrink-0 items-center gap-3 px-4">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="rounded-lg p-2 text-[var(--color-dark)] transition-colors hover:bg-gray-100"
+            className="rounded-lg p-2 text-[var(--color-dark)] transition-colors hover:bg-gray-100 md:hidden"
             aria-label="메뉴"
           >
             <Menu size={20} />
           </button>
-          <span className="text-sm font-medium text-[var(--color-primary)]">
-            AI 전문가 상담
+          <span className="text-sm font-semibold text-[var(--color-dark)]">
+            AI 전문가상담{" "}
+            <span className="rounded-full bg-[var(--color-primary)] px-1.5 py-0.5 text-[10px] font-bold text-white">
+              Beta
+            </span>
           </span>
         </div>
 
@@ -187,6 +214,14 @@ export default function ConsultingPage() {
         <ChatInput onSend={handleSendMessage} disabled={isLoading} />
         <SuggestChips onChipClick={handleSuggestChipClick} />
       </div>
+
+      {/* Chat Search Modal */}
+      <ChatSearchModal
+        sessions={sessions}
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+        onSelectSession={handleSelectSession}
+      />
     </div>
   );
 }

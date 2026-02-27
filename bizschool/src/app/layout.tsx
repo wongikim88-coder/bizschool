@@ -1,9 +1,6 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Squada_One, Noto_Sans_KR } from "next/font/google";
-import Header from "@/components/layout/Header";
-import SearchBar from "@/components/layout/SearchBar";
-import Footer from "@/components/layout/Footer";
+import LayoutContent from "@/components/layout/LayoutContent";
 import "./globals.css";
 
 const squadaOne = Squada_One({
@@ -33,12 +30,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${squadaOne.variable} ${notoSansKR.variable} antialiased`}>
-        <Header />
-        <Suspense>
-          <SearchBar />
-        </Suspense>
-        <main>{children}</main>
-        <Footer />
+        <LayoutContent>{children}</LayoutContent>
       </body>
     </html>
   );

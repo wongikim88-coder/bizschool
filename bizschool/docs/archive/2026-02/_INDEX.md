@@ -8,6 +8,7 @@
 | community-home-revamp | 100% | 2026-02-27 | plan, design, analysis, report |
 | ux-improvements-v1 | 100% | 2026-02-27 | plan, design, analysis, report |
 | book-search-tabs | 100% | 2026-02-27 | plan, design, analysis, report |
+| consulting-gemini-ui | 100% | 2026-02-28 | plan, design, analysis, report |
 
 ## book-page
 
@@ -62,3 +63,12 @@
 - **Duration**: 2026-02-27 (1 day)
 - **Files**: 2 files modified (page.tsx, CategoryFilter.tsx)
 - **Path**: `docs/archive/2026-02/book-search-tabs/`
+
+## consulting-gemini-ui
+
+- **Description**: 전문가상담 페이지 Gemini UI 개선 — 사이드바 토글(Icon Rail), 수직 헤더 레이아웃, 채팅 검색 모달, "AI 전문가상담 Beta" 라벨
+- **PDCA Cycle**: #1 (Design v1→v2)
+- **Match Rate**: 100% (PASS)
+- **Duration**: 2026-02-27 ~ 2026-02-28
+- **Files**: 4 modified + 2 new (layout.tsx, LayoutContent.tsx, page.tsx, Sidebar.tsx, ChatSearchModal.tsx, consultation.ts)
+- **Path**: `docs/archive/2026-02/consulting-gemini-ui/`

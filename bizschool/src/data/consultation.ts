@@ -116,6 +116,21 @@ export function getSessionTitle(firstMessage: string): string {
     : firstMessage;
 }
 
+export function getSearchSnippet(
+  content: string,
+  query: string,
+  contextLen = 30
+): string {
+  const lower = content.toLowerCase();
+  const idx = lower.indexOf(query.toLowerCase());
+  if (idx === -1) return content.slice(0, 60);
+  const start = Math.max(0, idx - contextLen);
+  const end = Math.min(content.length, idx + query.length + contextLen);
+  const prefix = start > 0 ? "..." : "";
+  const suffix = end < content.length ? "..." : "";
+  return prefix + content.slice(start, end) + suffix;
+}
+
 export function groupSessionsByDate<
   T extends { createdAt: string },
 >(sessions: T[]): Record<string, T[]> {
