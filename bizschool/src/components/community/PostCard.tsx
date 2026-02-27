@@ -4,6 +4,7 @@ import type { CourseQuestion, ConsultationCase, DiscussionPost } from "@/types";
 interface PostCardProps {
   post: CourseQuestion | ConsultationCase | DiscussionPost;
   showTabTag?: boolean;
+  variant?: "compact" | "feed";
 }
 
 function formatViewCount(count: number): string {
@@ -33,7 +34,50 @@ function getTabTag(post: CourseQuestion | ConsultationCase | DiscussionPost): st
   }
 }
 
-export default function PostCard({ post, showTabTag = false }: PostCardProps) {
+const tagStyles: Record<string, string> = {
+  question: "bg-blue-50 text-blue-600",
+  consultation: "bg-emerald-50 text-emerald-600",
+  discussion: "bg-purple-50 text-purple-600",
+};
+
+export default function PostCard({ post, showTabTag = false, variant = "compact" }: PostCardProps) {
+  if (variant === "feed") {
+    return (
+      <article className="cursor-pointer px-5 py-5 transition-colors hover:bg-[var(--color-light-bg)]">
+        {/* 카테고리 태그 */}
+        <span
+          className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${tagStyles[post.type]}`}
+        >
+          {getTabTag(post)}
+        </span>
+
+        {/* 제목 */}
+        <h3 className="mt-2 text-base font-bold text-[var(--color-dark)] line-clamp-1">
+          {post.title}
+        </h3>
+
+        {/* 본문 미리보기 */}
+        <p className="mt-1.5 text-sm text-[var(--color-muted)] line-clamp-2">
+          {post.content}
+        </p>
+
+        {/* 메타 정보 */}
+        <div className="mt-3 flex items-center justify-between text-sm text-[var(--color-muted)]">
+          <div className="flex items-center gap-1.5">
+            <span>{post.author}</span>
+            <span>·</span>
+            <span>{post.createdAt}</span>
+          </div>
+          <div className="hidden items-center gap-1 sm:flex">
+            <Eye size={14} />
+            <span>{formatViewCount(post.viewCount)}</span>
+          </div>
+        </div>
+      </article>
+    );
+  }
+
+  // variant="compact" (기존 레이아웃)
   const tabTag = showTabTag ? getTabTag(post) : null;
 
   return (

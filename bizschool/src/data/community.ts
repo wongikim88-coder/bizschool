@@ -9,6 +9,30 @@ export const communityTabs = [
 
 export const POSTS_PER_PAGE = 10;
 export const HOME_POSTS_PER_SECTION = 5;
+export const FEED_BATCH_SIZE = 10;
+
+// ── 통합 피드 셔플링 함수 ──
+
+export function getShuffledFeed(): (CourseQuestion | ConsultationCase | DiscussionPost)[] {
+  const questions = [...courseQuestions].sort((a, b) => b.viewCount - a.viewCount);
+  const cases = [...consultationCases].sort((a, b) => b.viewCount - a.viewCount);
+  const discussions = [...discussionPosts].sort((a, b) => b.viewCount - a.viewCount);
+
+  const queues = [questions, cases, discussions];
+  const result: (CourseQuestion | ConsultationCase | DiscussionPost)[] = [];
+  const indices = [0, 0, 0];
+
+  while (indices.some((idx, i) => idx < queues[i].length)) {
+    for (let i = 0; i < queues.length; i++) {
+      if (indices[i] < queues[i].length) {
+        result.push(queues[i][indices[i]]);
+        indices[i]++;
+      }
+    }
+  }
+
+  return result;
+}
 
 // ── 강의질문 데이터 ──
 
@@ -25,6 +49,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 3,
     answerCount: 1,
     isAnswered: true,
+    content: "급여 분개 시 4대보험 사용자부담분과 회사부담분을 어떻게 구분하여 처리하는지 궁금합니다. 특히 건강보험과 국민연금의 경우 회사부담분은 복리후생비로 처리하는 게 맞나요?",
   },
   {
     id: "q-2",
@@ -38,6 +63,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 2,
     answerCount: 0,
     isAnswered: false,
+    content: "부가세 예정신고를 누락했을 경우 가산세가 얼마나 부과되는지 궁금합니다. 납부불성실가산세와 신고불성실가산세가 각각 어떻게 적용되나요?",
   },
   {
     id: "q-3",
@@ -51,6 +77,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 5,
     answerCount: 2,
     isAnswered: true,
+    content: "손익계산서의 당기순이익이 재무상태표의 이익잉여금으로 어떻게 연결되는지 이해가 잘 안 됩니다. 기초잔액과 기말잔액의 차이가 곧 당기순이익인 건가요?",
   },
   {
     id: "q-4",
@@ -64,6 +91,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 1,
     answerCount: 1,
     isAnswered: true,
+    content: "법인세 중간예납 시 직전사업연도 기준과 당해사업연도 기준 중 어떤 걸 선택하는 게 유리한지 판단 기준이 궁금합니다.",
   },
   {
     id: "q-5",
@@ -77,6 +105,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 2,
     answerCount: 1,
     isAnswered: true,
+    content: "ERP에서 이미 승인된 전표의 금액을 수정해야 하는데, 역분개 후 재입력하는 방법밖에 없나요? 직접 수정이 가능한 방법이 있는지 궁금합니다.",
   },
   {
     id: "q-6",
@@ -90,6 +119,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 4,
     answerCount: 1,
     isAnswered: true,
+    content: "퇴직급여충당부채를 매월 설정해야 하나요, 아니면 결산 시에만 설정하면 되나요? 중소기업 기준으로 실무적인 처리 방법이 궁금합니다.",
   },
   {
     id: "q-7",
@@ -103,6 +133,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 6,
     answerCount: 2,
     isAnswered: true,
+    content: "연차수당 계산 시 통상임금에 포함되는 항목이 헷갈립니다. 식대, 교통비, 직책수당 등이 통상임금에 포함되는지 각각 알려주세요.",
   },
   {
     id: "q-8",
@@ -116,6 +147,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 1,
     answerCount: 0,
     isAnswered: false,
+    content: "유동비율이 200% 이상이면 안전하다고 하는데, 업종별로 기준이 다른 건가요? 부채비율과 함께 종합적으로 해석하는 방법이 궁금합니다.",
   },
   {
     id: "q-9",
@@ -129,6 +161,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 3,
     answerCount: 1,
     isAnswered: true,
+    content: "퇴직자에게 원천징수 영수증을 발급해야 하는데, 홈택스에서 발급하는 절차와 필요한 서류가 무엇인지 알려주세요.",
   },
   {
     id: "q-10",
@@ -142,6 +175,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 8,
     answerCount: 3,
     isAnswered: true,
+    content: "감가상각비를 정률법으로 계산할 때와 정액법으로 계산할 때 각각의 장단점이 궁금합니다. 세무상 어떤 방법이 유리한가요?",
   },
   {
     id: "q-11",
@@ -155,6 +189,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 2,
     answerCount: 1,
     isAnswered: true,
+    content: "신입사원 입사 후 4대보험 취득신고를 언제까지 해야 하는지 궁금합니다. 각 보험별로 신고 기한이 다른가요?",
   },
   {
     id: "q-12",
@@ -168,6 +203,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 1,
     answerCount: 0,
     isAnswered: false,
+    content: "ERP에서 특정 거래처의 원장을 조회하려고 하는데 데이터가 안 나옵니다. 기간 설정이나 계정과목 필터 문제인 것 같은데 확인 방법을 알려주세요.",
   },
   {
     id: "q-13",
@@ -181,6 +217,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 0,
     answerCount: 0,
     isAnswered: false,
+    content: "BSC(균형성과표)에서 재무, 고객, 프로세스, 학습 관점별로 KPI를 어떻게 설정하는지 실제 사례가 궁금합니다.",
   },
   {
     id: "q-14",
@@ -194,6 +231,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 4,
     answerCount: 1,
     isAnswered: true,
+    content: "매출채권이 회수 불가능해진 경우 대손상각비로 처리하는 시점과 세무상 손금 인정 요건이 궁금합니다.",
   },
   {
     id: "q-15",
@@ -207,6 +245,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 2,
     answerCount: 0,
     isAnswered: false,
+    content: "프리랜서에게 사업소득을 지급할 때 원천징수 세율이 3.3%인데, 이게 소득세 3%와 지방소득세 0.3%를 합한 건가요?",
   },
 ];
 
@@ -225,6 +264,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 43,
+    content: "퇴직금 중간정산은 근로자가 요청하고 사용자가 승인해야 하며, 주택구입, 전세자금 등 법정 사유에 해당해야 합니다. 2012년 이후 중간정산 사유가 제한되었으니 확인이 필요합니다.",
   },
   {
     id: "c-2",
@@ -238,6 +278,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "이회계사",
     helpfulCount: 38,
+    content: "의료비 세액공제는 총급여의 3%를 초과하는 금액에 대해 15%의 세액공제를 받을 수 있습니다. 난임시술비는 30%, 미숙아는 20%의 높은 공제율이 적용됩니다.",
   },
   {
     id: "c-3",
@@ -251,6 +292,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "박노무사",
     helpfulCount: 27,
+    content: "보수월액 변경 신고는 국민연금과 건강보험에서 각각 처리해야 합니다. 급여가 변동된 달의 다음 달 15일까지 신고하면 됩니다.",
   },
   {
     id: "c-4",
@@ -264,6 +306,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 50,
+    content: "접대비, 비영업용 소형승용차 관련 비용, 토지 관련 매입세액 등은 매입세액 불공제 항목입니다. 사업과 직접 관련 없는 지출도 불공제 대상이니 주의하세요.",
   },
   {
     id: "c-5",
@@ -277,6 +320,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "이회계사",
     helpfulCount: 22,
+    content: "세무조정 시 유보는 일시적 차이로 향후 환입되는 항목이고, 소득처분은 영구적 차이로 귀속자에 따라 배당, 상여, 기타소득 등으로 구분됩니다.",
   },
   {
     id: "c-6",
@@ -290,6 +334,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "박노무사",
     helpfulCount: 35,
+    content: "2021년 11월부터 임금명세서 교부가 의무화되었습니다. 기본급, 각종 수당, 공제 항목별 금액, 계산 방법 등을 명시해야 하며 위반 시 과태료가 부과됩니다.",
   },
   {
     id: "c-7",
@@ -303,6 +348,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 29,
+    content: "퇴직소득세는 근속연수에 따라 공제금액이 달라집니다. 환산급여 방식으로 계산하며, 근속연수가 길수록 세부담이 줄어드는 구조입니다.",
   },
   {
     id: "c-8",
@@ -316,6 +362,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "이회계사",
     helpfulCount: 45,
+    content: "부양가족 인적공제는 연간 소득금액 100만원 이하(근로소득만 있는 경우 총급여 500만원 이하)인 경우 적용됩니다. 직계존속은 만 60세 이상이어야 합니다.",
   },
   {
     id: "c-9",
@@ -329,6 +376,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 18,
+    content: "간이과세자는 연 1회(1월) 부가세 신고를 합니다. 업종별 부가가치율을 적용하여 납부세액을 계산하며, 매출이 4,800만원 미만이면 납부의무가 면제됩니다.",
   },
   {
     id: "c-10",
@@ -342,6 +390,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "이회계사",
     helpfulCount: 15,
+    content: "이월결손금은 각 사업연도 소득의 80%(중소기업 100%)까지 공제 가능합니다. 15년간 이월되며, 발생 순서대로 공제해야 합니다.",
   },
   {
     id: "c-11",
@@ -355,6 +404,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "박노무사",
     helpfulCount: 21,
+    content: "급여가 소급 인상된 경우 차액에 대한 4대보험료도 정산해야 합니다. 국민연금은 보수월액 변경신고, 건강보험은 보수변경 신고를 통해 처리합니다.",
   },
   {
     id: "c-12",
@@ -368,6 +418,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 32,
+    content: "DB형은 회사가 운용 책임을 지고 퇴직 시 확정된 급여를 지급하며, DC형은 근로자가 직접 운용하여 운용 성과에 따라 퇴직급여가 달라집니다.",
   },
   {
     id: "c-13",
@@ -381,6 +432,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "이회계사",
     helpfulCount: 41,
+    content: "주택자금공제는 주택마련저축, 주택임차차입금, 장기주택저당차입금 이자상환액 등으로 구분됩니다. 무주택 세대주 요건과 주택 기준시가 요건을 확인하세요.",
   },
   {
     id: "c-14",
@@ -394,6 +446,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 24,
+    content: "사업소득의 필요경비는 수입금액을 얻기 위해 직접 소요된 비용입니다. 인건비, 임차료, 감가상각비, 접대비(한도 내) 등이 인정됩니다.",
   },
   {
     id: "c-15",
@@ -407,6 +460,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "이회계사",
     helpfulCount: 19,
+    content: "증여세 면제한도는 배우자 6억원, 직계존비속 5천만원(미성년자 2천만원)이며 10년 단위로 합산됩니다. 증여일이 속하는 달의 말일부터 3개월 내 신고해야 합니다.",
   },
 ];
 
@@ -423,6 +477,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.27",
     viewCount: 1892,
     commentCount: 45,
+    content: "이직 고민이 있어서 글 올려봅니다. 현재 중소기업에서 경리로 3년째 근무 중인데, 연봉이 너무 낮아서 이직을 생각하고 있습니다. 경력직으로 이직하신 분들 조언 부탁드려요.",
   },
   {
     id: "d-2",
@@ -434,6 +489,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.26",
     viewCount: 1245,
     commentCount: 32,
+    content: "2026년 세법 개정안에서 주요 변경사항을 정리해봤습니다. 법인세율 인하, 소규모 사업자 세액감면 확대, 연말정산 공제한도 조정 등 실무에 영향이 큰 내용 위주로 공유드립니다.",
   },
   {
     id: "d-3",
@@ -445,6 +501,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.25",
     viewCount: 987,
     commentCount: 28,
+    content: "경리 취업을 준비하고 있는데 전산회계 1급과 재경관리사 중 어떤 자격증을 먼저 따는 게 좋을까요? 현직자분들의 조언이 필요합니다.",
   },
   {
     id: "d-4",
@@ -456,6 +513,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.24",
     viewCount: 1567,
     commentCount: 38,
+    content: "10년간 경리 업무하면서 가장 많이 쓰는 엑셀 단축키와 함수를 정리해봤습니다. VLOOKUP, SUMIFS, 피벗테이블 활용법까지 실무에서 바로 쓸 수 있는 팁 모음입니다.",
   },
   {
     id: "d-5",
@@ -467,6 +525,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.23",
     viewCount: 432,
     commentCount: 12,
+    content: "BIZSCHOOL에서 재무회계 마스터 강의를 완강했습니다. 실무 중심의 설명이 정말 좋았고, 특히 분개 연습 파트가 실무에 바로 적용할 수 있어서 만족스러웠습니다.",
   },
   {
     id: "d-6",
@@ -478,6 +537,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.22",
     viewCount: 756,
     commentCount: 23,
+    content: "결산 시즌이라 또 야근입니다... 다들 결산 기간에 얼마나 야근하시나요? 저만 이렇게 힘든 건지 공감해주실 분 계신가요 ㅠㅠ",
   },
   {
     id: "d-7",
@@ -489,6 +549,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.21",
     viewCount: 1034,
     commentCount: 41,
+    content: "연말정산 시즌마다 반복되는 실수와 놓치기 쉬운 공제항목을 정리했습니다. 직원들에게 안내할 때 유용한 체크리스트도 함께 공유드립니다.",
   },
   {
     id: "d-8",
@@ -500,6 +561,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.20",
     viewCount: 2134,
     commentCount: 56,
+    content: "경리 3년차인데 현재 연봉이 3,200만원입니다. 동종업계 대비 적정 수준인지 궁금하네요. 경력별, 기업 규모별 연봉 수준을 알고 계신 분 공유 부탁드려요.",
   },
   {
     id: "d-9",
@@ -511,6 +573,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.19",
     viewCount: 345,
     commentCount: 8,
+    content: "ERP 실무 완성 강의를 3주 만에 완강했습니다. 실제 ERP 화면을 보면서 진행하니 이해가 빨랐고, 전표 입력부터 결산까지 전체 프로세스를 배울 수 있었습니다.",
   },
   {
     id: "d-10",
@@ -522,6 +585,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.18",
     viewCount: 543,
     commentCount: 19,
+    content: "평일에는 업무 때문에 공부할 시간이 없어서 주말에 몰아서 하고 있는데요. 혹시 주말에 같이 스터디하실 분 계신가요?",
   },
   {
     id: "d-11",
@@ -533,6 +597,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.17",
     viewCount: 678,
     commentCount: 15,
+    content: "드디어 전산세무 2급에 합격했습니다! 3개월간 준비했고, BIZSCHOOL 세무실무 강의가 큰 도움이 됐어요. 공부 방법과 시험 팁 공유드립니다.",
   },
   {
     id: "d-12",
@@ -544,6 +609,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.16",
     viewCount: 892,
     commentCount: 34,
+    content: "직원 10명인 소규모 법인에서 경리를 혼자 담당하고 있습니다. 급여, 4대보험, 세금 신고, 결산까지 다 혼자 해야 하나요? 외부 기장은 비용이 부담되는데...",
   },
   {
     id: "d-13",
@@ -555,6 +621,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.15",
     viewCount: 467,
     commentCount: 21,
+    content: "소규모 사업장에서 쓰기 좋은 회계프로그램을 추천해주세요. 현재 더존을 쓰고 있는데 비용이 부담되어서 다른 대안을 찾고 있습니다.",
   },
   {
     id: "d-14",
@@ -566,6 +633,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.14",
     viewCount: 234,
     commentCount: 42,
+    content: "결산 시즌이라 밖에 나가기도 힘들어서 편의점 도시락 먹고 있네요. 다들 점심은 어떻게 해결하시나요? 혼밥 메뉴 추천 부탁드려요 ㅎㅎ",
   },
   {
     id: "d-15",
@@ -577,6 +645,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.13",
     viewCount: 189,
     commentCount: 7,
+    content: "세무실무 강의 절반 정도 들었는데 부가세 파트가 정말 알차네요. 실무에서 헷갈렸던 부분들이 하나씩 정리되는 느낌입니다.",
   },
 ];
 

@@ -75,6 +75,7 @@ export interface CommunityPost {
   createdAt: string;
   viewCount: number;
   commentCount: number;
+  content: string;
 }
 
 export interface CourseQuestion extends CommunityPost {

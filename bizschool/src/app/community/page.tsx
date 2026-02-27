@@ -6,8 +6,6 @@ import HomeTab from "@/components/community/HomeTab";
 import QuestionsTab from "@/components/community/QuestionsTab";
 import CasesTab from "@/components/community/CasesTab";
 import DiscussionTab from "@/components/community/DiscussionTab";
-import WeeklyTopUsers from "@/components/community/WeeklyTopUsers";
-import { weeklyTopUsers } from "@/data/community";
 
 export const metadata: Metadata = {
   title: "커뮤니티 - BIZSCHOOL",
@@ -34,15 +32,7 @@ export default async function CommunityPage({
       </Suspense>
 
       <div className="mt-4">
-        {tab === "home" && (
-          <>
-            <HomeTab />
-            {/* 모바일/태블릿용 TOP 10 */}
-            <div className="mt-6 lg:hidden">
-              <WeeklyTopUsers users={weeklyTopUsers} layout="horizontal" />
-            </div>
-          </>
-        )}
+        {tab === "home" && <HomeTab />}
 
         {tab === "questions" && (
           <Suspense>

@@ -1,88 +1,73 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import PostCard from "./PostCard";
 import WeeklyTopUsers from "./WeeklyTopUsers";
-import {
-  courseQuestions,
-  consultationCases,
-  discussionPosts,
-  weeklyTopUsers,
-  HOME_POSTS_PER_SECTION,
-} from "@/data/community";
+import { getShuffledFeed, weeklyTopUsers, FEED_BATCH_SIZE } from "@/data/community";
+import { Loader2 } from "lucide-react";
 
-const popularQuestions = [...courseQuestions]
-  .sort((a, b) => b.viewCount - a.viewCount)
-  .slice(0, HOME_POSTS_PER_SECTION);
-
-const popularCases = [...consultationCases]
-  .sort((a, b) => b.viewCount - a.viewCount)
-  .slice(0, HOME_POSTS_PER_SECTION);
-
-const popularDiscussions = [...discussionPosts]
-  .sort((a, b) => b.viewCount - a.viewCount)
-  .slice(0, HOME_POSTS_PER_SECTION);
-
-interface SectionProps {
-  title: string;
-  icon: string;
-  tabKey: string;
-  children: React.ReactNode;
-}
-
-function Section({ title, icon, tabKey, children }: SectionProps) {
-  return (
-    <section className="mb-8">
-      <div className="flex items-center justify-between py-4">
-        <h2 className="text-lg font-bold text-[var(--color-dark)]">
-          {icon} {title}
-        </h2>
-        <Link
-          href={`/community?tab=${tabKey}`}
-          className="flex items-center gap-0.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-primary)]"
-        >
-          더보기
-          <ChevronRight size={14} />
-        </Link>
-      </div>
-      <div className="divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)]">
-        {children}
-      </div>
-    </section>
-  );
-}
+const allPosts = getShuffledFeed();
 
 export default function HomeTab() {
+  const [displayCount, setDisplayCount] = useState(FEED_BATCH_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const visiblePosts = allPosts.slice(0, displayCount);
+  const hasMore = displayCount < allPosts.length;
+
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setDisplayCount((prev) => Math.min(prev + FEED_BATCH_SIZE, allPosts.length));
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [displayCount, hasMore]);
+
   return (
     <div className="flex gap-6">
-      {/* 좌측 메인 콘텐츠 */}
+      {/* 메인 피드 */}
       <div className="min-w-0 flex-1">
-        <Section title="인기 강의질문" icon="🔥" tabKey="questions">
-          {popularQuestions.map((post) => (
-            <PostCard key={post.id} post={post} showTabTag />
+        <div className="divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)]">
+          {visiblePosts.map((post) => (
+            <PostCard key={post.id} post={post} variant="feed" />
           ))}
-        </Section>
+        </div>
 
-        <Section title="인기 상담사례" icon="📋" tabKey="cases">
-          {popularCases.map((post) => (
-            <PostCard key={post.id} post={post} showTabTag />
-          ))}
-        </Section>
+        {/* Sentinel & Status */}
+        {hasMore ? (
+          <div ref={sentinelRef} className="flex justify-center py-8">
+            <Loader2 size={24} className="animate-spin text-[var(--color-muted)]" />
+            <span className="sr-only">게시물을 불러오는 중입니다</span>
+          </div>
+        ) : (
+          <p
+            role="status"
+            aria-live="polite"
+            className="py-8 text-center text-sm text-[var(--color-muted)]"
+          >
+            모든 게시물을 확인했습니다
+          </p>
+        )}
 
-        <Section title="인기 소통공간" icon="💬" tabKey="discussion">
-          {popularDiscussions.map((post) => (
-            <PostCard key={post.id} post={post} showTabTag />
-          ))}
-        </Section>
+        {/* 모바일/태블릿용 TOP 10 - 피드 끝에 표시 */}
+        {!hasMore && (
+          <div className="mt-6 lg:hidden">
+            <WeeklyTopUsers users={weeklyTopUsers} layout="horizontal" />
+          </div>
+        )}
       </div>
 
-      {/* 우측 패널 - 데스크톱 */}
-      <div className="hidden w-[280px] shrink-0 pt-4 lg:block">
+      {/* 우측 사이드바 - 데스크톱 */}
+      <div className="hidden w-[280px] shrink-0 lg:block">
         <WeeklyTopUsers users={weeklyTopUsers} />
-      </div>
-
-      {/* 모바일/태블릿용 TOP 10 - 하단 가로 스크롤 */}
-      <div className="hidden" aria-hidden="true">
-        {/* HomeTab 전체가 flex이므로 모바일 TOP10은 page.tsx에서 처리 */}
       </div>
     </div>
   );
