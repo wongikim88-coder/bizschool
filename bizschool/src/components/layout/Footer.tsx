@@ -2,6 +2,14 @@ import Link from "next/link";
 
 const footerLinks = [
   {
+    title: "더존비즈스쿨",
+    links: [
+      { label: "비즈스쿨 소개", href: "/about" },
+      { label: "연혁 및 교육실적", href: "/history" },
+      { label: "찾아오시는 길", href: "/directions" },
+    ],
+  },
+  {
     title: "강의",
     links: [
       { label: "전체강의", href: "/" },
@@ -40,7 +48,7 @@ export default function Footer() {
     <footer className="bg-[var(--color-dark-navy)] text-white">
       {/* Main footer content */}
       <div className="mx-auto max-w-[1200px] px-4 py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-6">
           {/* Logo & Description */}
           <div className="col-span-2">
             <span className="font-logo text-xl text-white">BIZSCHOOL</span>
