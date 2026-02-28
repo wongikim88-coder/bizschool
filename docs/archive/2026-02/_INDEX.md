@@ -5,6 +5,7 @@
 | bizschool-main | 95% | 2026-02-25 | plan, design, analysis, report |
 | main-page-revamp | 98% | 2026-02-25 | plan, analysis, report |
 | book-search-reset | 100% | 2026-02-27 | plan, design, analysis, report |
+| directions-page | 98% | 2026-02-28 | plan, design, analysis, report |
 
 ## bizschool-main
 
@@ -28,3 +29,11 @@
 - **PDCA Duration**: 2026-02-27 (same day completion, 0 iterations)
 - **Key Changes**: Search chip with X in results area, SearchBar URL sync, result text format update
 - **Path**: `docs/archive/2026-02/book-search-reset/`
+
+## directions-page
+
+- **Description**: 찾아오시는 길 페이지 - 카카오 지도 API, 주소/연락처/교통편 안내
+- **Tech Stack**: Next.js 16.1.6, React 19.2.3, Tailwind CSS v4, Kakao Maps SDK
+- **PDCA Duration**: 2026-02-28 (same day completion, 0 iterations)
+- **Key Changes**: KakaoMap client component (next/script), Hero + Map + Info card layout
+- **Path**: `docs/archive/2026-02/directions-page/`
