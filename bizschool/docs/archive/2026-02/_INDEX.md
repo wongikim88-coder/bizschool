@@ -10,6 +10,7 @@
 | book-search-tabs | 100% | 2026-02-27 | plan, design, analysis, report |
 | consulting-gemini-ui | 100% | 2026-02-28 | plan, design, analysis, report |
 | book-search-autocomplete | 97% | 2026-02-28 | plan, design, analysis, report |
+| about-bizschool | 99% | 2026-02-28 | plan, design, analysis, report |
 
 ## book-page
 
@@ -82,3 +83,12 @@
 - **Duration**: 2026-02-28 (1 day)
 - **Files**: 2 files (SearchBar.tsx modified, SearchAutocomplete.tsx new), ~180 lines
 - **Path**: `docs/archive/2026-02/book-search-autocomplete/`
+
+## about-bizschool
+
+- **Description**: 비즈스쿨 소개 페이지 (/about) — 히어로 섹션, 핵심 서비스 3카드, 선순환 원형 다이어그램
+- **PDCA Cycle**: #1 (7 intentional deviations from design)
+- **Match Rate**: 99% (PASS)
+- **Duration**: 2026-02-28 (1 day)
+- **Files**: 1 file (src/app/about/page.tsx), 255 lines
+- **Path**: `docs/archive/2026-02/about-bizschool/`
