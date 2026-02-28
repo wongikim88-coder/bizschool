@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   BookOpen,
   MessageCircle,
@@ -7,6 +8,8 @@ import {
   GraduationCap,
   Share2,
   TrendingUp,
+  Monitor,
+  Laptop,
 } from "lucide-react";
 
 const features = [
@@ -36,6 +39,94 @@ const features = [
       "업무 노하우를 공유하고, 동료들의 경험에서 배우세요. 질문, 사례 공유, 자유 토론으로 함께 성장하는 공간입니다.",
     linkText: "커뮤니티 가기",
     href: "/community",
+  },
+];
+
+const historyData = [
+  {
+    year: 2011,
+    items: [
+      "노동부 기관평가 B등급(동부지역 내 최고점수)",
+      "국세청 조사국 공무원 대상 위탁교육",
+      "국세청 재산세국 공무원 대상 위탁교육",
+      "대경정보산업 고등학교 학교 위탁교육",
+      "기업체 출장 강의",
+      "내일 배움카드제 교육과정 11개 과정 노동부승인(세무회계 6개, OA 2개, 쇼핑몰 3개)",
+    ],
+  },
+  {
+    year: 2010,
+    items: [
+      "국세청 조사국 공무원 대상 위탁교육",
+      "직업능력개발계좌제 9개 과정 노동부 승인(세무회계 5개, OA 4개)",
+      "세무회계, ERP 등 노동부지원 실업자 교육",
+      "제4강의장(멀티미디어실 25석) 오픈",
+      "더존 아이플러스 실무용 프로그램 설치 및 교육실시",
+      "대경정보산업 고등학교 학교 위탁교육",
+    ],
+  },
+  {
+    year: 2009,
+    items: [
+      "세무회계, ERP 등 노동부지원 실업자 교육",
+      "국세청 공무원 대상 위탁교육",
+      "대동세무 고등학교 선생님, 학생 대상 위탁교육",
+      "기업체 출장 강의",
+      "대구, 부산 지방 특강(양도분야)",
+    ],
+  },
+  {
+    year: 2008,
+    items: [
+      "제3교육장(멀티미디어실 30석) 개설",
+      "휴게실 등 편의시설 확대",
+      "국세청 재산세국 공무원 대상 위탁교육",
+      "대동세무 고등학교 선생님, 학생 대상 위탁교육",
+      "기업체 출장 강의",
+      "2008 노동부 기관평가 재직자, 실업자 모두 B등급",
+      "노동부 직업능력시설 인정(세무회계분야)",
+      "대전, 대구, 부산 지방특강(상속세 및 증여세)",
+    ],
+  },
+  {
+    year: 2007,
+    items: [
+      "수강지원금 과정 실시",
+      "신입사원 위탁과정, 네오플러스 실무 및 자격증 과정 운영",
+      "세무사 등 세무전문가 대상 양도소득세, 네오플러스 등 과정 운영",
+    ],
+  },
+  {
+    year: 2006,
+    items: [
+      "서울시 성동교육청에 기업부설 평생교육원 설립신고",
+      "제1,2 교육장(멀티미디어실 70석) 개설",
+      "더존 네오플러스 실무용 버전 설치",
+      "12월부터 사업주 훈련 교육 실시",
+    ],
+  },
+];
+
+const facilityFeatures = [
+  {
+    icon: Monitor,
+    title: "1인 1PC 환경",
+    description: "인터넷 연결 가능한 PC 및 노트북 비치",
+  },
+  {
+    icon: Users,
+    title: "40석 규모",
+    description: "총 40석 규모의 독립 강의장 운영",
+  },
+  {
+    icon: Laptop,
+    title: "더존 Smart A",
+    description: "실무용 버전 프로그램 설치 완비",
+  },
+  {
+    icon: BookOpen,
+    title: "실무 교육",
+    description: "이론 + 실습 통합 멀티미디어 교육",
   },
 ];
 
@@ -127,11 +218,10 @@ export default function AboutPage() {
       <section className="bg-[var(--color-light-bg)]">
         <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
           <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
-            배우고, 나누고, 함께 성장하는 선순환
+            배우고, 나누고, 함께 성장합니다.
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-center text-[var(--color-muted)]">
-            비즈스쿨은 단순한 강의 플랫폼이 아닙니다. 모두가 함께 성장하는
-            오픈러닝 생태계입니다.
+            비즈스쿨은 모두가 함께 성장하는 오픈러닝 생태계를 지향합니다.
           </p>
 
           {/* Circular Diagram */}
@@ -155,7 +245,7 @@ export default function AboutPage() {
                   fill="none"
                 />
                 <polygon
-                  points="412,332 400,348 418,346"
+                  points="408,340 409,322 423,330"
                   fill="var(--color-primary)"
                   fillOpacity="0.3"
                 />
@@ -169,7 +259,7 @@ export default function AboutPage() {
                   fill="none"
                 />
                 <polygon
-                  points="118,384 106,372 104,392"
+                  points="110,380 127,386 115,398"
                   fill="var(--color-primary)"
                   fillOpacity="0.3"
                 />
@@ -183,18 +273,12 @@ export default function AboutPage() {
                   fill="none"
                 />
                 <polygon
-                  points="202,72 218,60 214,80"
+                  points="210,68 195,78 193,62"
                   fill="var(--color-primary)"
                   fillOpacity="0.3"
                 />
               </svg>
 
-              {/* Center label */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                <span className="text-sm font-bold text-[var(--color-primary)]/60">
-                  선순환
-                </span>
-              </div>
 
               {/* Node: 배움 (top center) */}
               <div className="absolute left-1/2 top-0 -translate-x-1/2">
@@ -247,6 +331,91 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 4: 연혁 */}
+      <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+        <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
+          비즈스쿨 연혁
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-center text-[var(--color-muted)]">
+          2006년 설립 이후 꾸준히 성장해온 비즈스쿨의 발자취
+        </p>
+
+        <div className="mt-12 mx-auto max-w-2xl">
+          {historyData.map((group, groupIdx) => (
+            <div
+              key={group.year}
+              className={`relative pl-8 border-l-2 border-[var(--color-border)] ${
+                groupIdx === historyData.length - 1 ? "pb-0" : "pb-10"
+              }`}
+            >
+              <div className="absolute -left-[7px] top-0 h-3 w-3 rounded-full bg-[var(--color-primary)]" />
+              <span className="inline-block rounded-full bg-[var(--color-primary)] px-3 py-0.5 text-sm font-bold text-white mb-3">
+                {group.year}
+              </span>
+              <ul className="space-y-2">
+                {group.items.map((item) => (
+                  <li
+                    key={item}
+                    className="text-sm leading-relaxed text-[var(--color-body)]"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Section 5: 강의장 소개 */}
+      <section className="bg-[var(--color-light-bg)]">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+          <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
+            강의장 소개
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-[var(--color-muted)]">
+            실무 교육에 최적화된 멀티미디어 강의 환경
+          </p>
+
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+              <Image
+                src="/images/about/bzschool_img_3.jpg"
+                alt="비즈스쿨 강의장"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
+              <Image
+                src="/images/about/bzschool_img_4.jpg"
+                alt="비즈스쿨 강의장"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-4">
+            {facilityFeatures.map((feat) => (
+              <div key={feat.title} className="text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)]">
+                  <feat.icon size={24} />
+                </div>
+                <h3 className="mt-3 text-sm font-bold text-[var(--color-dark)]">
+                  {feat.title}
+                </h3>
+                <p className="mt-1 text-xs text-[var(--color-muted)]">
+                  {feat.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

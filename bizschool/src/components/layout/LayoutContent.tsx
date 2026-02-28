@@ -13,11 +13,12 @@ export default function LayoutContent({
 }) {
   const pathname = usePathname();
   const isConsulting = pathname === "/consulting";
+  const hideSearchBar = isConsulting || pathname === "/about";
 
   return (
     <>
       <Header />
-      {!isConsulting && (
+      {!hideSearchBar && (
         <Suspense>
           <SearchBar />
         </Suspense>

@@ -11,6 +11,7 @@
 | consulting-gemini-ui | 100% | 2026-02-28 | plan, design, analysis, report |
 | book-search-autocomplete | 97% | 2026-02-28 | plan, design, analysis, report |
 | about-bizschool | 99% | 2026-02-28 | plan, design, analysis, report |
+| about-history-facility | 95% | 2026-02-28 | plan, design, report |
 
 ## book-page
 
@@ -92,3 +93,12 @@
 - **Duration**: 2026-02-28 (1 day)
 - **Files**: 1 file (src/app/about/page.tsx), 255 lines
 - **Path**: `docs/archive/2026-02/about-bizschool/`
+
+## about-history-facility
+
+- **Description**: About 페이지 연혁(2006~2011 역순 타임라인) + 강의장 소개(이미지 2장 + 시설 특징 4카드) 섹션 추가, SearchBar /about 숨김 처리
+- **PDCA Cycle**: #1 (Check 생략, 사용자 직접 검증)
+- **Match Rate**: 95% (PASS)
+- **Duration**: 2026-02-28 (1 day)
+- **Files**: 3 files modified (about/page.tsx, LayoutContent.tsx, images 2장)
+- **Path**: `docs/archive/2026-02/about-history-facility/`
