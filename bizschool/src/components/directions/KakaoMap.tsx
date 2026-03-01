@@ -31,6 +31,13 @@ export default function KakaoMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const [sdkLoaded, setSdkLoaded] = useState(false);
 
+  // 클라이언트 사이드 네비게이션으로 재방문 시 이미 로드된 SDK 감지
+  useEffect(() => {
+    if (window.kakao?.maps) {
+      setSdkLoaded(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (!sdkLoaded || !mapRef.current) return;
 
