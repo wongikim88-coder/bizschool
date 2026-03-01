@@ -5,7 +5,6 @@ const footerLinks = [
     title: "더존비즈스쿨",
     links: [
       { label: "비즈스쿨 소개", href: "/about" },
-      { label: "연혁 및 교육실적", href: "/history" },
       { label: "찾아오시는 길", href: "/directions" },
     ],
   },
