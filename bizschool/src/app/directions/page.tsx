@@ -33,24 +33,18 @@ const TRANSPORT_INFO = {
 export default function DirectionsPage() {
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#155dfc] to-[#0d3b9e] px-8 py-16 text-center md:px-16 md:py-24 lg:py-28">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5" />
-        <div className="pointer-events-none absolute -bottom-10 right-20 h-40 w-40 rounded-full bg-white/5" />
-        <div className="pointer-events-none absolute left-1/3 top-0 h-32 w-32 rounded-full bg-white/5" />
-
-        <div className="relative z-10 mx-auto max-w-3xl">
-          <h1 className="text-2xl font-bold leading-tight text-white md:text-3xl lg:text-4xl">
+      {/* Title + Map Section */}
+      <section className="mx-auto max-w-[1200px] px-4 pt-12 pb-16 md:pt-16 md:pb-24">
+        <div className="mb-8 md:mb-10">
+          <h1 className="text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
             찾아오시는 길
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg">
+          <p className="mt-3 text-base text-[var(--color-muted)] md:text-lg">
             더존비즈스쿨 평생교육원의 위치와 교통편을 안내합니다.
           </p>
+          <hr className="mt-6 border-t-2 border-[var(--color-border)]" />
         </div>
-      </section>
 
-      {/* Map Section */}
-      <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
         <div className="overflow-hidden rounded-2xl shadow-lg">
           <KakaoMap />
         </div>

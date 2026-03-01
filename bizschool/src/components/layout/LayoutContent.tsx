@@ -13,7 +13,7 @@ export default function LayoutContent({
 }) {
   const pathname = usePathname();
   const isConsulting = pathname === "/consulting";
-  const hideSearchBar = isConsulting || pathname === "/about";
+  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions";
 
   return (
     <>

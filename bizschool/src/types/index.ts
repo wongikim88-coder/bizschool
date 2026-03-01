@@ -105,3 +105,16 @@ export interface WeeklyActiveUser {
 }
 
 export type CommunityTab = "home" | "questions" | "cases" | "discussion";
+
+// ── 공개교육 ──
+
+export interface EducationCourse {
+  id: number;
+  category: string;
+  title: string;
+  dateRange: string;
+  timeRange: string;
+  fee: number;
+  instructor: string;
+  status: "open" | "closed";
+}

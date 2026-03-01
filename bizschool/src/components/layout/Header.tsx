@@ -6,6 +6,7 @@ import { Menu, X, GraduationCap, LogIn } from "lucide-react";
 import type { MenuItem } from "@/types";
 
 const menuItems: MenuItem[] = [
+  { label: "공개교육", href: "/education" },
   { label: "강의", href: "/" },
   { label: "도서", href: "/books" },
   { label: "전문가상담", href: "/consulting" },
