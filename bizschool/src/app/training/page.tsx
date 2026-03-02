@@ -1,10 +1,6 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { trainingCourses, DEFAULT_PAGE } from "@/data/training";
-import ProgramGuide from "@/components/training/ProgramGuide";
-import CourseIntro from "@/components/training/CourseIntro";
-import TrainingMonthSelector from "@/components/training/TrainingMonthSelector";
-import CourseTable from "@/components/education/CourseTable";
+import TrainingPageContent from "@/components/training/TrainingPageContent";
 
 export const metadata: Metadata = {
   title: "근로자 주도훈련 | BIZSCHOOL",
@@ -58,30 +54,12 @@ export default async function TrainingPage({
         </div>
       </section>
 
-      {/* Section 2: 프로그램 안내 */}
-      <ProgramGuide />
-
-      {/* Section 3: 과정소개 */}
-      <CourseIntro />
-
-      {/* Section 4: 교육일정 */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-16">
-        <h2 className="mt-16 text-center text-xl font-bold text-[var(--color-dark)] md:mt-24 md:text-2xl">
-          교육일정
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-sm text-[var(--color-muted)] md:text-base">
-          월별 근로자 주도훈련 교육일정을 확인하고 수강신청하세요.
-        </p>
-
-        <Suspense>
-          <TrainingMonthSelector
-            currentYear={year}
-            currentMonth={month}
-          />
-        </Suspense>
-
-        <CourseTable courses={filtered} />
-      </div>
+      {/* 탭 + 콘텐츠 */}
+      <TrainingPageContent
+        currentYear={year}
+        currentMonth={month}
+        filteredCourses={filtered}
+      />
     </div>
   );
 }

@@ -64,8 +64,6 @@ const steps: Step[] = [
 ];
 
 const requiredDocs = [
-  "근로자 훈련 참여 사업주확인서",
-  "근로자 훈련 참여 훈련기관 확인서",
   "훈련비 납입 영수증",
   "훈련 수료증",
 ];
@@ -105,19 +103,16 @@ export default function ProgramGuide() {
 
       {/* 4단계 프로세스 */}
       <div className="mt-16">
-        <h2 className="text-center text-xl font-bold text-[var(--color-dark)] md:text-2xl">
-          신청에서 환급까지, 4단계 프로세스
-        </h2>
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           {steps.map((s, idx) => (
-            <div key={s.step} className="relative">
+            <div key={s.step} className="relative h-full">
               {/* 데스크톱 화살표 (마지막 카드 제외) */}
               {idx < steps.length - 1 && (
                 <div className="pointer-events-none absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 translate-x-1/2 md:block">
                   <ChevronRight size={20} className="text-[var(--color-muted)]" />
                 </div>
               )}
-              <div className="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+              <div className="flex h-full flex-col rounded-2xl border border-[var(--color-border)] bg-white p-6">
                 {/* 스텝 번호 */}
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
                   {s.step}
@@ -156,29 +151,28 @@ export default function ProgramGuide() {
         <h3 className="text-lg font-bold text-[var(--color-dark)]">
           필수 제출서류
         </h3>
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {requiredDocs.map((doc, idx) => (
-            <div
-              key={doc}
-              className="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4"
-            >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
-                {idx + 1}
-              </div>
-              <span className="text-sm font-medium text-[var(--color-dark)]">
-                {doc}
-              </span>
-            </div>
-          ))}
-        </div>
         {/* 간소화 안내 */}
-        <div className="mt-4 rounded-xl border-l-4 border-[var(--color-primary)] bg-blue-50 p-4">
+        <div className="mt-4 rounded-xl bg-blue-50 p-4">
           <p className="text-sm font-medium text-[var(--color-dark)]">
             2025년 12월 1일부터 간소화
           </p>
           <p className="mt-1 text-sm text-[var(--color-body)]">
             제출서류가 훈련비 납입 영수증과 훈련 수료증 2가지로 간소화되었습니다.
           </p>
+        </div>
+        <div className="mt-4 space-y-3">
+          {requiredDocs.map((doc) => (
+            <div
+              key={doc}
+              className="flex items-start gap-3 text-sm text-[var(--color-body)]"
+            >
+              <CheckCircle
+                size={16}
+                className="mt-0.5 shrink-0 text-emerald-500"
+              />
+              {doc}
+            </div>
+          ))}
         </div>
       </div>
 
@@ -209,7 +203,7 @@ export default function ProgramGuide() {
           비용 신청 및 지급 절차
         </h3>
         {/* 경로 안내 */}
-        <div className="mt-4 rounded-xl bg-[var(--color-light-bg)] p-4">
+        <div className="mt-4 rounded-xl bg-blue-50 p-4">
           <p className="text-sm font-medium text-[var(--color-dark)]">
             신청 경로
           </p>
