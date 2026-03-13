@@ -56,3 +56,9 @@ body {
 .font-logo {
   font-family: "Squada One", cursive;
 }
+
+/* Lightbox fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Search } from "lucide-react";
 import { MEMBER_NOTE, type ProductType } from "@/data/rate-table";
+import ImageLightbox from "./ImageLightbox";
 
 function formatPrice(price: number) {
   return price.toLocaleString("ko-KR") + "원";
@@ -10,12 +12,15 @@ function formatPrice(price: number) {
 function TypeSection({
   productId,
   productType,
+  productName,
 }: {
   productId: string;
   productType: ProductType;
+  productName: string;
 }) {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isMember, setIsMember] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const selected = productType.prices[selectedIdx];
   const radioName = `qty-${productId}-${productType.type}`;
 
@@ -29,14 +34,25 @@ function TypeSection({
         <p className="mt-2 text-sm text-gray-500">{productType.description}</p>
       </div>
 
-      {/* Product image */}
-      <div className="mb-5 overflow-hidden rounded-xl border border-gray-200">
+      {/* Product image (clickable) */}
+      <button
+        type="button"
+        onClick={() => setLightboxOpen(true)}
+        className="group relative mb-5 w-full cursor-pointer overflow-hidden rounded-xl border border-gray-200 transition-shadow hover:shadow-md"
+        aria-label={`${productType.label} 이미지 확대 보기`}
+      >
         <img
           src={productType.image}
           alt={`${productType.label} 미리보기`}
           className="h-auto w-full object-cover"
         />
-      </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
+          <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-gray-700 opacity-0 shadow transition-opacity group-hover:opacity-100">
+            <Search size={14} />
+            확대 보기
+          </span>
+        </div>
+      </button>
 
       {/* Price table */}
       <table className="mb-5 w-full text-sm">
@@ -131,6 +147,13 @@ function TypeSection({
           신청하기
         </button>
       </div>
+
+      <ImageLightbox
+        src={productType.image}
+        alt={`${productName} - ${productType.label}`}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </div>
   );
 }
@@ -163,7 +186,12 @@ export default function RateTableProduct({
 
       <div className="mt-6 grid items-stretch gap-6 md:grid-cols-2">
         {types.map((t) => (
-          <TypeSection key={t.type} productId={id} productType={t} />
+          <TypeSection
+            key={t.type}
+            productId={id}
+            productType={t}
+            productName={name}
+          />
         ))}
       </div>
     </section>
