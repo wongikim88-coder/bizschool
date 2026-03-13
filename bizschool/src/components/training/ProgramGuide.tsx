@@ -21,7 +21,7 @@ const steps: Step[] = [
   {
     step: 1,
     title: "교육 준비",
-    parties: "기업 - 공단",
+    parties: "기업 → 공단",
     icon: ClipboardCheck,
     items: [
       "고용24 기업회원 가입",
@@ -32,7 +32,7 @@ const steps: Step[] = [
   {
     step: 2,
     title: "교육 신청",
-    parties: "기업 - 더존비즈스쿨",
+    parties: "기업 → 더존비즈스쿨",
     icon: FileText,
     items: [
       "우선지원 대상기업 확인",
@@ -43,17 +43,17 @@ const steps: Step[] = [
   {
     step: 3,
     title: "교육참여 및 수료",
-    parties: "더존비즈스쿨 - 기업",
+    parties: "더존비즈스쿨 → 기업",
     icon: GraduationCap,
     items: [
       "교육훈련 참여",
-      "수료 시 확인서/수료증 발송",
+      "수료 시 본 교육기관에서 수료증 발송",
     ],
   },
   {
     step: 4,
     title: "지원금 신청",
-    parties: "기업 - 공단",
+    parties: "기업 → 공단",
     icon: Banknote,
     items: [
       "제출서류 준비",
@@ -210,6 +210,9 @@ export default function ProgramGuide() {
           <p className="mt-2 text-sm text-[var(--color-body)]">
             고용24 로그인 → 마이페이지 → 재직자 훈련관리 → 사업주훈련 → 비용관리
             → 비용신청(사업주위탁)
+          </p>
+          <p className="mt-2 text-xs text-[var(--color-muted)]">
+            *비용신청 시, 관련 첨부서류를 반드시 함께 제출해 주세요.
           </p>
         </div>
         {/* 지급 정보 */}

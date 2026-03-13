@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, GraduationCap, LogIn } from "lucide-react";
+import { Menu, X, GraduationCap, LogIn, FileText } from "lucide-react";
 import type { MenuItem } from "@/types";
 
 const menuItems: MenuItem[] = [
@@ -40,6 +40,13 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="hidden items-center gap-6 md:flex">
+          <Link
+            href="/rate-table"
+            className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
+          >
+            <FileText size={18} />
+            <span>조견표 신청</span>
+          </Link>
           <Link
             href="/expert"
             className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
@@ -81,7 +88,11 @@ export default function Header() {
               </Link>
             ))}
             <div className="mt-4 flex gap-6 border-t border-[var(--color-border)] pt-4">
-              <Link href="/expert" className="flex items-center gap-1.5 text-sm text-[var(--color-muted)]">
+              <Link href="/rate-table" className="flex items-center gap-1.5 text-sm text-[var(--color-muted)]" onClick={() => setMobileMenuOpen(false)}>
+                <FileText size={18} />
+                <span>조견표 신청</span>
+              </Link>
+              <Link href="/expert" className="flex items-center gap-1.5 text-sm text-[var(--color-muted)]" onClick={() => setMobileMenuOpen(false)}>
                 <GraduationCap size={18} />
                 <span>전문가지원</span>
               </Link>
