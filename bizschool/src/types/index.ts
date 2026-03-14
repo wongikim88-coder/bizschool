@@ -138,6 +138,48 @@ export type InquiryFilter = "all" | "pending" | "answered";
 
 export type MypageTab = "profile" | "inquiry" | "courses" | "purchases";
 
+// ── 나의 강의실 (수강내역) ──
+
+export type CourseGroupType = "online" | "public" | "completed";
+export type CoursePaymentStatus = "결제완료" | "미결제";
+
+export interface MyCourse {
+  id: string;
+  title: string;
+  periodStart: string;
+  periodEnd: string;
+  paymentStatus: CoursePaymentStatus;
+  isInsuranceRefund?: boolean;
+  groupType: CourseGroupType;
+}
+
+// ── 도서 주문내역 (구매내역) ──
+
+export type OrderStatus = "결제대기" | "결제완료" | "발송준비" | "발송완료";
+export type PaymentMethod = "신용카드" | "무통장입금" | "카카오페이" | "네이버페이";
+
+export interface BookOrder {
+  id: string;
+  orderedAt: string;
+  bookTitle: string;
+  bookAuthor: string;
+  quantity: number;
+  paymentMethod: PaymentMethod;
+  paymentStatus: "결제완료" | "결제대기";
+  orderStatus: OrderStatus;
+}
+
+export type PeriodPreset = "1m" | "3m" | "6m" | "custom";
+export type OrderStatusFilter = "전체" | OrderStatus;
+
+export interface BookOrderFilter {
+  periodPreset: PeriodPreset;
+  dateFrom: string;
+  dateTo: string;
+  orderStatus: OrderStatusFilter;
+  searchKeyword: string;
+}
+
 // ── 공개교육 ──
 
 export interface EducationCourse {

@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { MypageTab, InquiryFilter, Inquiry } from "@/types";
 import { mockUser, mypageTabs, mockInquiries } from "@/data/mypage";
-import { BookOpen, ShoppingBag } from "lucide-react";
 import ProfileSection from "./ProfileSection";
 import InquiryList from "./InquiryList";
 import InquiryDetail from "./InquiryDetail";
 import InquiryForm from "./InquiryForm";
+import CoursesSection from "./CoursesSection";
+import BookOrderSection from "./BookOrderSection";
 
 interface MypageContentProps {
   currentTab: MypageTab;
@@ -16,26 +17,6 @@ interface MypageContentProps {
   page: number;
   viewId: number | null;
   writeMode: boolean;
-}
-
-function PlaceholderSection({
-  title,
-  icon: Icon,
-}: {
-  title: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-}) {
-  return (
-    <div className="rounded-2xl border border-[var(--color-border)] bg-white py-20 text-center">
-      <Icon size={32} className="mx-auto text-[var(--color-muted)]" />
-      <p className="mt-3 text-lg font-medium text-[var(--color-muted)]">
-        {title}
-      </p>
-      <p className="mt-1 text-sm text-[var(--color-muted)]">
-        준비 중인 기능입니다
-      </p>
-    </div>
-  );
 }
 
 export default function MypageContent({
@@ -119,13 +100,9 @@ export default function MypageContent({
           <InquiryForm onSubmit={handleNewInquiry} nextId={nextId} />
         )}
 
-        {currentTab === "courses" && (
-          <PlaceholderSection title="수강내역" icon={BookOpen} />
-        )}
+        {currentTab === "courses" && <CoursesSection />}
 
-        {currentTab === "purchases" && (
-          <PlaceholderSection title="구매내역" icon={ShoppingBag} />
-        )}
+        {currentTab === "purchases" && <BookOrderSection />}
       </div>
     </div>
   );
