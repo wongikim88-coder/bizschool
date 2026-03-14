@@ -106,6 +106,38 @@ export interface WeeklyActiveUser {
 
 export type CommunityTab = "home" | "questions" | "cases" | "discussion";
 
+// ── 마이페이지 ──
+
+export interface MockUser {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  joinDate: string;
+}
+
+export interface Inquiry {
+  id: number;
+  category: InquiryCategory;
+  title: string;
+  content: string;
+  status: "pending" | "answered";
+  createdAt: string;
+  answer?: InquiryAnswer;
+}
+
+export interface InquiryAnswer {
+  content: string;
+  answeredAt: string;
+  answeredBy: string;
+}
+
+export type InquiryCategory = "강의" | "도서" | "결제" | "기술문제" | "기타";
+
+export type InquiryFilter = "all" | "pending" | "answered";
+
+export type MypageTab = "profile" | "inquiry" | "courses" | "purchases";
+
 // ── 공개교육 ──
 
 export interface EducationCourse {

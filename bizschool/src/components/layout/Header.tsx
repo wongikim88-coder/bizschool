@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, GraduationCap, LogIn, FileText } from "lucide-react";
+import { Menu, X, GraduationCap, UserCircle, FileText } from "lucide-react";
 import type { MenuItem } from "@/types";
 
 const menuItems: MenuItem[] = [
@@ -55,11 +55,11 @@ export default function Header() {
             <span>전문가지원</span>
           </Link>
           <Link
-            href="/login"
+            href="/mypage"
             className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
           >
-            <LogIn size={18} />
-            <span>로그인</span>
+            <UserCircle size={18} />
+            <span>마이페이지</span>
           </Link>
         </div>
 
@@ -96,9 +96,9 @@ export default function Header() {
                 <GraduationCap size={18} />
                 <span>전문가지원</span>
               </Link>
-              <Link href="/login" className="flex items-center gap-1.5 text-sm text-[var(--color-muted)]">
-                <LogIn size={18} />
-                <span>로그인</span>
+              <Link href="/mypage" className="flex items-center gap-1.5 text-sm text-[var(--color-muted)]" onClick={() => setMobileMenuOpen(false)}>
+                <UserCircle size={18} />
+                <span>마이페이지</span>
               </Link>
             </div>
           </nav>

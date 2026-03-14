@@ -13,18 +13,18 @@ export default function LayoutContent({
 }) {
   const pathname = usePathname();
   const isConsulting = pathname === "/consulting";
-  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions";
+  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions" || pathname === "/mypage";
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Header />
       {!hideSearchBar && (
         <Suspense>
           <SearchBar />
         </Suspense>
       )}
-      <main>{children}</main>
+      <main className="flex-1">{children}</main>
       {!isConsulting && <Footer />}
-    </>
+    </div>
   );
 }
