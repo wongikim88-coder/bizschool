@@ -155,7 +155,7 @@ export interface MyCourse {
 
 // ── 도서 주문내역 (구매내역) ──
 
-export type OrderStatus = "결제대기" | "결제완료" | "발송준비" | "발송완료";
+export type OrderStatus = "결제대기" | "결제완료" | "배송준비" | "배송중" | "배송완료";
 export type PaymentMethod = "신용카드" | "무통장입금" | "카카오페이" | "네이버페이";
 
 export interface BookOrder {
@@ -179,6 +179,36 @@ export interface BookOrderFilter {
   dateTo: string;
   orderStatus: OrderStatusFilter;
   searchKeyword: string;
+}
+
+// ── 도서 주문 상세 ──
+
+export interface BookOrderShippingInfo {
+  recipientName: string;
+  phone: string;
+  address: string;
+  memo?: string;
+}
+
+export interface BookOrderPaymentDetail {
+  productTotal: number;
+  discountAmount: number;
+  shippingFee: number;
+  totalAmount: number;
+  paymentMethod: PaymentMethod;
+  paidAmount: number;
+}
+
+export interface BookOrderPointsInfo {
+  earnedPoints: number;
+  usedPoints: number;
+}
+
+export interface BookOrderDetail extends BookOrder {
+  shipping: BookOrderShippingInfo;
+  payment: BookOrderPaymentDetail;
+  points: BookOrderPointsInfo;
+  trackingNumber?: string;
 }
 
 // ── 강의 구매내역 ──

@@ -12,16 +12,20 @@ import {
   Calendar,
   X,
   RotateCcw,
+  Trash2,
+  BookOpen,
 } from "lucide-react";
 import type {
   BookOrder,
+  BookOrderDetail as BookOrderDetailType,
   OrderStatus,
   OrderStatusFilter,
   PeriodPreset,
   BookOrderFilter,
 } from "@/types";
-import { mockBookOrders, ORDERS_PER_PAGE } from "@/data/mypage";
+import { mockBookOrders, mockBookOrderDetails, ORDERS_PER_PAGE } from "@/data/mypage";
 import DatePicker from "./DatePicker";
+import BookOrderDetail from "./BookOrderDetail";
 
 // ── Helpers ──
 
@@ -75,24 +79,39 @@ const orderStatusOptions: OrderStatusFilter[] = [
   "전체",
   "결제대기",
   "결제완료",
-  "발송준비",
-  "발송완료",
+  "배송준비",
+  "배송중",
+  "배송완료",
 ];
 
-// ── Sub-components ──
-
-function OrderStatusBadge({ status }: { status: OrderStatus }) {
-  return (
-    <span className="text-xs text-[var(--color-body)]">{status}</span>
-  );
+function formatDotDate(date: string): string {
+  return date.replace(/-/g, ".");
 }
+
+function getStatusColor(status: OrderStatus): string {
+  switch (status) {
+    case "배송완료":
+      return "text-[var(--color-primary)]";
+    case "배송중":
+      return "text-[var(--color-dark)]";
+    case "배송준비":
+      return "text-[var(--color-muted)]";
+    case "결제완료":
+      return "text-[var(--color-dark)]";
+    case "결제대기":
+      return "text-[var(--color-muted)]";
+  }
+}
+
+// ── Sub-components ──
 
 const statusItems = [
   { label: "주문건수", icon: ClipboardList, key: "total" as const },
   { label: "결제대기", icon: Clock, key: "결제대기" as const },
   { label: "결제완료", icon: CreditCard, key: "결제완료" as const },
-  { label: "발송준비", icon: Package, key: "발송준비" as const },
-  { label: "발송완료", icon: Truck, key: "발송완료" as const },
+  { label: "배송준비", icon: Package, key: "배송준비" as const },
+  { label: "배송중", icon: Truck, key: "배송중" as const },
+  { label: "배송완료", icon: Truck, key: "배송완료" as const },
 ];
 
 function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
@@ -106,7 +125,7 @@ function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
 
   return (
     <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <div className="grid grid-cols-3 gap-4 md:grid-cols-5">
+      <div className="grid grid-cols-3 gap-4 md:grid-cols-6">
         {statusItems.map((item) => {
           const Icon = item.icon;
           const count = counts[item.key] || 0;
@@ -397,10 +416,25 @@ function DetailSearchModal({
 
 // ── Main Component ──
 
-export default function BookOrderSection() {
+interface BookOrderSectionProps {
+  onDetailViewChange?: (isDetail: boolean) => void;
+}
+
+export default function BookOrderSection({ onDetailViewChange }: BookOrderSectionProps) {
   const [filter, setFilter] = useState<BookOrderFilter>(getDefaultFilter);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+
+  const handleSelectOrder = (id: string) => {
+    setSelectedOrderId(id);
+    onDetailViewChange?.(true);
+  };
+
+  const handleBackToList = () => {
+    setSelectedOrderId(null);
+    onDetailViewChange?.(false);
+  };
 
   const handleApplyFilter = (newFilter: BookOrderFilter) => {
     setFilter(newFilter);
@@ -440,6 +474,63 @@ export default function BookOrderSection() {
   if (filter.orderStatus !== "전체") activeFilters.push(filter.orderStatus);
   if (filter.searchKeyword.trim())
     activeFilters.push(`"${filter.searchKeyword}"`);
+
+  const groupedOrders = useMemo(() => {
+    const groups: { date: string; orders: BookOrder[] }[] = [];
+    for (const order of paginatedOrders) {
+      const last = groups[groups.length - 1];
+      if (last && last.date === order.orderedAt) {
+        last.orders.push(order);
+      } else {
+        groups.push({ date: order.orderedAt, orders: [order] });
+      }
+    }
+    return groups;
+  }, [paginatedOrders]);
+
+  // Detail view
+  if (selectedOrderId) {
+    const detailData = mockBookOrderDetails[selectedOrderId];
+    if (detailData) {
+      return (
+        <BookOrderDetail
+          order={detailData}
+          onBack={handleBackToList}
+        />
+      );
+    }
+    // Fallback: build a basic detail from list data
+    const listOrder = mockBookOrders.find((o) => o.id === selectedOrderId);
+    if (listOrder) {
+      const fallbackDetail: BookOrderDetailType = {
+        ...listOrder,
+        shipping: {
+          recipientName: "김비즈",
+          phone: "010-1234-5678",
+          address: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+        },
+        payment: {
+          productTotal: listOrder.price,
+          discountAmount: 0,
+          shippingFee: 0,
+          totalAmount: listOrder.price,
+          paymentMethod: listOrder.paymentMethod,
+          paidAmount: listOrder.paymentStatus === "결제완료" ? listOrder.price : 0,
+        },
+        points: {
+          earnedPoints: listOrder.paymentStatus === "결제완료" ? Math.floor(listOrder.price * 0.01) : 0,
+          usedPoints: 0,
+        },
+      };
+      return (
+        <BookOrderDetail
+          order={fallbackDetail}
+          onBack={handleBackToList}
+        />
+      );
+    }
+    handleBackToList();
+  }
 
   return (
     <div className="space-y-4">
@@ -496,89 +587,123 @@ export default function BookOrderSection() {
         </div>
       ) : (
         <>
-          {/* Desktop: Table */}
-          <div className="hidden min-h-[572px] overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-white md:block">
-            <table className="w-full table-fixed text-sm">
-              <colgroup>
-                <col className="w-[13%]" />
-                <col className="w-[37%]" />
-                <col className="w-[10%]" />
-                <col className="w-[18%]" />
-                <col className="w-[22%]" />
-              </colgroup>
-              <thead>
-                <tr className="bg-[var(--color-light-bg)]">
-                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    날짜
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-[var(--color-muted)]">
-                    상품정보
-                  </th>
-                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    수량
-                  </th>
-                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    결제금액
-                  </th>
-                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    주문상태
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedOrders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b border-[var(--color-border)] last:border-0"
-                  >
-                    <td className="px-4 py-4 text-center text-[var(--color-body)]">
-                      {order.orderedAt}
-                    </td>
-                    <td className="px-4 py-4">
-                      <p className="font-medium text-[var(--color-dark)]">
-                        {order.bookTitle}
-                      </p>
-                      <p className="text-xs text-[var(--color-muted)]">
-                        {order.bookAuthor}
-                      </p>
-                    </td>
-                    <td className="px-4 py-4 text-center text-[var(--color-body)]">
-                      {order.quantity}
-                    </td>
-                    <td className="px-4 py-4 text-center font-medium text-[var(--color-dark)]">
-                      {order.price.toLocaleString()}원
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      <OrderStatusBadge status={order.orderStatus} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile: Cards */}
-          <div className="min-h-[480px] space-y-3 md:hidden">
-            {paginatedOrders.map((order) => (
-              <div
-                key={order.id}
-                className="rounded-xl border border-[var(--color-border)] bg-white p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <OrderStatusBadge status={order.orderStatus} />
-                  <span className="text-xs text-[var(--color-muted)]">
-                    {order.orderedAt}
-                  </span>
+          <div className="space-y-8">
+            {groupedOrders.map((group) => (
+              <div key={group.date}>
+                {/* Group Header */}
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-dark)] pb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="font-bold text-[var(--color-dark)]">
+                      {formatDotDate(group.date)} ({group.orders[0].id})
+                    </span>
+                    <button
+                      onClick={() => handleSelectOrder(group.orders[0].id)}
+                      className="cursor-pointer text-sm text-[var(--color-body)] transition-colors hover:text-[var(--color-primary)]"
+                    >
+                      상세보기 &gt;
+                    </button>
+                  </div>
+                  <button className="flex cursor-pointer items-center gap-1 text-sm text-[var(--color-muted)] transition-colors hover:text-red-500">
+                    <Trash2 size={14} />
+                    주문내역에서 삭제
+                  </button>
                 </div>
-                <h4 className="mt-2 font-medium text-[var(--color-dark)]">
-                  {order.bookTitle}
-                </h4>
-                <p className="mt-0.5 text-sm text-[var(--color-muted)]">
-                  {order.bookAuthor} | {order.quantity}권
-                </p>
-                <p className="mt-2 text-sm font-medium text-[var(--color-dark)]">
-                  {order.price.toLocaleString()}원
-                </p>
+
+                {/* Group Body */}
+                <div className="border-x border-b border-[var(--color-border)] bg-white">
+                  {group.orders.map((order, idx) => (
+                    <div
+                      key={order.id}
+                      className={idx > 0 ? "border-t border-[var(--color-border)]" : ""}
+                    >
+                      <div className="p-5">
+                        {/* Desktop */}
+                        <div className="hidden items-center gap-6 md:flex">
+                          <div className="flex h-24 w-20 shrink-0 items-center justify-center rounded border border-[var(--color-border)] bg-[var(--color-light-bg)]">
+                            <BookOpen size={28} className="text-[var(--color-muted)]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate font-medium text-[var(--color-dark)]">
+                              {order.bookTitle}
+                            </p>
+                            <p className="mt-1 text-sm text-[var(--color-muted)]">
+                              수량 : {order.quantity}
+                            </p>
+                          </div>
+                          <div className="shrink-0 text-center">
+                            <p className="text-lg font-bold text-[var(--color-dark)]">
+                              {order.price.toLocaleString()}
+                              <span className="text-base font-normal">원</span>
+                            </p>
+                          </div>
+                          <div className="w-28 shrink-0 text-center">
+                            <p className={`font-bold ${getStatusColor(order.orderStatus)}`}>
+                              {order.orderStatus}
+                            </p>
+                            {order.orderStatus === "결제완료" && (
+                              <p className="mt-1 text-xs text-[var(--color-muted)]">
+                                배송 준비중
+                              </p>
+                            )}
+                            {order.orderStatus === "배송완료" && (
+                              <p className="mt-1 text-xs text-[var(--color-muted)]">
+                                {formatDotDate(order.orderedAt)} 배송완료
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 flex-col gap-2">
+                            <button className="cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+                              리뷰 작성
+                            </button>
+                            <button className="cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+                              문장수집
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Mobile */}
+                        <div className="md:hidden">
+                          <div className="flex gap-4">
+                            <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded border border-[var(--color-border)] bg-[var(--color-light-bg)]">
+                              <BookOpen size={22} className="text-[var(--color-muted)]" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-[var(--color-dark)]">
+                                {order.bookTitle}
+                              </p>
+                              <p className="mt-0.5 text-sm text-[var(--color-muted)]">
+                                수량 : {order.quantity}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="mt-3 flex items-center justify-between">
+                            <p className="text-base font-bold text-[var(--color-dark)]">
+                              {order.price.toLocaleString()}원
+                            </p>
+                            <div className="text-right">
+                              <p className={`text-sm font-bold ${getStatusColor(order.orderStatus)}`}>
+                                {order.orderStatus}
+                              </p>
+                              {order.orderStatus === "결제완료" && (
+                                <p className="mt-0.5 text-xs text-[var(--color-muted)]">
+                                  배송 준비중
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-3 flex gap-2">
+                            <button className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+                              리뷰 작성
+                            </button>
+                            <button className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+                              문장수집
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

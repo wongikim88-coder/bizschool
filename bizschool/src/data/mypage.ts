@@ -1,4 +1,4 @@
-import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, CourseOrder } from "@/types";
+import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, CourseOrder } from "@/types";
 
 export const mockUser: MockUser = {
   id: "user-001",
@@ -285,18 +285,18 @@ export const mockBookOrders: BookOrder[] = [
     price: 22500,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-002",
-    orderedAt: "2026-03-12",
+    orderedAt: "2026-03-14",
     bookTitle: "세무실무 완전정복 2026",
     bookAuthor: "김완일, 고경희",
     quantity: 2,
     price: 180000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "발송준비",
+    orderStatus: "배송준비",
   },
   {
     id: "ORD-2026-003",
@@ -318,7 +318,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 16200,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송중",
   },
   {
     id: "ORD-2026-005",
@@ -329,11 +329,11 @@ export const mockBookOrders: BookOrder[] = [
     price: 89100,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-006",
-    orderedAt: "2026-03-03",
+    orderedAt: "2026-03-05",
     bookTitle: "제로 투 원 - 스탠퍼드 대학 스타트업 최고 명강의",
     bookAuthor: "피터 틸",
     quantity: 1,
@@ -351,7 +351,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 24300,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송중",
   },
   {
     id: "ORD-2026-008",
@@ -362,18 +362,18 @@ export const mockBookOrders: BookOrder[] = [
     price: 30600,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-009",
-    orderedAt: "2026-02-20",
+    orderedAt: "2026-02-25",
     bookTitle: "퍼포먼스 마케팅 - 데이터 기반 디지털 마케팅 전략",
     bookAuthor: "김성환",
     quantity: 1,
     price: 25200,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-010",
@@ -384,7 +384,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 31500,
     paymentMethod: "무통장입금",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-011",
@@ -395,7 +395,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 18000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-012",
@@ -417,7 +417,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 17100,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-014",
@@ -428,7 +428,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 22500,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-015",
@@ -450,7 +450,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 22500,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-017",
@@ -461,7 +461,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 39600,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-018",
@@ -483,7 +483,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 15300,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "발송완료",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-020",
@@ -497,6 +497,117 @@ export const mockBookOrders: BookOrder[] = [
     orderStatus: "결제대기",
   },
 ];
+
+// ── 도서 주문 상세 ──
+
+export const mockBookOrderDetails: Record<string, BookOrderDetail> = {
+  "ORD-2026-001": {
+    ...mockBookOrders[0],
+    shipping: {
+      recipientName: "김비즈",
+      phone: "010-1234-5678",
+      address: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+      memo: "부재 시 경비실에 맡겨주세요",
+    },
+    payment: {
+      productTotal: 22500,
+      discountAmount: 0,
+      shippingFee: 0,
+      totalAmount: 22500,
+      paymentMethod: "신용카드",
+      paidAmount: 22500,
+    },
+    points: {
+      earnedPoints: 225,
+      usedPoints: 0,
+    },
+    trackingNumber: "1234567890",
+  },
+  "ORD-2026-002": {
+    ...mockBookOrders[1],
+    shipping: {
+      recipientName: "김비즈",
+      phone: "010-1234-5678",
+      address: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+    },
+    payment: {
+      productTotal: 180000,
+      discountAmount: 0,
+      shippingFee: 0,
+      totalAmount: 180000,
+      paymentMethod: "카카오페이",
+      paidAmount: 180000,
+    },
+    points: {
+      earnedPoints: 1800,
+      usedPoints: 0,
+    },
+  },
+  "ORD-2026-003": {
+    ...mockBookOrders[2],
+    shipping: {
+      recipientName: "이경영",
+      phone: "010-9876-5432",
+      address: "경기도 성남시 분당구 판교로 456 IT센터 2층",
+      memo: "문 앞에 놓아주세요",
+    },
+    payment: {
+      productTotal: 27000,
+      discountAmount: 2700,
+      shippingFee: 3000,
+      totalAmount: 27300,
+      paymentMethod: "무통장입금",
+      paidAmount: 0,
+    },
+    points: {
+      earnedPoints: 0,
+      usedPoints: 0,
+    },
+  },
+  "ORD-2026-004": {
+    ...mockBookOrders[3],
+    shipping: {
+      recipientName: "김비즈",
+      phone: "010-1234-5678",
+      address: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+    },
+    payment: {
+      productTotal: 16200,
+      discountAmount: 0,
+      shippingFee: 3000,
+      totalAmount: 19200,
+      paymentMethod: "네이버페이",
+      paidAmount: 19200,
+    },
+    points: {
+      earnedPoints: 162,
+      usedPoints: 500,
+    },
+    trackingNumber: "9876543210",
+  },
+  "ORD-2026-005": {
+    ...mockBookOrders[4],
+    shipping: {
+      recipientName: "박인사",
+      phone: "010-5555-7777",
+      address: "서울특별시 서초구 서초대로 789 교육빌딩 8층",
+      memo: "회사 주소입니다. 택배함에 넣어주세요.",
+    },
+    payment: {
+      productTotal: 89100,
+      discountAmount: 8910,
+      shippingFee: 0,
+      totalAmount: 80190,
+      paymentMethod: "신용카드",
+      paidAmount: 80190,
+    },
+    points: {
+      earnedPoints: 891,
+      usedPoints: 0,
+    },
+    trackingNumber: "5678901234",
+  },
+};
 
 // ── 강의 구매내역 ──
 
