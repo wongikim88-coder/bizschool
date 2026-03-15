@@ -1,4 +1,4 @@
-import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, CourseOrder } from "@/types";
+import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, ShippingTrackingInfo, CourseOrder } from "@/types";
 
 export const mockUser: MockUser = {
   id: "user-001",
@@ -306,8 +306,8 @@ export const mockBookOrders: BookOrder[] = [
     quantity: 1,
     price: 27000,
     paymentMethod: "무통장입금",
-    paymentStatus: "결제대기",
-    orderStatus: "결제대기",
+    paymentStatus: "결제완료",
+    orderStatus: "취소",
   },
   {
     id: "ORD-2026-004",
@@ -340,7 +340,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 16200,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "결제완료",
+    orderStatus: "반품",
   },
   {
     id: "ORD-2026-007",
@@ -406,7 +406,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 30600,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "결제완료",
+    orderStatus: "취소",
   },
   {
     id: "ORD-2026-013",
@@ -438,8 +438,8 @@ export const mockBookOrders: BookOrder[] = [
     quantity: 3,
     price: 135000,
     paymentMethod: "무통장입금",
-    paymentStatus: "결제대기",
-    orderStatus: "결제대기",
+    paymentStatus: "결제완료",
+    orderStatus: "배송준비",
   },
   {
     id: "ORD-2026-016",
@@ -472,7 +472,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 15300,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "결제완료",
+    orderStatus: "반품",
   },
   {
     id: "ORD-2026-019",
@@ -493,8 +493,8 @@ export const mockBookOrders: BookOrder[] = [
     quantity: 2,
     price: 54000,
     paymentMethod: "무통장입금",
-    paymentStatus: "결제대기",
-    orderStatus: "결제대기",
+    paymentStatus: "결제완료",
+    orderStatus: "취소",
   },
 ];
 
@@ -606,6 +606,77 @@ export const mockBookOrderDetails: Record<string, BookOrderDetail> = {
       usedPoints: 0,
     },
     trackingNumber: "5678901234",
+  },
+};
+
+// ── 배송 추적 ──
+
+export const mockShippingTracking: Record<string, ShippingTrackingInfo> = {
+  "ORD-2026-001": {
+    orderId: "ORD-2026-001",
+    carrier: "CJ대한통운",
+    trackingNumber: "1234567890",
+    recipientName: "김비즈",
+    recipientAddress: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+    deliveryRequest: "부재 시 경비실에 맡겨주세요",
+    deliveryMethod: "문앞 전달",
+    currentStatus: "배송완료",
+    statusMessage: "고객님이 주문하신 상품이 배송완료 되었습니다.",
+    completedDate: "2026-03-16",
+    steps: [
+      { datetime: "3월 16, 2026 14:23", location: "강남구", status: "배송완료" },
+      { datetime: "3월 16, 2026 09:15", location: "강남구", status: "배송출발" },
+      { datetime: "3월 16, 2026 06:30", location: "서울강남", status: "캠프도착" },
+      { datetime: "3월 15, 2026 22:10", location: "곤지암HUB", status: "간선상차" },
+      { datetime: "3월 15, 2026 18:00", location: "대전HUB", status: "집하" },
+    ],
+  },
+  "ORD-2026-004": {
+    orderId: "ORD-2026-004",
+    carrier: "한진택배",
+    trackingNumber: "9876543210",
+    recipientName: "김비즈",
+    recipientAddress: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+    deliveryMethod: "직접 수령",
+    currentStatus: "배송중",
+    statusMessage: "고객님이 주문하신 상품이 배송중 입니다.",
+    steps: [
+      { datetime: "3월 10, 2026 16:07", location: "고양1HUB", status: "간선상차" },
+      { datetime: "3월 10, 2026 12:30", location: "인천HUB", status: "집하" },
+    ],
+  },
+  "ORD-2026-005": {
+    orderId: "ORD-2026-005",
+    carrier: "CJ대한통운",
+    trackingNumber: "5678901234",
+    recipientName: "박인사",
+    recipientAddress: "서울특별시 서초구 서초대로 789 교육빌딩 8층",
+    deliveryRequest: "회사 주소입니다. 택배함에 넣어주세요.",
+    deliveryMethod: "택배함",
+    currentStatus: "배송완료",
+    statusMessage: "고객님이 주문하신 상품이 배송완료 되었습니다.",
+    completedDate: "2026-03-08",
+    steps: [
+      { datetime: "3월 08, 2026 11:45", location: "서초구", status: "배송완료" },
+      { datetime: "3월 08, 2026 08:20", location: "서초구", status: "배송출발" },
+      { datetime: "3월 08, 2026 05:50", location: "서울서초", status: "캠프도착" },
+      { datetime: "3월 07, 2026 21:00", location: "곤지암HUB", status: "간선상차" },
+      { datetime: "3월 07, 2026 15:30", location: "성남HUB", status: "집하" },
+    ],
+  },
+  "ORD-2026-007": {
+    orderId: "ORD-2026-007",
+    carrier: "롯데택배",
+    trackingNumber: "3456789012",
+    recipientName: "김비즈",
+    recipientAddress: "서울특별시 강남구 테헤란로 123 비즈타워 4층",
+    deliveryMethod: "문앞 전달",
+    currentStatus: "배송중",
+    statusMessage: "고객님이 주문하신 상품이 배송중 입니다.",
+    steps: [
+      { datetime: "3월 02, 2026 09:00", location: "용인HUB", status: "간선상차" },
+      { datetime: "3월 01, 2026 17:00", location: "대전HUB", status: "집하" },
+    ],
   },
 };
 
