@@ -9,7 +9,7 @@ import InquiryList from "./InquiryList";
 import InquiryDetail from "./InquiryDetail";
 import InquiryForm from "./InquiryForm";
 import CoursesSection from "./CoursesSection";
-import BookOrderSection from "./BookOrderSection";
+import PurchasesSection from "./PurchasesSection";
 
 interface MypageContentProps {
   currentTab: MypageTab;
@@ -102,7 +102,7 @@ export default function MypageContent({
 
         {currentTab === "courses" && <CoursesSection />}
 
-        {currentTab === "purchases" && <BookOrderSection />}
+        {currentTab === "purchases" && <PurchasesSection />}
       </div>
     </div>
   );

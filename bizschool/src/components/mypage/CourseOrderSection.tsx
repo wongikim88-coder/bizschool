@@ -5,8 +5,8 @@ import {
   ClipboardList,
   Clock,
   CreditCard,
-  Package,
-  Truck,
+  PlayCircle,
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Calendar,
@@ -14,13 +14,13 @@ import {
   RotateCcw,
 } from "lucide-react";
 import type {
-  BookOrder,
-  OrderStatus,
-  OrderStatusFilter,
+  CourseOrder,
+  CourseOrderStatus,
+  CourseOrderStatusFilter,
   PeriodPreset,
-  BookOrderFilter,
+  CourseOrderFilter,
 } from "@/types";
-import { mockBookOrders, ORDERS_PER_PAGE } from "@/data/mypage";
+import { mockCourseOrders, COURSE_ORDERS_PER_PAGE } from "@/data/mypage";
 import DatePicker from "./DatePicker";
 
 // ── Helpers ──
@@ -46,7 +46,7 @@ function getPresetDays(preset: Exclude<PeriodPreset, "custom">): number {
   }
 }
 
-const MAX_RANGE_DAYS = 365 * 5; // 5년
+const MAX_RANGE_DAYS = 365 * 5;
 
 function getDaysDiff(from: string, to: string): number {
   const a = new Date(from);
@@ -54,7 +54,7 @@ function getDaysDiff(from: string, to: string): number {
   return Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-function getDefaultFilter(): BookOrderFilter {
+function getDefaultFilter(): CourseOrderFilter {
   return {
     periodPreset: "1m",
     dateFrom: getDateBefore(30),
@@ -71,19 +71,49 @@ const periodPresetOptions: { key: PeriodPreset; label: string }[] = [
   { key: "custom", label: "직접입력" },
 ];
 
-const orderStatusOptions: OrderStatusFilter[] = [
+const courseOrderStatusOptions: CourseOrderStatusFilter[] = [
   "전체",
   "결제대기",
   "결제완료",
-  "발송준비",
-  "발송완료",
+  "수강중",
+  "수강완료",
 ];
 
 // ── Sub-components ──
 
-function OrderStatusBadge({ status }: { status: OrderStatus }) {
+function CourseOrderStatusBadge({ status }: { status: CourseOrderStatus }) {
+  const variantMap: Record<CourseOrderStatus, string> = {
+    결제대기: "bg-amber-50 text-amber-600",
+    결제완료: "bg-blue-50 text-blue-600",
+    수강중: "bg-purple-50 text-purple-600",
+    수강완료: "bg-emerald-50 text-emerald-600",
+  };
+
   return (
-    <span className="text-xs text-[var(--color-body)]">{status}</span>
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${variantMap[status]}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+function PaymentStatusBadge({
+  status,
+}: {
+  status: "결제완료" | "결제대기";
+}) {
+  if (status === "결제완료") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-600">
+        결제완료
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600">
+      결제대기
+    </span>
   );
 }
 
@@ -91,11 +121,11 @@ const statusItems = [
   { label: "주문건수", icon: ClipboardList, key: "total" as const },
   { label: "결제대기", icon: Clock, key: "결제대기" as const },
   { label: "결제완료", icon: CreditCard, key: "결제완료" as const },
-  { label: "발송준비", icon: Package, key: "발송준비" as const },
-  { label: "발송완료", icon: Truck, key: "발송완료" as const },
+  { label: "수강중", icon: PlayCircle, key: "수강중" as const },
+  { label: "수강완료", icon: CheckCircle, key: "수강완료" as const },
 ];
 
-function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
+function CourseOrderStatusBar({ orders }: { orders: CourseOrder[] }) {
   const counts = useMemo(() => {
     const map: Record<string, number> = { total: orders.length };
     for (const order of orders) {
@@ -202,11 +232,11 @@ function DetailSearchModal({
   onApply,
   onClose,
 }: {
-  currentFilter: BookOrderFilter;
-  onApply: (filter: BookOrderFilter) => void;
+  currentFilter: CourseOrderFilter;
+  onApply: (filter: CourseOrderFilter) => void;
   onClose: () => void;
 }) {
-  const [local, setLocal] = useState<BookOrderFilter>(currentFilter);
+  const [local, setLocal] = useState<CourseOrderFilter>(currentFilter);
   const [rangeError, setRangeError] = useState("");
 
   const handlePresetChange = (preset: PeriodPreset) => {
@@ -256,7 +286,6 @@ function DetailSearchModal({
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  // Lock body scroll while modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -266,12 +295,9 @@ function DetailSearchModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* Modal */}
       <div className="relative mx-4 w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-[var(--color-dark)]">
             상세조회
@@ -286,7 +312,6 @@ function DetailSearchModal({
 
         <hr className="my-4 border-[var(--color-border)]" />
 
-        {/* Info box */}
         <div className="rounded-lg bg-[var(--color-light-bg)] p-4 text-sm text-[var(--color-muted)]">
           <ul className="list-disc space-y-1 pl-4">
             <li>
@@ -331,20 +356,20 @@ function DetailSearchModal({
           )}
         </div>
 
-        {/* 주문배송 상태 */}
+        {/* 수강 상태 */}
         <div className="mt-6">
-          <h3 className="font-bold text-[var(--color-dark)]">주문배송 상태</h3>
+          <h3 className="font-bold text-[var(--color-dark)]">수강 상태</h3>
           <select
             value={local.orderStatus}
             onChange={(e) =>
               setLocal((prev) => ({
                 ...prev,
-                orderStatus: e.target.value as OrderStatusFilter,
+                orderStatus: e.target.value as CourseOrderStatusFilter,
               }))
             }
             className="mt-3 w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)]"
           >
-            {orderStatusOptions.map((opt) => (
+            {courseOrderStatusOptions.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
               </option>
@@ -357,7 +382,7 @@ function DetailSearchModal({
           <h3 className="font-bold text-[var(--color-dark)]">검색</h3>
           <div className="mt-3 flex gap-2">
             <select className="shrink-0 rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)]">
-              <option>상품명</option>
+              <option>강좌명</option>
             </select>
             <input
               type="text"
@@ -368,7 +393,7 @@ function DetailSearchModal({
                   searchKeyword: e.target.value,
                 }))
               }
-              placeholder="상품명을 입력해 주세요."
+              placeholder="강좌명을 입력해 주세요."
               className="flex-1 rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
             />
           </div>
@@ -397,18 +422,18 @@ function DetailSearchModal({
 
 // ── Main Component ──
 
-export default function BookOrderSection() {
-  const [filter, setFilter] = useState<BookOrderFilter>(getDefaultFilter);
+export default function CourseOrderSection() {
+  const [filter, setFilter] = useState<CourseOrderFilter>(getDefaultFilter);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleApplyFilter = (newFilter: BookOrderFilter) => {
+  const handleApplyFilter = (newFilter: CourseOrderFilter) => {
     setFilter(newFilter);
     setCurrentPage(1);
   };
 
   const filteredOrders = useMemo(() => {
-    let orders = mockBookOrders.filter(
+    let orders = mockCourseOrders.filter(
       (order) =>
         order.orderedAt >= filter.dateFrom && order.orderedAt <= filter.dateTo
     );
@@ -422,18 +447,18 @@ export default function BookOrderSection() {
     if (filter.searchKeyword.trim()) {
       const keyword = filter.searchKeyword.trim().toLowerCase();
       orders = orders.filter((order) =>
-        order.bookTitle.toLowerCase().includes(keyword)
+        order.courseTitle.toLowerCase().includes(keyword)
       );
     }
 
     return orders;
   }, [filter]);
 
-  const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+  const totalPages = Math.ceil(filteredOrders.length / COURSE_ORDERS_PER_PAGE);
+  const startIndex = (currentPage - 1) * COURSE_ORDERS_PER_PAGE;
   const paginatedOrders = filteredOrders.slice(
     startIndex,
-    startIndex + ORDERS_PER_PAGE
+    startIndex + COURSE_ORDERS_PER_PAGE
   );
 
   const activeFilters: string[] = [];
@@ -444,7 +469,7 @@ export default function BookOrderSection() {
   return (
     <div className="space-y-4">
       {/* Status Summary Bar */}
-      <OrderStatusBar orders={mockBookOrders} />
+      <CourseOrderStatusBar orders={mockCourseOrders} />
 
       {/* Filter Bar */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
@@ -500,11 +525,13 @@ export default function BookOrderSection() {
           <div className="hidden min-h-[572px] overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-white md:block">
             <table className="w-full table-fixed text-sm">
               <colgroup>
-                <col className="w-[13%]" />
-                <col className="w-[37%]" />
+                <col className="w-[11%]" />
+                <col className="w-[28%]" />
                 <col className="w-[10%]" />
-                <col className="w-[18%]" />
-                <col className="w-[22%]" />
+                <col className="w-[14%]" />
+                <col className="w-[12%]" />
+                <col className="w-[12%]" />
+                <col className="w-[13%]" />
               </colgroup>
               <thead>
                 <tr className="bg-[var(--color-light-bg)]">
@@ -512,13 +539,19 @@ export default function BookOrderSection() {
                     날짜
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-[var(--color-muted)]">
-                    상품정보
+                    강좌명
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    수량
+                    유형
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
                     결제금액
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
+                    결제방식
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
+                    결제여부
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
                     주문상태
@@ -536,20 +569,23 @@ export default function BookOrderSection() {
                     </td>
                     <td className="px-4 py-4">
                       <p className="font-medium text-[var(--color-dark)]">
-                        {order.bookTitle}
-                      </p>
-                      <p className="text-xs text-[var(--color-muted)]">
-                        {order.bookAuthor}
+                        {order.courseTitle}
                       </p>
                     </td>
                     <td className="px-4 py-4 text-center text-[var(--color-body)]">
-                      {order.quantity}
+                      {order.courseType}
                     </td>
                     <td className="px-4 py-4 text-center font-medium text-[var(--color-dark)]">
                       {order.price.toLocaleString()}원
                     </td>
+                    <td className="px-4 py-4 text-center text-[var(--color-body)]">
+                      {order.paymentMethod}
+                    </td>
                     <td className="px-4 py-4 text-center">
-                      <OrderStatusBadge status={order.orderStatus} />
+                      <PaymentStatusBadge status={order.paymentStatus} />
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <CourseOrderStatusBadge status={order.orderStatus} />
                     </td>
                   </tr>
                 ))}
@@ -565,20 +601,22 @@ export default function BookOrderSection() {
                 className="rounded-xl border border-[var(--color-border)] bg-white p-4"
               >
                 <div className="flex items-center justify-between">
-                  <OrderStatusBadge status={order.orderStatus} />
+                  <CourseOrderStatusBadge status={order.orderStatus} />
                   <span className="text-xs text-[var(--color-muted)]">
                     {order.orderedAt}
                   </span>
                 </div>
                 <h4 className="mt-2 font-medium text-[var(--color-dark)]">
-                  {order.bookTitle}
+                  {order.courseTitle}
                 </h4>
                 <p className="mt-0.5 text-sm text-[var(--color-muted)]">
-                  {order.bookAuthor} | {order.quantity}권
+                  {order.courseType} | {order.price.toLocaleString()}원
                 </p>
-                <p className="mt-2 text-sm font-medium text-[var(--color-dark)]">
-                  {order.price.toLocaleString()}원
-                </p>
+                <div className="mt-2 flex items-center gap-2 text-sm text-[var(--color-body)]">
+                  <span>{order.paymentMethod}</span>
+                  <span>·</span>
+                  <PaymentStatusBadge status={order.paymentStatus} />
+                </div>
               </div>
             ))}
           </div>

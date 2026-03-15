@@ -164,6 +164,7 @@ export interface BookOrder {
   bookTitle: string;
   bookAuthor: string;
   quantity: number;
+  price: number;
   paymentMethod: PaymentMethod;
   paymentStatus: "결제완료" | "결제대기";
   orderStatus: OrderStatus;
@@ -177,6 +178,33 @@ export interface BookOrderFilter {
   dateFrom: string;
   dateTo: string;
   orderStatus: OrderStatusFilter;
+  searchKeyword: string;
+}
+
+// ── 강의 구매내역 ──
+
+export type PurchaseSubTab = "books" | "courses";
+
+export type CourseOrderStatus = "결제대기" | "결제완료" | "수강중" | "수강완료";
+
+export interface CourseOrder {
+  id: string;
+  orderedAt: string;
+  courseTitle: string;
+  courseType: "온라인" | "공개교육";
+  price: number;
+  paymentMethod: PaymentMethod;
+  paymentStatus: "결제완료" | "결제대기";
+  orderStatus: CourseOrderStatus;
+}
+
+export type CourseOrderStatusFilter = "전체" | CourseOrderStatus;
+
+export interface CourseOrderFilter {
+  periodPreset: PeriodPreset;
+  dateFrom: string;
+  dateTo: string;
+  orderStatus: CourseOrderStatusFilter;
   searchKeyword: string;
 }
 
