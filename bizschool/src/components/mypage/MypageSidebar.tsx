@@ -15,12 +15,14 @@ const tabIcons: Record<MypageTab, LucideIcon> = {
 
 interface MypageSidebarProps {
   currentTab: MypageTab;
+  onTabClick?: (tab: MypageTab) => void;
 }
 
-export default function MypageSidebar({ currentTab }: MypageSidebarProps) {
+export default function MypageSidebar({ currentTab, onTabClick }: MypageSidebarProps) {
   const router = useRouter();
 
   const handleTabChange = (tab: MypageTab) => {
+    onTabClick?.(tab);
     if (tab === "profile") {
       router.push("/mypage");
     } else {

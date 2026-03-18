@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import type { MypageTab, InquiryFilter } from "@/types";
-import MypageSidebar from "@/components/mypage/MypageSidebar";
-import MypageContent from "@/components/mypage/MypageContent";
+import MypageLayout from "@/components/mypage/MypageLayout";
 
 export const metadata: Metadata = {
   title: "마이페이지 - BIZSCHOOL",
@@ -40,25 +38,13 @@ export default async function MypagePage({
         마이페이지
       </h1>
 
-      <div className="flex gap-8">
-        {/* Desktop Sidebar */}
-        <div className="hidden shrink-0 md:block">
-          <MypageSidebar currentTab={tab} />
-        </div>
-
-        {/* Content */}
-        <div className="min-w-0 flex-1">
-          <Suspense>
-            <MypageContent
-              currentTab={tab}
-              filter={filter}
-              page={page}
-              viewId={view}
-              writeMode={write}
-            />
-          </Suspense>
-        </div>
-      </div>
+      <MypageLayout
+        currentTab={tab}
+        filter={filter}
+        page={page}
+        viewId={view}
+        writeMode={write}
+      />
     </div>
   );
 }

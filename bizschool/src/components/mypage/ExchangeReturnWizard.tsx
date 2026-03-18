@@ -94,16 +94,15 @@ interface StepIndicatorProps {
 function StepIndicator({ currentStep }: StepIndicatorProps) {
   return (
     <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <div className="flex items-center">
+      <div className="mx-auto flex max-w-lg items-center">
         {STEPS.map((step, idx) => {
           const isDone = step.number < currentStep;
           const isCurrent = step.number === currentStep;
-          const isUpcoming = step.number > currentStep;
 
           return (
-            <div key={step.number} className="flex flex-1 items-center">
+            <div key={step.number} className="contents">
               {/* Circle + Label */}
-              <div className="flex flex-col items-center gap-1.5 flex-1">
+              <div className="flex flex-col items-center gap-1.5">
                 <div
                   className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold transition-colors ${
                     isDone
@@ -114,11 +113,7 @@ function StepIndicator({ currentStep }: StepIndicatorProps) {
                   }`}
                   aria-current={isCurrent ? "step" : undefined}
                 >
-                  {isDone ? (
-                    <CheckCircle2 size={18} />
-                  ) : (
-                    step.number
-                  )}
+                  {step.number}
                 </div>
                 <span
                   className={`text-xs font-medium ${
@@ -188,23 +183,8 @@ function RadioOption({
         checked={checked}
         onChange={() => onChange(value)}
         disabled={disabled}
-        className="sr-only"
+        className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-[var(--color-primary)]"
       />
-      <span className="mt-0.5 shrink-0">
-        {checked ? (
-          <CheckCircle2
-            size={20}
-            className="text-[var(--color-primary)]"
-            aria-hidden="true"
-          />
-        ) : (
-          <Circle
-            size={20}
-            className="text-gray-300"
-            aria-hidden="true"
-          />
-        )}
-      </span>
       <span className="flex flex-col gap-0.5">
         <span className="text-sm font-medium text-[var(--color-dark)]">
           {label}
@@ -224,6 +204,7 @@ interface Step1Props {
   selectedIds: string[];
   onToggle: (id: string) => void;
   onNext: () => void;
+  onBackToList: () => void;
 }
 
 function Step1ProductSelect({
@@ -231,6 +212,7 @@ function Step1ProductSelect({
   selectedIds,
   onToggle,
   onNext,
+  onBackToList,
 }: Step1Props) {
   const hasSelection = selectedIds.length > 0;
 
@@ -342,7 +324,14 @@ function Step1ProductSelect({
       </div>
 
       {/* CTA */}
-      <div className="flex justify-end">
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={onBackToList}
+          className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+        >
+          <ArrowLeft size={16} />
+          주문/배송 목록
+        </button>
         <button
           onClick={onNext}
           disabled={!hasSelection}
@@ -425,7 +414,7 @@ function Step2ReasonSelect({
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between">
+      <div className="flex justify-center gap-4">
         <button
           onClick={onPrev}
           className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
@@ -973,7 +962,7 @@ function Step3Resolution({
       )}
 
       {/* Navigation */}
-      <div className="flex justify-between">
+      <div className="flex justify-center gap-4">
         <button
           onClick={onPrev}
           className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
@@ -1223,17 +1212,10 @@ export default function ExchangeReturnWizard({
   return (
     <div className="space-y-4">
       {/* Page header */}
-      <div className="flex items-center justify-between">
+      <div>
         <h2 className="text-xl font-bold text-[var(--color-dark)]">
           교환/반품 신청
         </h2>
-        <button
-          onClick={onBack}
-          className="flex cursor-pointer items-center gap-1 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-        >
-          <ArrowLeft size={16} />
-          돌아가기
-        </button>
       </div>
 
       {/* Step indicator */}
@@ -1246,6 +1228,7 @@ export default function ExchangeReturnWizard({
           selectedIds={formState.selectedOrderIds}
           onToggle={handleToggleOrder}
           onNext={handleStep1Next}
+          onBackToList={onBack}
         />
       )}
       {step === 2 && (

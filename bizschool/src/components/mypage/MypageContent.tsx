@@ -17,6 +17,8 @@ interface MypageContentProps {
   page: number;
   viewId: number | null;
   writeMode: boolean;
+  purchaseResetKey: number;
+  onPurchaseReset: () => void;
 }
 
 export default function MypageContent({
@@ -25,6 +27,8 @@ export default function MypageContent({
   page,
   viewId,
   writeMode,
+  purchaseResetKey,
+  onPurchaseReset,
 }: MypageContentProps) {
   const router = useRouter();
   const [inquiries, setInquiries] = useState<Inquiry[]>(mockInquiries);
@@ -32,6 +36,11 @@ export default function MypageContent({
   const initial = mockUser.name.charAt(0);
 
   const handleTabChange = (tab: MypageTab) => {
+    // 구매내역 탭을 다시 클릭하면 위자드/상세 뷰를 닫고 목록으로 복귀
+    if (tab === "purchases" && currentTab === "purchases") {
+      onPurchaseReset();
+      return;
+    }
     if (tab === "profile") {
       router.push("/mypage");
     } else {
@@ -102,7 +111,7 @@ export default function MypageContent({
 
         {currentTab === "courses" && <CoursesSection />}
 
-        {currentTab === "purchases" && <PurchasesSection />}
+        {currentTab === "purchases" && <PurchasesSection key={purchaseResetKey} />}
       </div>
     </div>
   );

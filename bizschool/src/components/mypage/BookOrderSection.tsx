@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   ClipboardList,
   Package,
@@ -11,9 +11,11 @@ import {
   X,
   RotateCcw,
   ArrowLeftRight,
-  Trash2,
+  RefreshCw,
+  MoreVertical,
   BookOpen,
   CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 import type {
   BookOrder,
@@ -22,6 +24,7 @@ import type {
   OrderStatusFilter,
   PeriodPreset,
   BookOrderFilter,
+  ExchangeSubStatus,
 } from "@/types";
 import { mockBookOrders, mockBookOrderDetails, mockShippingTracking, ORDERS_PER_PAGE } from "@/data/mypage";
 import DatePicker from "./DatePicker";
@@ -85,6 +88,7 @@ const orderStatusOptions: OrderStatusFilter[] = [
   "배송완료",
   "취소",
   "반품",
+  "교환",
 ];
 
 function formatDotDate(date: string): string {
@@ -103,6 +107,8 @@ function getStatusColor(status: OrderStatus): string {
       return "text-red-500";
     case "반품":
       return "text-red-500";
+    case "교환":
+      return "text-amber-600";
   }
 }
 
@@ -115,6 +121,7 @@ const statusItems = [
   { label: "배송완료", icon: CheckCircle, key: "배송완료" as const },
   { label: "취소", icon: X, key: "취소" as const },
   { label: "반품", icon: ArrowLeftRight, key: "반품" as const },
+  { label: "교환", icon: RefreshCw, key: "교환" as const },
 ];
 
 function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
@@ -128,7 +135,7 @@ function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
 
   return (
     <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <div className="grid grid-cols-3 gap-4 md:grid-cols-6">
+      <div className="grid grid-cols-4 gap-4 md:grid-cols-7">
         {statusItems.map((item) => {
           const Icon = item.icon;
           const count = counts[item.key] || 0;
@@ -214,6 +221,96 @@ function Pagination({
         <ChevronRight size={18} />
       </button>
     </nav>
+  );
+}
+
+// ── Order More Menu (⋮) ──
+
+function OrderMoreMenu({ orderId, orders }: { orderId: string; orders: BookOrder[] }) {
+  const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const handleDelete = () => {
+    // In production this would call an API
+    console.info("[OrderDelete]", orderId);
+    setConfirmOpen(false);
+    setOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)]"
+        aria-label="더보기"
+      >
+        <MoreVertical size={18} />
+      </button>
+
+      {/* Popover */}
+      {open && !confirmOpen && (
+        <div className="absolute right-0 z-20 mt-1 w-44 rounded-xl border border-[var(--color-border)] bg-white py-1 shadow-lg">
+          <button
+            onClick={() => { setConfirmOpen(true); }}
+            className="w-full cursor-pointer px-4 py-2.5 text-left text-sm text-red-500 transition-colors hover:bg-[var(--color-light-bg)]"
+          >
+            주문 내역 삭제
+          </button>
+          <button
+            onClick={() => setOpen(false)}
+            className="w-full cursor-pointer px-4 py-2.5 text-left text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+          >
+            닫기
+          </button>
+        </div>
+      )}
+
+      {/* Confirm Modal */}
+      {confirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setConfirmOpen(false)} />
+          <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white px-6 py-8 text-center shadow-xl">
+            <img
+              src={orders[0].bookCover}
+              alt={orders[0].bookTitle}
+              className="mx-auto mb-4 h-28 w-20 rounded object-cover shadow-sm"
+            />
+            <p className="text-sm font-medium text-[var(--color-dark)]">
+              {orders.length === 1
+                ? `"${orders[0].bookTitle}"`
+                : `"${orders[0].bookTitle}" 외 ${orders.length - 1}건`}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--color-dark)]">
+              주문이 삭제되면 복구할 수 없습니다.<br />삭제하시겠습니까?
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => { setConfirmOpen(false); setOpen(false); }}
+                className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+              >
+                닫기
+              </button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 cursor-pointer rounded-lg border border-red-300 py-2.5 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+              >
+                삭제하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -308,17 +405,6 @@ function DetailSearchModal({
 
         <hr className="my-4 border-[var(--color-border)]" />
 
-        {/* Info box */}
-        <div className="rounded-lg bg-[var(--color-light-bg)] p-4 text-sm text-[var(--color-muted)]">
-          <ul className="list-disc space-y-1 pl-4">
-            <li>
-              조회기간 설정은 6개월 단위이며, 주문정보 조회는 최대 5년까지
-              가능합니다.
-            </li>
-            <li>필터 이용 시 선택한 주문정보만 조회 가능합니다.</li>
-          </ul>
-        </div>
-
         {/* 기간조회 */}
         <div className="mt-6">
           <h3 className="font-bold text-[var(--color-dark)]">기간조회</h3>
@@ -353,47 +439,21 @@ function DetailSearchModal({
           )}
         </div>
 
-        {/* 주문배송 상태 */}
-        <div className="mt-6">
-          <h3 className="font-bold text-[var(--color-dark)]">주문배송 상태</h3>
-          <select
-            value={local.orderStatus}
-            onChange={(e) =>
-              setLocal((prev) => ({
-                ...prev,
-                orderStatus: e.target.value as OrderStatusFilter,
-              }))
-            }
-            className="mt-3 w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)]"
-          >
-            {orderStatusOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {/* 검색 */}
         <div className="mt-6">
           <h3 className="font-bold text-[var(--color-dark)]">검색</h3>
-          <div className="mt-3 flex gap-2">
-            <select className="shrink-0 rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)]">
-              <option>상품명</option>
-            </select>
-            <input
-              type="text"
-              value={local.searchKeyword}
-              onChange={(e) =>
-                setLocal((prev) => ({
-                  ...prev,
-                  searchKeyword: e.target.value,
-                }))
-              }
-              placeholder="상품명을 입력해 주세요."
-              className="flex-1 rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
-            />
-          </div>
+          <input
+            type="text"
+            value={local.searchKeyword}
+            onChange={(e) =>
+              setLocal((prev) => ({
+                ...prev,
+                searchKeyword: e.target.value,
+              }))
+            }
+            placeholder="도서명 또는 저자명을 입력해 주세요."
+            className="mt-3 w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
+          />
         </div>
 
         {/* Buttons */}
@@ -447,13 +507,19 @@ function getQuickPeriodFilter(key: string): { dateFrom: string; dateTo: string }
 }
 
 export default function BookOrderSection({ onDetailViewChange }: BookOrderSectionProps) {
-  const [filter, setFilter] = useState<BookOrderFilter>(getDefaultFilter);
-  const [quickPeriod, setQuickPeriod] = useState<string | null>(null);
+  const [filter, setFilter] = useState<BookOrderFilter>(() => ({
+    ...getDefaultFilter(),
+    periodPreset: "custom" as PeriodPreset,
+    dateFrom: getDateBefore(180),
+    dateTo: getToday(),
+  }));
+  const [quickPeriod, setQuickPeriod] = useState<string | null>("6m");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [trackingOrderId, setTrackingOrderId] = useState<string | null>(null);
   const [returnOrderId, setReturnOrderId] = useState<string | null>(null);
+  const [returnBlockedAlert, setReturnBlockedAlert] = useState<string | null>(null);
 
   const handleSelectOrder = (id: string) => {
     setSelectedOrderId(id);
@@ -475,7 +541,23 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     onDetailViewChange?.(false);
   };
 
-  const handleShowReturnWizard = (id: string) => {
+  const handleShowReturnWizard = (id: string, orderStatus: OrderStatus) => {
+    if (orderStatus === "교환") {
+      setReturnBlockedAlert("교환이 진행 중인 건입니다.");
+      return;
+    }
+    if (orderStatus === "반품") {
+      setReturnBlockedAlert("이미 반품된 건입니다.");
+      return;
+    }
+    if (orderStatus === "취소") {
+      setReturnBlockedAlert("취소된 건입니다.");
+      return;
+    }
+    if (orderStatus !== "배송완료") {
+      setReturnBlockedAlert("교환, 반품은 배송이 완료된 건만\n신청 가능합니다.");
+      return;
+    }
     setReturnOrderId(id);
     onDetailViewChange?.(true);
   };
@@ -524,7 +606,8 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     if (filter.searchKeyword.trim()) {
       const keyword = filter.searchKeyword.trim().toLowerCase();
       orders = orders.filter((order) =>
-        order.bookTitle.toLowerCase().includes(keyword)
+        order.bookTitle.toLowerCase().includes(keyword) ||
+        order.bookAuthor.toLowerCase().includes(keyword)
       );
     }
 
@@ -576,7 +659,7 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     const clickedOrder = mockBookOrders.find((o) => o.id === returnOrderId);
     const eligibleOrders = clickedOrder
       ? mockBookOrders.filter(
-          (o) => o.orderedAt === clickedOrder.orderedAt
+          (o) => o.orderedAt === clickedOrder.orderedAt && o.orderStatus === "배송완료"
         )
       : [];
     return (
@@ -638,42 +721,40 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
       {/* Status Summary Bar */}
       <OrderStatusBar orders={mockBookOrders} />
 
-      {/* Quick Period Buttons + 상세조회 */}
-      <div className="flex flex-wrap items-center gap-2">
-        {QUICK_PERIODS.map((p) => (
+      {/* Quick Period Buttons + 상세조회 + Summary */}
+      <div className="my-5 flex flex-wrap items-center justify-between gap-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {QUICK_PERIODS.map((p) => (
+            <button
+              key={p.key}
+              onClick={() => handleQuickPeriod(p.key)}
+              className={`cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                quickPeriod === p.key
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                  : "border-[var(--color-border)] bg-white text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
           <button
-            key={p.key}
-            onClick={() => handleQuickPeriod(p.key)}
-            className={`cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-              quickPeriod === p.key
-                ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
-                : "border-[var(--color-border)] bg-white text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
-            }`}
+            onClick={() => setIsModalOpen(true)}
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
           >
-            {p.label}
+            <Calendar size={16} />
+            상세조회
           </button>
-        ))}
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
-        >
-          <Calendar size={16} />
-          상세조회
-        </button>
-      </div>
-
-      {/* Filter Bar */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <div>
+        </div>
+        <div className="w-full text-left sm:w-auto sm:text-right">
           <p className="text-sm text-[var(--color-body)]">
-            {filter.dateFrom} ~ {filter.dateTo} 주문내역 (총{" "}
+            {filter.dateFrom} ~ {filter.dateTo} (총{" "}
             <span className="font-bold text-[var(--color-primary)]">
               {filteredOrders.length}
             </span>
             건)
           </p>
           {activeFilters.length > 0 && (
-            <p className="mt-1 text-xs text-[var(--color-primary)]">
+            <p className="text-xs text-[var(--color-primary)]">
               필터: {activeFilters.join(", ")}
             </p>
           )}
@@ -687,6 +768,27 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
           onApply={handleApplyFilter}
           onClose={() => setIsModalOpen(false)}
         />
+      )}
+
+      {/* Exchange/Return Blocked Alert Modal */}
+      {returnBlockedAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setReturnBlockedAlert(null)} />
+          <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white px-6 py-8 text-center shadow-xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+              <AlertCircle size={28} className="text-amber-500" />
+            </div>
+            <p className="mt-4 text-sm font-medium leading-relaxed text-[var(--color-dark)] whitespace-pre-line">
+              {returnBlockedAlert}
+            </p>
+            <button
+              onClick={() => setReturnBlockedAlert(null)}
+              className="mt-6 w-full cursor-pointer rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+            >
+              확인
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Order List */}
@@ -714,10 +816,7 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                       상세보기 &gt;
                     </button>
                   </div>
-                  <button className="flex cursor-pointer items-center gap-1 text-sm text-[var(--color-muted)] transition-colors hover:text-red-500">
-                    <Trash2 size={14} />
-                    주문내역에서 삭제
-                  </button>
+                  <OrderMoreMenu orderId={group.orders[0].id} orders={group.orders} />
                 </div>
 
                 {/* Group Body */}
@@ -756,6 +855,15 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                                 {formatDotDate(order.orderedAt)} 배송완료
                               </p>
                             )}
+                            {order.orderStatus === "교환" && order.exchangeStatus && (
+                              <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                                order.exchangeStatus === "교환완료"
+                                  ? "bg-green-50 text-green-600"
+                                  : "bg-amber-50 text-amber-600"
+                              }`}>
+                                {order.exchangeStatus}
+                              </span>
+                            )}
                           </div>
                           <div className="flex shrink-0 flex-col gap-2">
                             <button
@@ -765,8 +873,12 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                               배송 조회
                             </button>
                             <button
-                              onClick={() => handleShowReturnWizard(order.id)}
-                              className="cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              onClick={() => handleShowReturnWizard(order.id, order.orderStatus)}
+                              className={`rounded-lg border px-5 py-1.5 text-sm transition-colors ${
+                                order.orderStatus === "배송완료"
+                                  ? "cursor-pointer border-[var(--color-border)] text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
+                                  : "cursor-pointer border-gray-200 text-gray-400"
+                              }`}
                             >
                               교환, 반품 신청
                             </button>
@@ -799,6 +911,15 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                               <p className={`text-sm font-bold ${getStatusColor(order.orderStatus)}`}>
                                 {order.orderStatus}
                               </p>
+                              {order.orderStatus === "교환" && order.exchangeStatus && (
+                                <span className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                                  order.exchangeStatus === "교환완료"
+                                    ? "bg-green-50 text-green-600"
+                                    : "bg-amber-50 text-amber-600"
+                                }`}>
+                                  {order.exchangeStatus}
+                                </span>
+                              )}
                             </div>
                           </div>
                           <div className="mt-3 flex gap-2">
@@ -809,8 +930,12 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                               배송 조회
                             </button>
                             <button
-                              onClick={() => handleShowReturnWizard(order.id)}
-                              className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              onClick={() => handleShowReturnWizard(order.id, order.orderStatus)}
+                              className={`flex-1 rounded-lg border py-2 text-sm transition-colors ${
+                                order.orderStatus === "배송완료"
+                                  ? "cursor-pointer border-[var(--color-border)] text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
+                                  : "cursor-pointer border-gray-200 text-gray-400"
+                              }`}
                             >
                               교환, 반품 신청
                             </button>

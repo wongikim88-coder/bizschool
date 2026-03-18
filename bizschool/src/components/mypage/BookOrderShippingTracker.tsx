@@ -39,15 +39,8 @@ export default function BookOrderShippingTracker({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div>
         <h2 className="text-xl font-bold text-[var(--color-dark)]">배송 조회</h2>
-        <button
-          onClick={onBack}
-          className="flex cursor-pointer items-center gap-1 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-        >
-          <ArrowLeft size={16} />
-          돌아가기
-        </button>
       </div>
 
       {/* Status Banner */}
@@ -173,7 +166,7 @@ export default function BookOrderShippingTracker({
       <div className="flex justify-center py-4">
         <button
           onClick={onBack}
-          className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+          className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
         >
           <ArrowLeft size={16} />
           주문/배송 목록

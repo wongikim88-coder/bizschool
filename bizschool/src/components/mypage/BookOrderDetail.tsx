@@ -1,14 +1,61 @@
 "use client";
 
 import { ArrowLeft, Package, Truck, Clock, CreditCard } from "lucide-react";
-import type { BookOrderDetail as BookOrderDetailType, OrderStatus } from "@/types";
+import type { BookOrderDetail as BookOrderDetailType, OrderStatus, ExchangeSubStatus } from "@/types";
 
 interface BookOrderDetailProps {
   order: BookOrderDetailType;
   onBack: () => void;
 }
 
-function DeliveryStatusStep({ status }: { status: OrderStatus }) {
+function DeliveryStatusStep({ status, exchangeStatus }: { status: OrderStatus; exchangeStatus?: ExchangeSubStatus }) {
+  if (status === "교환" && exchangeStatus) {
+    const exchangeSteps: { label: string; key: ExchangeSubStatus }[] = [
+      { label: "교환접수", key: "교환접수" },
+      { label: "수거중", key: "수거중" },
+      { label: "수거완료", key: "수거완료" },
+      { label: "교환배송중", key: "교환배송중" },
+      { label: "교환완료", key: "교환완료" },
+    ];
+    const exchangeOrder: ExchangeSubStatus[] = ["교환접수", "수거중", "수거완료", "교환배송중", "교환완료"];
+    const currentIdx = exchangeOrder.indexOf(exchangeStatus);
+
+    return (
+      <div className="flex items-center justify-between">
+        {exchangeSteps.map((step, idx) => {
+          const isActive = idx <= currentIdx;
+          const isCurrent = idx === currentIdx;
+          return (
+            <div key={step.key} className="flex flex-1 flex-col items-center gap-1.5">
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                  isCurrent
+                    ? "bg-amber-500 text-white"
+                    : isActive
+                      ? "bg-amber-100 text-amber-600"
+                      : "bg-gray-100 text-gray-400"
+                }`}
+              >
+                {idx + 1}
+              </div>
+              <span
+                className={`text-xs text-center ${
+                  isCurrent
+                    ? "font-bold text-amber-600"
+                    : isActive
+                      ? "text-[var(--color-body)]"
+                      : "text-gray-400"
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   const steps: { label: string; key: OrderStatus }[] = [
     { label: "배송준비", key: "배송준비" },
     { label: "배송중", key: "배송중" },
@@ -69,11 +116,13 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
         </div>
       </div>
 
-      {/* 배송 현황 */}
+      {/* 배송 현황 / 교환 진행 현황 */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <h3 className="font-bold text-[var(--color-dark)]">배송 현황</h3>
+        <h3 className="font-bold text-[var(--color-dark)]">
+          {order.exchangeStatus ? "교환 진행 현황" : "배송 현황"}
+        </h3>
         <div className="mt-4">
-          <DeliveryStatusStep status={order.orderStatus} />
+          <DeliveryStatusStep status={order.orderStatus} exchangeStatus={order.exchangeStatus} />
         </div>
         {order.trackingNumber && (
           <p className="mt-3 text-center text-xs text-[var(--color-muted)]">
