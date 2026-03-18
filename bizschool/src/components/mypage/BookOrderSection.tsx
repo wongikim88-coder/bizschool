@@ -423,8 +423,32 @@ interface BookOrderSectionProps {
   onDetailViewChange?: (isDetail: boolean) => void;
 }
 
+const QUICK_PERIODS: { key: string; label: string }[] = [
+  { key: "6m", label: "6개월" },
+  { key: "2026", label: "2026" },
+  { key: "2025", label: "2025" },
+  { key: "2024", label: "2024" },
+  { key: "2023", label: "2023" },
+  { key: "2022", label: "2022" },
+];
+
+function getQuickPeriodFilter(key: string): { dateFrom: string; dateTo: string } {
+  if (key === "6m") {
+    return { dateFrom: getDateBefore(180), dateTo: getToday() };
+  }
+  // Year filter
+  const year = parseInt(key, 10);
+  const today = getToday();
+  const yearEnd = `${year}-12-31`;
+  return {
+    dateFrom: `${year}-01-01`,
+    dateTo: yearEnd <= today ? yearEnd : today,
+  };
+}
+
 export default function BookOrderSection({ onDetailViewChange }: BookOrderSectionProps) {
   const [filter, setFilter] = useState<BookOrderFilter>(getDefaultFilter);
+  const [quickPeriod, setQuickPeriod] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -469,6 +493,19 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
 
   const handleApplyFilter = (newFilter: BookOrderFilter) => {
     setFilter(newFilter);
+    setQuickPeriod(null);
+    setCurrentPage(1);
+  };
+
+  const handleQuickPeriod = (key: string) => {
+    const { dateFrom, dateTo } = getQuickPeriodFilter(key);
+    setQuickPeriod(key);
+    setFilter((prev) => ({
+      ...prev,
+      periodPreset: "custom" as PeriodPreset,
+      dateFrom,
+      dateTo,
+    }));
     setCurrentPage(1);
   };
 
@@ -601,35 +638,45 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
       {/* Status Summary Bar */}
       <OrderStatusBar orders={mockBookOrders} />
 
+      {/* Quick Period Buttons + 상세조회 */}
+      <div className="flex flex-wrap items-center gap-2">
+        {QUICK_PERIODS.map((p) => (
+          <button
+            key={p.key}
+            onClick={() => handleQuickPeriod(p.key)}
+            className={`cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+              quickPeriod === p.key
+                ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                : "border-[var(--color-border)] bg-white text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+        >
+          <Calendar size={16} />
+          상세조회
+        </button>
+      </div>
+
       {/* Filter Bar */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            {filter.periodPreset !== "custom" && (
-              <p className="text-sm font-medium text-[var(--color-dark)]">
-                {periodPresetOptions.find((o) => o.key === filter.periodPreset)?.label} 주문내역 입니다.
-              </p>
-            )}
-            <p className={`text-sm text-[var(--color-body)]${filter.periodPreset !== "custom" ? " mt-1" : ""}`}>
-              {filter.dateFrom} ~ {filter.dateTo} 주문내역 (총{" "}
-              <span className="font-bold text-[var(--color-primary)]">
-                {filteredOrders.length}
-              </span>
-              건)
+        <div>
+          <p className="text-sm text-[var(--color-body)]">
+            {filter.dateFrom} ~ {filter.dateTo} 주문내역 (총{" "}
+            <span className="font-bold text-[var(--color-primary)]">
+              {filteredOrders.length}
+            </span>
+            건)
+          </p>
+          {activeFilters.length > 0 && (
+            <p className="mt-1 text-xs text-[var(--color-primary)]">
+              필터: {activeFilters.join(", ")}
             </p>
-            {activeFilters.length > 0 && (
-              <p className="mt-1 text-xs text-[var(--color-primary)]">
-                필터: {activeFilters.join(", ")}
-              </p>
-            )}
-          </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
-          >
-            <Calendar size={16} />
-            상세조회
-          </button>
+          )}
         </div>
       </div>
 
