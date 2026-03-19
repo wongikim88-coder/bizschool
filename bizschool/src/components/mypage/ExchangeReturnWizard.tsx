@@ -40,6 +40,8 @@ export interface WizardFormState {
   reasonDetailText: string;
   // Step 3
   resolution: ReturnResolution | null;
+  deliveryAddress: string;
+  deliveryAddressDetail: string;
   pickupAddress: string;
   pickupAddressDetail: string;
   pickupLocation: PickupLocation | null;
@@ -365,20 +367,45 @@ function Step2ReasonSelect({
   onPrev,
   onNext,
 }: Step2Props) {
+  const [showErrors, setShowErrors] = useState(false);
   const selectedOption = REASON_OPTIONS.find((r) => r.id === reasonId);
   const needsDetail = selectedOption?.detailPlaceholder != null;
-  const canProceed =
-    reasonId !== null && (!needsDetail || reasonDetailText.trim().length > 0);
+
+  const errors = {
+    reason: reasonId === null,
+    detail: needsDetail && reasonDetailText.trim().length === 0,
+  };
+  const hasErrors = errors.reason || errors.detail;
+
+  const reasonRef = useRef<HTMLDivElement>(null);
+
+  const handleReasonChange = (id: string) => {
+    setShowErrors(false);
+    onSelectReason(id);
+  };
+
+  const handleNextClick = () => {
+    if (hasErrors) {
+      setShowErrors(true);
+      reasonRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    onNext();
+  };
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+      <div ref={reasonRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.reason ? "border-red-400" : "border-[var(--color-border)]"}`}>
         <h3 className="font-bold text-[var(--color-dark)]">어떤 문제가 있나요?</h3>
+        {showErrors && errors.reason && (
+          <p className="mt-1 text-xs text-red-500">사유를 선택해 주세요.</p>
+        )}
         <fieldset className="mt-4 space-y-2" aria-label="사유 선택">
           <legend className="sr-only">사유를 선택해 주세요</legend>
           {REASON_OPTIONS.map((reason) => {
             const isChecked = reasonId === reason.id;
             const showDetail = isChecked && reason.detailPlaceholder != null;
+            const detailEmpty = showDetail && reasonDetailText.trim().length === 0;
             return (
               <div key={reason.id}>
                 <RadioOption
@@ -386,25 +413,34 @@ function Step2ReasonSelect({
                   name="return-reason"
                   value={reason.id}
                   checked={isChecked}
-                  onChange={onSelectReason}
+                  onChange={handleReasonChange}
                   label={reason.label}
                 />
                 {showDetail && (
                   <div className="ml-8 mt-2">
                     <div className="relative">
+                      {reasonDetailText.length === 0 && (
+                        <div className="pointer-events-none absolute left-3 top-2.5 text-sm text-gray-400">
+                          {reason.detailPlaceholder} <span className="text-red-500">* (필수)</span>
+                        </div>
+                      )}
                       <textarea
                         id={`reason-detail-${reason.id}`}
                         value={reasonDetailText}
                         onChange={(e) => onDetailChange(e.target.value.slice(0, REASON_DETAIL_MAX))}
-                        placeholder={`${reason.detailPlaceholder} * (필수)`}
                         maxLength={REASON_DETAIL_MAX}
                         rows={4}
-                        className="w-full resize-y rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
+                        className={`w-full resize-y rounded-lg border px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)] ${
+                          showErrors && detailEmpty ? "border-red-400" : "border-[var(--color-border)]"
+                        }`}
                       />
                       <span className="absolute right-3 bottom-2.5 text-xs text-[var(--color-muted)]">
                         {reasonDetailText.length} / {REASON_DETAIL_MAX}
                       </span>
                     </div>
+                    {showErrors && detailEmpty && (
+                      <p className="mt-1 text-xs text-red-500">상세 사유를 입력해 주세요.</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -423,10 +459,8 @@ function Step2ReasonSelect({
           이전 단계
         </button>
         <button
-          onClick={onNext}
-          disabled={!canProceed}
-          className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-          aria-disabled={!canProceed}
+          onClick={handleNextClick}
+          className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
         >
           다음 단계
           <ChevronRight size={16} />
@@ -442,6 +476,9 @@ interface Step3Props {
   selectedOrders: BookOrder[];
   reasonId: string | null;
   resolution: ReturnResolution | null;
+  deliveryAddress: string;
+  deliveryAddressDetail: string;
+  showDeliveryDetailAddress: boolean;
   pickupAddress: string;
   pickupAddressDetail: string;
   showDetailAddress: boolean;
@@ -453,6 +490,8 @@ interface Step3Props {
   pickupDate: string;
   deliveryCompletedDate: string;
   onSelectResolution: (v: ReturnResolution) => void;
+  onChangeDeliveryAddress: (address: string) => void;
+  onDeliveryAddressDetailChange: (v: string) => void;
   onChangeAddress: (address: string) => void;
   onAddressDetailChange: (v: string) => void;
   onSelectPickup: (v: PickupLocation) => void;
@@ -480,14 +519,14 @@ const RESOLUTION_OPTIONS: { value: ReturnResolution; label: string; description:
 
 // ── Kakao Postcode helper ──
 
-function openKakaoPostcode(onComplete: (address: string) => void) {
+function openKakaoPostcode(onComplete: (address: string) => void, focusId = "pickup-address-detail") {
   const scriptId = "kakao-postcode-script";
   const run = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     new (window as any).daum.Postcode({
       oncomplete(data: { address: string; zonecode: string }) {
         onComplete(`(${data.zonecode}) ${data.address}`);
-        setTimeout(() => document.getElementById("pickup-address-detail")?.focus(), 100);
+        setTimeout(() => document.getElementById(focusId)?.focus(), 100);
       },
     }).open();
   };
@@ -660,6 +699,9 @@ function Step3Resolution({
   selectedOrders,
   reasonId,
   resolution,
+  deliveryAddress,
+  deliveryAddressDetail,
+  showDeliveryDetailAddress,
   pickupAddress,
   pickupAddressDetail,
   showDetailAddress,
@@ -671,6 +713,8 @@ function Step3Resolution({
   pickupDate,
   deliveryCompletedDate,
   onSelectResolution,
+  onChangeDeliveryAddress,
+  onDeliveryAddressDetailChange,
   onChangeAddress,
   onAddressDetailChange,
   onSelectPickup,
@@ -683,19 +727,50 @@ function Step3Resolution({
   onSubmit,
 }: Step3Props) {
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
   const reasonLabel = REASON_OPTIONS.find((r) => r.id === reasonId)?.label ?? "";
+  const isSimpleReason = reasonId === "r01" || reasonId === "r02";
+  const availableResolutions = isSimpleReason
+    ? RESOLUTION_OPTIONS.filter((opt) => opt.value !== "교환")
+    : RESOLUTION_OPTIONS;
 
-  // Derive missing required fields for the pre-submit summary.
-  // entranceType is required: user must explicitly choose "code" or "nocode".
-  const missingFields: string[] = [];
-  if (resolution === null) missingFields.push("해결방법");
-  if (showDetailAddress && pickupAddressDetail.trim().length === 0) missingFields.push("상세주소");
-  if (pickupLocation === null || (pickupLocation === "기타" && pickupEtcText.trim().length === 0))
-    missingFields.push("회수 요청 장소");
-  if (entranceType === null || (entranceType === "code" && entranceCode.trim().length === 0))
-    missingFields.push("공동현관 출입번호");
+  // Validation checks per field
+  const showDeliverySection = !isSimpleReason && resolution === "교환";
+  const errors = {
+    resolution: resolution === null,
+    deliveryDetailAddress: showDeliverySection && showDeliveryDetailAddress && deliveryAddressDetail.trim().length === 0,
+    detailAddress: showDetailAddress && pickupAddressDetail.trim().length === 0,
+    pickupLocation: pickupLocation === null || (pickupLocation === "기타" && pickupEtcText.trim().length === 0),
+    entranceType: entranceType === null,
+    entranceCode: entranceType === "code" && entranceCode.trim().length === 0,
+    pickupDate: pickupDate === "",
+  };
+  const hasErrors = Object.values(errors).some(Boolean);
 
-  const canSubmit = missingFields.length === 0 && pickupDate !== "";
+  // Refs for scrolling to first error
+  const resolutionRef = useRef<HTMLDivElement>(null);
+  const deliveryAddressRef = useRef<HTMLDivElement>(null);
+  const addressRef = useRef<HTMLDivElement>(null);
+  const pickupDateRef = useRef<HTMLDivElement>(null);
+  const pickupLocationRef = useRef<HTMLDivElement>(null);
+  const entranceRef = useRef<HTMLDivElement>(null);
+
+  const handleSubmitClick = () => {
+    if (hasErrors) {
+      setShowErrors(true);
+      // Scroll to first error
+      const firstErrorRef = errors.resolution ? resolutionRef
+        : errors.deliveryDetailAddress ? deliveryAddressRef
+        : errors.detailAddress ? addressRef
+        : errors.pickupDate ? pickupDateRef
+        : errors.pickupLocation ? pickupLocationRef
+        : (errors.entranceType || errors.entranceCode) ? entranceRef
+        : null;
+      firstErrorRef?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    onSubmit();
+  };
 
   // Compute date range for calendar (delivery date + 30 days)
   const minDate = (() => {
@@ -746,14 +821,17 @@ function Step3Resolution({
       </div>
 
       {/* Resolution selection */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+      <div ref={resolutionRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.resolution ? "border-red-400" : "border-[var(--color-border)]"}`}>
         <h3 className="font-bold text-[var(--color-dark)]">
           해결방법 선택
           <span className="ml-1.5 text-xs font-normal text-[var(--color-muted)]">(필수)</span>
         </h3>
+        {showErrors && errors.resolution && (
+          <p className="mt-1 text-xs text-red-500">해결방법을 선택해 주세요.</p>
+        )}
         <fieldset className="mt-4 space-y-2" aria-label="해결방법">
           <legend className="sr-only">원하시는 해결방법을 선택해 주세요</legend>
-          {RESOLUTION_OPTIONS.map((opt) => (
+          {availableResolutions.map((opt) => (
             <RadioOption
               key={opt.value}
               id={`resolution-${opt.value}`}
@@ -774,8 +852,51 @@ function Step3Resolution({
         )}
       </div>
 
+      {/* Delivery address info (교환 only) */}
+      {showDeliverySection && (
+        <div ref={deliveryAddressRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.deliveryDetailAddress ? "border-red-400" : "border-[var(--color-border)]"}`}>
+          <div className="flex items-center gap-3">
+            <h3 className="font-bold text-[var(--color-dark)]">상품 배송지 정보</h3>
+            <button
+              type="button"
+              onClick={() => openKakaoPostcode((address) => onChangeDeliveryAddress(address), "delivery-address-detail")}
+              className="cursor-pointer text-sm font-medium text-[var(--color-primary)] hover:underline"
+            >
+              변경하기
+            </button>
+          </div>
+          <dl className="mt-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <MapPin size={16} className="mt-0.5 shrink-0 text-[var(--color-muted)]" />
+              <div className="flex-1">
+                <dt className="text-xs text-[var(--color-muted)]">배송지 주소</dt>
+                <dd className="mt-0.5 text-sm text-[var(--color-dark)]">{deliveryAddress}</dd>
+                {showDeliveryDetailAddress && (
+                  <dd className="mt-2">
+                    <input
+                      id="delivery-address-detail"
+                      type="text"
+                      value={deliveryAddressDetail}
+                      onChange={(e) => onDeliveryAddressDetailChange(e.target.value)}
+                      placeholder="상세주소를 입력해 주세요 (동/호수 등)"
+                      maxLength={100}
+                      className={`w-full rounded-lg border px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)] ${
+                        showErrors && errors.deliveryDetailAddress ? "border-red-400" : "border-[var(--color-border)]"
+                      }`}
+                    />
+                    {showErrors && errors.deliveryDetailAddress && (
+                      <p className="mt-1 text-xs text-red-500">상세주소를 입력해 주세요.</p>
+                    )}
+                  </dd>
+                )}
+              </div>
+            </div>
+          </dl>
+        </div>
+      )}
+
       {/* Pickup address info */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+      <div ref={addressRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.detailAddress ? "border-red-400" : "border-[var(--color-border)]"}`}>
         <div className="flex items-center gap-3">
           <h3 className="font-bold text-[var(--color-dark)]">상품 회수지 정보</h3>
           <button
@@ -802,7 +923,9 @@ function Step3Resolution({
                       onChange={(e) => onAddressDetailChange(e.target.value)}
                       placeholder="상세주소를 입력해 주세요 (동/호수 등)"
                       maxLength={100}
-                      className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
+                      className={`w-full rounded-lg border px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)] ${
+                        showErrors && errors.detailAddress ? "border-red-400" : "border-[var(--color-border)]"
+                      }`}
                     />
                     {pickupAddressDetail.length > 0 && (
                       <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--color-muted)]">
@@ -810,6 +933,9 @@ function Step3Resolution({
                       </span>
                     )}
                   </div>
+                  {showErrors && errors.detailAddress && (
+                    <p className="mt-1 text-xs text-red-500">상세주소를 입력해 주세요.</p>
+                  )}
                 </dd>
               )}
             </div>
@@ -818,8 +944,11 @@ function Step3Resolution({
       </div>
 
       {/* Pickup date */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+      <div ref={pickupDateRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.pickupDate ? "border-red-400" : "border-[var(--color-border)]"}`}>
         <h3 className="font-bold text-[var(--color-dark)]">회수 예정일</h3>
+        {showErrors && errors.pickupDate && (
+          <p className="mt-1 text-xs text-red-500">회수 예정일을 선택해 주세요.</p>
+        )}
         <fieldset className="mt-4 space-y-2" aria-label="회수 예정일">
           <legend className="sr-only">회수 예정일을 선택해 주세요</legend>
           <RadioOption
@@ -870,11 +999,14 @@ function Step3Resolution({
       />
 
       {/* Pickup location */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+      <div ref={pickupLocationRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.pickupLocation ? "border-red-400" : "border-[var(--color-border)]"}`}>
         <h3 className="font-bold text-[var(--color-dark)]">
           회수 요청 장소
           <span className="ml-1.5 text-xs font-normal text-[var(--color-muted)]">(필수)</span>
         </h3>
+        {showErrors && errors.pickupLocation && (
+          <p className="mt-1 text-xs text-red-500">회수 요청 장소를 선택해 주세요.</p>
+        )}
         <fieldset className="mt-4 space-y-2" aria-label="회수 요청 장소">
           <legend className="sr-only">회수 요청 장소를 선택해 주세요</legend>
           <RadioOption id="pickup-door" name="pickup-location" value="문앞" checked={pickupLocation === "문앞"} onChange={() => onSelectPickup("문앞")} label="문 앞" />
@@ -891,75 +1023,66 @@ function Step3Resolution({
               onChange={(e) => onPickupEtcChange(e.target.value)}
               placeholder="회수 장소를 직접 입력해 주세요"
               maxLength={100}
-              className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
+              className={`w-full rounded-lg border px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)] ${
+                showErrors && pickupEtcText.trim().length === 0 ? "border-red-400" : "border-[var(--color-border)]"
+              }`}
             />
+            {showErrors && pickupEtcText.trim().length === 0 && (
+              <p className="mt-1 text-xs text-red-500">회수 장소를 입력해 주세요.</p>
+            )}
           </div>
         )}
-
-        {/* 공동현관 출입번호 */}
-        <div className="mt-5 border-t border-[var(--color-border)] pt-5">
-          <h4 className="font-bold text-[var(--color-dark)]">
-            공동현관 출입번호
-            <span className="ml-1.5 text-xs font-normal text-[var(--color-muted)]">(필수)</span>
-          </h4>
-          <fieldset className="mt-3 space-y-2" aria-label="공동현관 출입번호">
-            <legend className="sr-only">공동현관 출입번호를 선택해 주세요</legend>
-            <div>
-              <RadioOption
-                id="entrance-code"
-                name="entrance-type"
-                value="code"
-                checked={entranceType === "code"}
-                onChange={() => onSelectEntrance("code")}
-                label="출입번호 입력"
-              />
-              {entranceType === "code" && (
-                <div className="ml-8 mt-2">
-                  <input
-                    id="entrance-code-input"
-                    type="text"
-                    value={entranceCode}
-                    onChange={(e) => onEntranceCodeChange(e.target.value)}
-                    placeholder="예 : #1234"
-                    maxLength={20}
-                    className="w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
-                  />
-                </div>
-              )}
-            </div>
-            <RadioOption
-              id="entrance-nocode"
-              name="entrance-type"
-              value="nocode"
-              checked={entranceType === "nocode"}
-              onChange={() => onSelectEntrance("nocode")}
-              label="비밀번호없이 출입 가능해요"
-            />
-          </fieldset>
-        </div>
       </div>
 
-      {/* Pre-submit missing-fields summary — visible only while canSubmit is false */}
-      {!canSubmit && (
-        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <AlertCircle
-            size={16}
-            className="mt-0.5 shrink-0 text-amber-500"
-            aria-hidden="true"
-          />
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-            <span className="text-sm text-amber-700">신청 전 확인해 주세요</span>
-            {missingFields.map((field) => (
-              <span
-                key={field}
-                className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800"
-              >
-                {field}
-              </span>
-            ))}
+      {/* 공동현관 출입번호 */}
+      <div ref={entranceRef} className={`rounded-2xl border bg-white p-5 ${showErrors && errors.entranceType ? "border-red-400" : "border-[var(--color-border)]"}`}>
+        <h3 className="font-bold text-[var(--color-dark)]">
+          공동현관 출입번호
+          <span className="ml-1.5 text-xs font-normal text-[var(--color-muted)]">(필수)</span>
+        </h3>
+        {showErrors && errors.entranceType && (
+          <p className="mt-1 text-xs text-red-500">공동현관 출입번호를 선택해 주세요.</p>
+        )}
+        <fieldset className="mt-4 space-y-2" aria-label="공동현관 출입번호">
+          <legend className="sr-only">공동현관 출입번호를 선택해 주세요</legend>
+          <div>
+            <RadioOption
+              id="entrance-code"
+              name="entrance-type"
+              value="code"
+              checked={entranceType === "code"}
+              onChange={() => onSelectEntrance("code")}
+              label="출입번호 입력"
+            />
+            {entranceType === "code" && (
+              <div className="ml-8 mt-2">
+                <input
+                  id="entrance-code-input"
+                  type="text"
+                  value={entranceCode}
+                  onChange={(e) => onEntranceCodeChange(e.target.value)}
+                  placeholder="예 : #1234"
+                  maxLength={20}
+                  className={`w-full rounded-lg border px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)] ${
+                    showErrors && entranceCode.trim().length === 0 ? "border-red-400" : "border-[var(--color-border)]"
+                  }`}
+                />
+                {showErrors && entranceCode.trim().length === 0 && (
+                  <p className="mt-1 text-xs text-red-500">출입번호를 입력해 주세요.</p>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+          <RadioOption
+            id="entrance-nocode"
+            name="entrance-type"
+            value="nocode"
+            checked={entranceType === "nocode"}
+            onChange={() => onSelectEntrance("nocode")}
+            label="비밀번호없이 출입 가능해요"
+          />
+        </fieldset>
+      </div>
 
       {/* Navigation */}
       <div className="flex justify-center gap-4">
@@ -971,10 +1094,8 @@ function Step3Resolution({
           이전 단계
         </button>
         <button
-          onClick={onSubmit}
-          disabled={!canSubmit}
-          className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-          aria-disabled={!canSubmit}
+          onClick={handleSubmitClick}
+          className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
         >
           신청하기
           <CheckCircle2 size={16} />
@@ -1087,11 +1208,15 @@ export default function ExchangeReturnWizard({
   // Find the earliest orderedAt among selected orders for 30-day window
   const deliveryCompletedDate = eligibleOrders.find((o) => o.id === initialOrderId)?.orderedAt ?? tomorrowStr;
 
+  const [showDeliveryDetailAddress, setShowDeliveryDetailAddress] = useState(false);
+
   const [formState, setFormState] = useState<WizardFormState>(() => ({
     selectedOrderIds: initialOrderId ? [initialOrderId] : [],
     reasonId: null,
     reasonDetailText: "",
     resolution: null,
+    deliveryAddress: DEFAULT_ADDRESS,
+    deliveryAddressDetail: "",
     pickupAddress: DEFAULT_ADDRESS,
     pickupAddressDetail: "",
     pickupLocation: null,
@@ -1134,10 +1259,14 @@ export default function ExchangeReturnWizard({
     const option = REASON_OPTIONS.find((r) => r.id === formState.reasonId);
     const needsDetail = option?.detailPlaceholder != null;
     if (needsDetail && !formState.reasonDetailText.trim()) return;
-    // Default resolution for 단순 변심 reasons
+    // Default resolution based on reason type
     const simpleReasons = ["r01", "r02"];
-    if (simpleReasons.includes(formState.reasonId) && formState.resolution === null) {
+    const isSimple = simpleReasons.includes(formState.reasonId!);
+    if (isSimple) {
+      // 단순변심은 교환 불가 → 항상 반품후환불
       setFormState((prev) => ({ ...prev, resolution: "반품후환불" }));
+    } else if (formState.resolution === null) {
+      setFormState((prev) => ({ ...prev, resolution: "교환" }));
     }
     setStep(3);
   }, [formState.reasonId, formState.reasonDetailText, formState.resolution]);
@@ -1145,6 +1274,15 @@ export default function ExchangeReturnWizard({
   // ── Step 3 handlers ──
   const handleSelectResolution = useCallback((v: ReturnResolution) => {
     setFormState((prev) => ({ ...prev, resolution: v }));
+  }, []);
+
+  const handleChangeDeliveryAddress = useCallback((address: string) => {
+    setFormState((prev) => ({ ...prev, deliveryAddress: address, deliveryAddressDetail: "" }));
+    setShowDeliveryDetailAddress(true);
+  }, []);
+
+  const handleDeliveryAddressDetailChange = useCallback((v: string) => {
+    setFormState((prev) => ({ ...prev, deliveryAddressDetail: v }));
   }, []);
 
   const handleChangeAddress = useCallback((address: string) => {
@@ -1246,6 +1384,9 @@ export default function ExchangeReturnWizard({
           selectedOrders={selectedOrders}
           reasonId={formState.reasonId}
           resolution={formState.resolution}
+          deliveryAddress={formState.deliveryAddress}
+          deliveryAddressDetail={formState.deliveryAddressDetail}
+          showDeliveryDetailAddress={showDeliveryDetailAddress}
           pickupAddress={formState.pickupAddress}
           pickupAddressDetail={formState.pickupAddressDetail}
           showDetailAddress={showDetailAddress}
@@ -1257,6 +1398,8 @@ export default function ExchangeReturnWizard({
           pickupDate={formState.pickupDate}
           deliveryCompletedDate={deliveryCompletedDate}
           onSelectResolution={handleSelectResolution}
+          onChangeDeliveryAddress={handleChangeDeliveryAddress}
+          onDeliveryAddressDetailChange={handleDeliveryAddressDetailChange}
           onChangeAddress={handleChangeAddress}
           onAddressDetailChange={handleAddressDetailChange}
           onSelectPickup={handleSelectPickup}

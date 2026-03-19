@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "BIZSCHOOL 마이페이지에서 내 정보와 1:1 문의를 관리하세요.",
 };
 
-const validTabs: MypageTab[] = ["profile", "inquiry", "courses", "purchases"];
+const validTabs: MypageTab[] = ["profile", "inquiry", "courses", "purchases", "claims"];
 const validFilters: InquiryFilter[] = ["all", "pending", "answered"];
 
 export default async function MypagePage({

@@ -10,6 +10,7 @@ import InquiryDetail from "./InquiryDetail";
 import InquiryForm from "./InquiryForm";
 import CoursesSection from "./CoursesSection";
 import PurchasesSection from "./PurchasesSection";
+import ClaimsSection from "./ClaimsSection";
 
 interface MypageContentProps {
   currentTab: MypageTab;
@@ -112,6 +113,8 @@ export default function MypageContent({
         {currentTab === "courses" && <CoursesSection />}
 
         {currentTab === "purchases" && <PurchasesSection key={purchaseResetKey} />}
+
+        {currentTab === "claims" && <ClaimsSection />}
       </div>
     </div>
   );

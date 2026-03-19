@@ -24,12 +24,14 @@ import type {
   PeriodPreset,
   BookOrderFilter,
 } from "@/types";
-import { mockBookOrders, mockBookOrderDetails, mockShippingTracking, ORDERS_PER_PAGE } from "@/data/mypage";
+import { mockBookOrders, mockBookOrderDetails, mockShippingTracking, mockClaimItems, ORDERS_PER_PAGE } from "@/data/mypage";
 import DatePicker from "./DatePicker";
 import BookOrderDetail from "./BookOrderDetail";
 import BookOrderShippingTracker from "./BookOrderShippingTracker";
 import ExchangeReturnWizard from "./ExchangeReturnWizard";
 import type { WizardFormState } from "./ExchangeReturnWizard";
+import CancelWizard from "./CancelWizard";
+import ClaimDetail from "./ClaimDetail";
 
 // ── Helpers ──
 
@@ -81,11 +83,13 @@ const periodPresetOptions: { key: PeriodPreset; label: string }[] = [
 
 const orderStatusOptions: OrderStatusFilter[] = [
   "전체",
+  "상품준비",
   "배송준비",
   "배송중",
   "배송완료",
   "취소",
-  "반품",
+  "반품접수",
+  "반품완료",
 ];
 
 function formatDotDate(date: string): string {
@@ -98,11 +102,13 @@ function getStatusColor(status: OrderStatus): string {
       return "text-[var(--color-primary)]";
     case "배송중":
       return "text-[var(--color-dark)]";
+    case "상품준비":
     case "배송준비":
+    case "반품접수":
       return "text-[var(--color-muted)]";
+    case "반품완료":
+      return "text-[var(--color-dark)]";
     case "취소":
-      return "text-red-500";
-    case "반품":
       return "text-red-500";
   }
 }
@@ -111,11 +117,13 @@ function getStatusColor(status: OrderStatus): string {
 
 const statusItems = [
   { label: "주문건수", icon: ClipboardList, key: "total" as const },
+  { label: "상품준비", icon: Package, key: "상품준비" as const },
   { label: "배송준비", icon: Package, key: "배송준비" as const },
   { label: "배송중", icon: Truck, key: "배송중" as const },
   { label: "배송완료", icon: CheckCircle, key: "배송완료" as const },
   { label: "취소", icon: X, key: "취소" as const },
-  { label: "반품", icon: ArrowLeftRight, key: "반품" as const },
+  { label: "반품접수", icon: ArrowLeftRight, key: "반품접수" as const },
+  { label: "반품완료", icon: CheckCircle, key: "반품완료" as const },
 ];
 
 function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
@@ -223,6 +231,7 @@ function Pagination({
 function OrderMoreMenu({ orderId, orders }: { orderId: string; orders: BookOrder[] }) {
   const [open, setOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -233,6 +242,22 @@ function OrderMoreMenu({ orderId, orders }: { orderId: string; orders: BookOrder
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
+
+  const canDelete = orders.every((o) => {
+    const deletableStatuses: OrderStatus[] = ["배송완료", "취소", "반품완료"];
+    if (!deletableStatuses.includes(o.orderStatus)) return false;
+    if (o.orderStatus === "배송완료" && o.exchangeInfo?.status === "교환진행") return false;
+    return true;
+  });
+
+  const handleDeleteClick = () => {
+    if (!canDelete) {
+      setAlertOpen(true);
+      setOpen(false);
+      return;
+    }
+    setConfirmOpen(true);
+  };
 
   const handleDelete = () => {
     // In production this would call an API
@@ -255,7 +280,7 @@ function OrderMoreMenu({ orderId, orders }: { orderId: string; orders: BookOrder
       {open && !confirmOpen && (
         <div className="absolute right-0 z-20 mt-1 w-44 rounded-xl border border-[var(--color-border)] bg-white py-1 shadow-lg">
           <button
-            onClick={() => { setConfirmOpen(true); }}
+            onClick={handleDeleteClick}
             className="w-full cursor-pointer px-4 py-2.5 text-left text-sm text-red-500 transition-colors hover:bg-[var(--color-light-bg)]"
           >
             주문 내역 삭제
@@ -266,6 +291,27 @@ function OrderMoreMenu({ orderId, orders }: { orderId: string; orders: BookOrder
           >
             닫기
           </button>
+        </div>
+      )}
+
+      {/* Delete Blocked Alert */}
+      {alertOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setAlertOpen(false)} />
+          <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white px-6 py-8 text-center shadow-xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+              <AlertCircle size={28} className="text-amber-500" />
+            </div>
+            <p className="mt-4 text-sm font-medium leading-relaxed text-[var(--color-dark)]">
+              상품이 아직 배송되지 않았거나<br />반품 · 교환 · 환불 중입니다.
+            </p>
+            <button
+              onClick={() => setAlertOpen(false)}
+              className="mt-6 w-full cursor-pointer rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+            >
+              확인
+            </button>
+          </div>
         </div>
       )}
 
@@ -514,6 +560,8 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
   const [trackingOrderId, setTrackingOrderId] = useState<string | null>(null);
   const [returnOrderId, setReturnOrderId] = useState<string | null>(null);
   const [returnBlockedAlert, setReturnBlockedAlert] = useState<string | null>(null);
+  const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
+  const [exchangeClaimId, setExchangeClaimId] = useState<string | null>(null);
 
   const handleSelectOrder = (id: string) => {
     setSelectedOrderId(id);
@@ -535,17 +583,10 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     onDetailViewChange?.(false);
   };
 
-  const handleShowReturnWizard = (id: string, orderStatus: OrderStatus) => {
-    if (orderStatus === "반품") {
-      setReturnBlockedAlert("이미 반품된 건입니다.");
-      return;
-    }
-    if (orderStatus === "취소") {
-      setReturnBlockedAlert("취소된 건입니다.");
-      return;
-    }
-    if (orderStatus !== "배송완료") {
-      setReturnBlockedAlert("교환, 반품은 배송이 완료된 건만\n신청 가능합니다.");
+  const handleShowReturnWizard = (id: string) => {
+    const order = mockBookOrders.find((o) => o.id === id);
+    if (order?.exchangeInfo?.status === "교환진행") {
+      setReturnBlockedAlert("이미 교환이 진행 중인 건입니다.");
       return;
     }
     setReturnOrderId(id);
@@ -561,6 +602,24 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     // In production this would call an API.
     // The wizard itself shows the confirmation screen after this callback.
     console.info("[ExchangeReturn] submitted", state);
+  };
+
+  const handleShowCancelWizard = (id: string, orderStatus: OrderStatus) => {
+    if (orderStatus === "취소") {
+      setReturnBlockedAlert("이미 취소된 건입니다.");
+      return;
+    }
+    if (orderStatus === "배송완료" || orderStatus === "배송중") {
+      setReturnBlockedAlert("배송이 시작된 건은 취소할 수 없습니다.\n교환/반품을 이용해 주세요.");
+      return;
+    }
+    setCancelOrderId(id);
+    onDetailViewChange?.(true);
+  };
+
+  const handleBackFromCancelWizard = () => {
+    setCancelOrderId(null);
+    onDetailViewChange?.(false);
   };
 
   const handleApplyFilter = (newFilter: BookOrderFilter) => {
@@ -629,6 +688,22 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     return groups;
   }, [paginatedOrders]);
 
+  // Exchange detail view
+  if (exchangeClaimId !== null) {
+    const claimItem = mockClaimItems.find((c) => c.id === exchangeClaimId);
+    if (claimItem) {
+      return (
+        <ClaimDetail
+          claimItem={claimItem}
+          onBack={() => {
+            setExchangeClaimId(null);
+            onDetailViewChange?.(false);
+          }}
+        />
+      );
+    }
+  }
+
   // Tracking view
   if (trackingOrderId) {
     const trackingData = mockShippingTracking[trackingOrderId];
@@ -658,6 +733,18 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
         eligibleOrders={eligibleOrders}
         onBack={handleBackFromReturnWizard}
         onSubmit={handleReturnSubmit}
+      />
+    );
+  }
+
+  // Cancel wizard view
+  if (cancelOrderId !== null) {
+    return (
+      <CancelWizard
+        orders={mockBookOrders.filter((o) => o.orderStatus === "상품준비")}
+        initialOrderId={cancelOrderId}
+        onBack={handleBackFromCancelWizard}
+        onComplete={handleBackFromCancelWizard}
       />
     );
   }
@@ -846,28 +933,65 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                               </p>
                             )}
                           </div>
-                          <div className="flex shrink-0 flex-col gap-2">
-                            <button
-                              onClick={() => handleShowTracking(order.id)}
-                              className="cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
-                            >
-                              배송 조회
-                            </button>
-                            <button
-                              onClick={() => handleShowReturnWizard(order.id, order.orderStatus)}
-                              className={`rounded-lg border px-5 py-1.5 text-sm transition-colors ${
-                                order.orderStatus === "배송완료"
-                                  ? "cursor-pointer border-[var(--color-border)] text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
-                                  : "cursor-pointer border-gray-200 text-gray-400"
-                              }`}
-                            >
-                              교환, 반품 신청
-                            </button>
-                            <button className="cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
-                              리뷰 작성
-                            </button>
+                          <div className="flex shrink-0 flex-col gap-2 min-w-[9rem]">
+                            {order.orderStatus !== "취소" && order.orderStatus !== "반품접수" && order.orderStatus !== "반품완료" && (
+                              <button
+                                onClick={() => handleShowTracking(order.id)}
+                                className="w-full cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                배송 조회
+                              </button>
+                            )}
+                            {order.orderStatus === "취소" && (
+                              <button
+                                onClick={() => handleSelectOrder(order.id)}
+                                className="w-full cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                취소 상세 보기
+                              </button>
+                            )}
+                            {(order.orderStatus === "반품접수" || order.orderStatus === "반품완료") && (
+                              <button
+                                onClick={() => handleSelectOrder(order.id)}
+                                className="w-full cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                반품 상세 보기
+                              </button>
+                            )}
+                            {order.orderStatus === "상품준비" && (
+                              <button
+                                onClick={() => handleShowCancelWizard(order.id, order.orderStatus)}
+                                className="w-full cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                주문취소
+                              </button>
+                            )}
+                            {order.orderStatus === "배송완료" && (
+                              <button
+                                onClick={() => handleShowReturnWizard(order.id)}
+                                className="w-full cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                교환, 반품 신청
+                              </button>
+                            )}
+                            {order.orderStatus === "배송완료" && (
+                              <button className="w-full cursor-pointer rounded-lg border border-[var(--color-border)] px-5 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+                                리뷰 작성
+                              </button>
+                            )}
                           </div>
                         </div>
+                        {/* Exchange detail link */}
+                        {order.exchangeInfo && (
+                          <div className="hidden md:block mt-2 pl-26">
+                            <button
+                              onClick={() => { setExchangeClaimId(order.exchangeInfo!.claimId); onDetailViewChange?.(true); }}
+                              className="cursor-pointer rounded-full border border-[var(--color-primary)] px-4 py-1.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+                            >
+                              교환 내역 조회 &gt;
+                            </button>
+                          </div>
+                        )}
 
                         {/* Mobile */}
                         <div className="md:hidden">
@@ -894,27 +1018,64 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                               </p>
                             </div>
                           </div>
-                          <div className="mt-3 flex gap-2">
-                            <button
-                              onClick={() => handleShowTracking(order.id)}
-                              className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
-                            >
-                              배송 조회
-                            </button>
-                            <button
-                              onClick={() => handleShowReturnWizard(order.id, order.orderStatus)}
-                              className={`flex-1 rounded-lg border py-2 text-sm transition-colors ${
-                                order.orderStatus === "배송완료"
-                                  ? "cursor-pointer border-[var(--color-border)] text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
-                                  : "cursor-pointer border-gray-200 text-gray-400"
-                              }`}
-                            >
-                              교환, 반품 신청
-                            </button>
-                            <button className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
-                              리뷰 작성
-                            </button>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {order.orderStatus !== "취소" && order.orderStatus !== "반품접수" && order.orderStatus !== "반품완료" && (
+                              <button
+                                onClick={() => handleShowTracking(order.id)}
+                                className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                배송 조회
+                              </button>
+                            )}
+                            {order.orderStatus === "취소" && (
+                              <button
+                                onClick={() => handleSelectOrder(order.id)}
+                                className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                취소 상세 보기
+                              </button>
+                            )}
+                            {(order.orderStatus === "반품접수" || order.orderStatus === "반품완료") && (
+                              <button
+                                onClick={() => handleSelectOrder(order.id)}
+                                className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                반품 상세 보기
+                              </button>
+                            )}
+                            {order.orderStatus === "상품준비" && (
+                              <button
+                                onClick={() => handleShowCancelWizard(order.id, order.orderStatus)}
+                                className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                주문취소
+                              </button>
+                            )}
+                            {order.orderStatus === "배송완료" && (
+                              <button
+                                onClick={() => handleShowReturnWizard(order.id)}
+                                className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                교환, 반품 신청
+                              </button>
+                            )}
+                            {order.orderStatus === "배송완료" && (
+                              <button className="flex-1 cursor-pointer rounded-lg border border-[var(--color-border)] py-2 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+                                리뷰 작성
+                              </button>
+                            )}
                           </div>
+                          {/* Exchange detail link */}
+                          {order.exchangeInfo && (
+                            <div className="mt-2">
+                              <button
+                                onClick={() => { setExchangeClaimId(order.exchangeInfo!.claimId); onDetailViewChange?.(true); }}
+                                className="cursor-pointer rounded-full border border-[var(--color-primary)] px-4 py-1.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+                              >
+                                교환 내역 조회 &gt;
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

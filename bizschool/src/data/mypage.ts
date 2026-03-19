@@ -1,4 +1,4 @@
-import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, ShippingTrackingInfo, CourseOrder } from "@/types";
+import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, ShippingTrackingInfo, CourseOrder, ClaimItem, CancelDetailInfo, ReturnDetailInfo, ExchangeDetailInfo } from "@/types";
 
 export const mockUser: MockUser = {
   id: "user-001",
@@ -12,6 +12,7 @@ export const mypageTabs: { key: MypageTab; label: string }[] = [
   { key: "inquiry", label: "1:1 문의" },
   { key: "courses", label: "수강내역" },
   { key: "purchases", label: "구매내역" },
+  { key: "claims", label: "취소/반품/교환/환불내역" },
 ];
 
 export const inquiryCategories: InquiryCategory[] = [
@@ -298,7 +299,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 180000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "배송준비",
+    orderStatus: "상품준비",
   },
   {
     id: "ORD-2026-003",
@@ -335,6 +336,7 @@ export const mockBookOrders: BookOrder[] = [
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
     orderStatus: "배송완료",
+    exchangeInfo: { claimId: "claim-ex-001", status: "교환진행" },
   },
   {
     id: "ORD-2026-006",
@@ -346,7 +348,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 16200,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "반품",
+    orderStatus: "반품접수",
   },
   {
     id: "ORD-2026-007",
@@ -358,7 +360,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 24300,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "배송중",
+    orderStatus: "배송준비",
   },
   {
     id: "ORD-2026-008",
@@ -371,6 +373,7 @@ export const mockBookOrders: BookOrder[] = [
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
     orderStatus: "배송완료",
+    exchangeInfo: { claimId: "claim-ex-002", status: "교환완료" },
   },
   {
     id: "ORD-2026-009",
@@ -478,7 +481,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 39600,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "배송완료",
+    orderStatus: "반품완료",
   },
   {
     id: "ORD-2026-018",
@@ -490,7 +493,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 15300,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "반품",
+    orderStatus: "반품접수",
   },
   {
     id: "ORD-2026-019",
@@ -886,3 +889,209 @@ export const mockCourseOrders: CourseOrder[] = [
     orderStatus: "수강완료",
   },
 ];
+
+// ── 취소/반품/교환/환불내역 ──
+
+export const mockClaimItems: ClaimItem[] = [
+  {
+    id: "claim-ex-001",
+    claimType: "exchange",
+    claimStatus: "교환진행",
+    claimDate: "2026/3/10",
+    orderDate: "2026/3/05",
+    orderNumber: "ORD-2026-005",
+    product: {
+      name: "클린 코드 - 애자일 소프트웨어 장인 정신",
+      description: "클린 코드 - 애자일 소프트웨어 장인 정신, 3권",
+      imageUrl: "/images/books/book-5.jpg",
+      quantity: 3,
+      price: 89100,
+    },
+  },
+  {
+    id: "claim-ex-002",
+    claimType: "exchange",
+    claimStatus: "교환완료",
+    claimDate: "2026/3/01",
+    orderDate: "2026/2/25",
+    orderNumber: "ORD-2026-008",
+    product: {
+      name: "아주 작은 습관의 힘 - 최고의 변화는 가장 작은 습관에서 시작된다",
+      description: "아주 작은 습관의 힘, 2권",
+      imageUrl: "/images/books/book-8.jpg",
+      quantity: 2,
+      price: 30600,
+    },
+  },
+  {
+    id: "claim-001",
+    claimType: "cancel",
+    claimStatus: "취소완료",
+    claimDate: "2026/3/19",
+    orderDate: "2026/3/19",
+    orderNumber: "2110017866L",
+    product: {
+      name: "리빙웰 자작나무 양면 이쑤시개",
+      description: "리빙웰 자작나무 양면 이쑤시개, 500개입, 2개",
+      imageUrl: "/images/books/book-1.jpg",
+      quantity: 1,
+      price: 3200,
+    },
+    refundExpectedDescription: "3/19(목) 이내",
+    refundMethod: "카드사 환불 완료 예정",
+  },
+  {
+    id: "claim-002",
+    claimType: "exchange",
+    claimStatus: "교환철회",
+    claimDate: "2026/3/19",
+    orderDate: "2026/3/11",
+    orderNumber: "2110017692L",
+    product: {
+      name: "탐사 투명 PET 아이스컵 + 스트로우프리 뚜껑 (국내 생산)",
+      description: "탐사 투명 PET 아이스컵 + 스트로우프리 뚜껑 (국내 생산), 410ml, 100개",
+      imageUrl: "/images/books/book-2.jpg",
+      quantity: 1,
+      price: 9890,
+    },
+  },
+  {
+    id: "claim-003",
+    claimType: "return",
+    claimStatus: "반품",
+    claimDate: "2026/3/19",
+    orderDate: "2026/3/11",
+    orderNumber: "2110017692",
+    product: {
+      name: "탐사 투명 PET 아이스컵 + 스트로우프리 뚜껑 (국내 생산)",
+      description: "탐사 투명 PET 아이스컵 + 스트로우프리 뚜껑 (국내 생산), 410ml, 100개",
+      imageUrl: "/images/books/book-2.jpg",
+      quantity: 1,
+      price: 9890,
+    },
+  },
+  {
+    id: "claim-004",
+    claimType: "cancel",
+    claimStatus: "취소완료",
+    claimDate: "2025/8/31",
+    orderDate: "2025/8/31",
+    orderNumber: "2110013726",
+    product: {
+      name: "누텔라 비스킷",
+      description: "누텔라 비스킷, 304g, 2개",
+      imageUrl: "/images/books/book-3.jpg",
+      quantity: 1,
+      price: 13760,
+    },
+    refundExpectedDescription: "8/31(일) 이내",
+    refundMethod: "카드사 환불 완료 예정",
+  },
+  {
+    id: "claim-005",
+    claimType: "return",
+    claimStatus: "반품완료",
+    claimDate: "2025/4/16",
+    orderDate: "2025/4/12",
+    orderNumber: "2110010741",
+    product: {
+      name: "하루온 핫팩 붙이는 타입 50g",
+      description: "하루온 핫팩 붙이는 타입 50g, 20개",
+      imageUrl: "/images/books/book-4.jpg",
+      quantity: 1,
+      price: 8820,
+    },
+    refundExpectedDescription: "4/18(금) 이내",
+    refundMethod: "카드사 환불 완료 예정",
+  },
+  {
+    id: "claim-006",
+    claimType: "return",
+    claimStatus: "반품완료",
+    claimDate: "2025/3/01",
+    orderDate: "2025/2/25",
+    orderNumber: "2110009851",
+    product: {
+      name: "마인드플레이 잇츠유 왁자지껄 진목도모를 위한 벌칙 이미지 앱티 소모임 보드게임",
+      description: "마인드플레이 잇츠유 왁자지껄 진목도모를 위한 벌칙 이미지게임 앱티 소모임 보드게임, 1개",
+      imageUrl: "/images/books/book-5.jpg",
+      quantity: 1,
+      price: 13810,
+    },
+    refundExpectedDescription: "3/5(수) 이내",
+    refundMethod: "카드사 환불 완료 예정",
+  },
+];
+
+export const mockCancelDetail: CancelDetailInfo = {
+  claimItem: mockClaimItems[0],
+  cancelReceiptDate: "2026/3/19",
+  cancelReceiptNumber: "1671085",
+  cancelCompleteDate: "2026/3/19",
+  cancelReason: "필요 없어짐 (단순 변심)",
+  refund: {
+    productAmount: 3200,
+    shippingFee: 0,
+    returnFee: 0,
+    refundMethod: "현대비자개인 / 일시불",
+    refundAmount: 3200,
+    isCompleted: true,
+  },
+};
+
+export const mockReturnDetail: ReturnDetailInfo = {
+  claimItem: mockClaimItems[2],
+  returnReceiptDate: "2026/3/19",
+  returnReceiptNumber: "1671061x",
+  pickupInfo: {
+    pickupPerson: "김○○",
+    phone: "010-6218-****",
+    contact: "010-6218-****",
+    address: "13595 경기도 성남시 분당구 황새울로258번길",
+  },
+  shippingInfo: {
+    carrier: "쿠친",
+    trackingNumber: "99598857",
+  },
+  pickupSchedule: {
+    pickupDate: "2026/3/20(금)",
+    pickupRequest: "door",
+  },
+  returnReason: "필요 없어짐",
+  refund: {
+    productAmount: 9890,
+    shippingFee: 0,
+    returnFee: 0,
+    refundMethod: "현대카드 / 일시불",
+    refundAmount: 9890,
+    isCompleted: false,
+  },
+};
+
+export const mockExchangeDetail: ExchangeDetailInfo = {
+  claimItem: {
+    ...mockClaimItems[1],
+    claimStatus: "교환진행",
+  },
+  exchangeReceiptDate: "2026/3/19",
+  exchangeReceiptNumber: "910038098992",
+  exchangeDeliveryInfo: {
+    deliveryStatus: "상품준비중",
+    deliveryCarrier: "쿠친",
+  },
+  pickupInfo: {
+    pickupPerson: "김○○",
+    phone: "010-6218-****",
+    contact: "010-6218-****",
+    address: "13595 경기도 성남시 분당구 황새울로258번길",
+  },
+  shippingInfo: {
+    carrier: "쿠친",
+    trackingNumber: "995988601",
+  },
+  pickupSchedule: {
+    pickupDate: "2026/3/20(금)",
+    pickupRequest: "door",
+  },
+  exchangeReason: "내가 주문한 상품과 아예 다른 상품이 배송됨",
+};

@@ -136,7 +136,127 @@ export type InquiryCategory = "강의" | "도서" | "결제" | "기술문제" | 
 
 export type InquiryFilter = "all" | "pending" | "answered";
 
-export type MypageTab = "profile" | "inquiry" | "courses" | "purchases";
+export type MypageTab = "profile" | "inquiry" | "courses" | "purchases" | "claims";
+
+// ── 취소/반품/교환/환불내역 ──
+
+export type ClaimType = "cancel" | "return" | "exchange";
+export type ClaimStatus =
+  | "취소완료"
+  | "취소접수"
+  | "반품"
+  | "반품완료"
+  | "교환진행"
+  | "교환완료"
+  | "교환철회";
+
+export type ClaimSubTab = "claims" | "bankRefund";
+
+export type CancelReason =
+  | "wrong-address"
+  | "not-satisfied"
+  | "reorder";
+
+export type CancelResolution =
+  | "change-address"
+  | "cancel";
+
+export type PickupRequestLocation = "door" | "security" | "other";
+
+export interface ClaimItem {
+  id: string;
+  claimType: ClaimType;
+  claimStatus: ClaimStatus;
+  claimDate: string;
+  orderDate: string;
+  orderNumber: string;
+  product: {
+    name: string;
+    description: string;
+    imageUrl: string;
+    quantity: number;
+    price: number;
+  };
+  refundExpectedDescription?: string;
+  refundMethod?: string;
+}
+
+export interface CancelDetailInfo {
+  claimItem: ClaimItem;
+  cancelReceiptDate: string;
+  cancelReceiptNumber: string;
+  cancelCompleteDate?: string;
+  cancelReason: string;
+  refund: RefundInfo;
+}
+
+export interface ReturnDetailInfo {
+  claimItem: ClaimItem;
+  returnReceiptDate: string;
+  returnReceiptNumber: string;
+  pickupInfo: PickupInfo;
+  shippingInfo: ShippingReturnInfo;
+  pickupSchedule: PickupScheduleInfo;
+  returnReason: string;
+  refund: RefundInfo;
+}
+
+export interface ExchangeDetailInfo {
+  claimItem: ClaimItem;
+  exchangeReceiptDate: string;
+  exchangeReceiptNumber: string;
+  exchangeDeliveryInfo: {
+    deliveryStatus: string;
+    deliveryCarrier: string;
+  };
+  pickupInfo: PickupInfo;
+  shippingInfo: ShippingReturnInfo;
+  pickupSchedule: PickupScheduleInfo;
+  exchangeReason: string;
+}
+
+export interface RefundInfo {
+  productAmount: number;
+  shippingFee: number;
+  returnFee: number;
+  refundMethod: string;
+  refundAmount: number;
+  isCompleted: boolean;
+}
+
+export interface PickupInfo {
+  pickupPerson: string;
+  phone: string;
+  contact: string;
+  address: string;
+}
+
+export interface ShippingReturnInfo {
+  carrier: string;
+  trackingNumber: string;
+}
+
+export interface PickupScheduleInfo {
+  pickupDate: string;
+  pickupRequest: PickupRequestLocation;
+  pickupRequestText?: string;
+}
+
+export interface CancelWizardFormState {
+  selectedOrderIds: string[];
+  cancelReason: CancelReason | null;
+  resolution: CancelResolution | null;
+  addToCart: boolean;
+}
+
+export interface CancelReceiptInfo {
+  productCancelAmount: number;
+  discountDeduction: number;
+  shippingFee: number;
+  totalRefundAmount: number;
+  receiptMethod: string;
+  receiptAmount: number;
+}
 
 // ── 나의 강의실 (수강내역) ──
 
@@ -155,7 +275,7 @@ export interface MyCourse {
 
 // ── 도서 주문내역 (구매내역) ──
 
-export type OrderStatus = "배송준비" | "배송중" | "배송완료" | "취소" | "반품";
+export type OrderStatus = "상품준비" | "배송준비" | "배송중" | "배송완료" | "취소" | "반품접수" | "반품완료";
 export type PaymentMethod = "신용카드" | "무통장입금" | "카카오페이" | "네이버페이";
 
 export interface BookOrder {
@@ -169,6 +289,10 @@ export interface BookOrder {
   paymentMethod: PaymentMethod;
   paymentStatus: "결제완료";
   orderStatus: OrderStatus;
+  exchangeInfo?: {
+    claimId: string;
+    status: "교환진행" | "교환완료" | "교환철회";
+  };
 }
 
 export type PeriodPreset = "1m" | "3m" | "6m" | "custom";

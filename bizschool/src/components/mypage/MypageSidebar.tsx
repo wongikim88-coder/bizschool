@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { User, MessageSquare, BookOpen, ShoppingBag } from "lucide-react";
+import { User, MessageSquare, BookOpen, ShoppingBag, RotateCcw } from "lucide-react";
 import type { MypageTab } from "@/types";
 import { mypageTabs } from "@/data/mypage";
 import type { LucideIcon } from "lucide-react";
@@ -11,6 +11,7 @@ const tabIcons: Record<MypageTab, LucideIcon> = {
   inquiry: MessageSquare,
   courses: BookOpen,
   purchases: ShoppingBag,
+  claims: RotateCcw,
 };
 
 interface MypageSidebarProps {

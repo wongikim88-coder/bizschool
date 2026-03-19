@@ -10,12 +10,13 @@ interface BookOrderDetailProps {
 
 function DeliveryStatusStep({ status }: { status: OrderStatus }) {
   const steps: { label: string; key: OrderStatus }[] = [
+    { label: "상품준비", key: "상품준비" },
     { label: "배송준비", key: "배송준비" },
     { label: "배송중", key: "배송중" },
     { label: "배송완료", key: "배송완료" },
   ];
 
-  const statusOrder: OrderStatus[] = ["배송준비", "배송중", "배송완료"];
+  const statusOrder: OrderStatus[] = ["상품준비", "배송준비", "배송중", "배송완료"];
   const currentIdx = statusOrder.indexOf(status);
 
   return (
