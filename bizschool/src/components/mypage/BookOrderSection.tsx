@@ -2,18 +2,13 @@
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import {
-  ClipboardList,
-  Package,
-  Truck,
   ChevronLeft,
   ChevronRight,
   Calendar,
   X,
   RotateCcw,
-  ArrowLeftRight,
   MoreVertical,
   BookOpen,
-  CheckCircle,
   AlertCircle,
 } from "lucide-react";
 import type {
@@ -115,48 +110,6 @@ function getStatusColor(status: OrderStatus): string {
 
 // ── Sub-components ──
 
-const statusItems = [
-  { label: "주문건수", icon: ClipboardList, key: "total" as const },
-  { label: "상품준비", icon: Package, key: "상품준비" as const },
-  { label: "배송준비", icon: Package, key: "배송준비" as const },
-  { label: "배송중", icon: Truck, key: "배송중" as const },
-  { label: "배송완료", icon: CheckCircle, key: "배송완료" as const },
-  { label: "취소", icon: X, key: "취소" as const },
-  { label: "반품접수", icon: ArrowLeftRight, key: "반품접수" as const },
-  { label: "반품완료", icon: CheckCircle, key: "반품완료" as const },
-];
-
-function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
-  const counts = useMemo(() => {
-    const map: Record<string, number> = { total: orders.length };
-    for (const order of orders) {
-      map[order.orderStatus] = (map[order.orderStatus] || 0) + 1;
-    }
-    return map;
-  }, [orders]);
-
-  return (
-    <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <div className="grid grid-cols-3 gap-4 md:grid-cols-6">
-        {statusItems.map((item) => {
-          const Icon = item.icon;
-          const count = counts[item.key] || 0;
-          return (
-            <div key={item.key} className="flex flex-col items-center gap-1.5">
-              <Icon size={24} className="text-[var(--color-muted)]" />
-              <span className="text-xs text-[var(--color-muted)]">
-                {item.label}
-              </span>
-              <span className="text-lg font-bold text-[var(--color-dark)]">
-                {count}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 function Pagination({
   currentPage,
@@ -688,6 +641,21 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     return groups;
   }, [paginatedOrders]);
 
+  // Reset invalid IDs (avoid setState during render)
+  useEffect(() => {
+    if (trackingOrderId && !mockShippingTracking[trackingOrderId]) {
+      setTrackingOrderId(null);
+      onDetailViewChange?.(false);
+    }
+  }, [trackingOrderId, onDetailViewChange]);
+
+  useEffect(() => {
+    if (selectedOrderId && !mockBookOrderDetails[selectedOrderId] && !mockBookOrders.find((o) => o.id === selectedOrderId)) {
+      setSelectedOrderId(null);
+      onDetailViewChange?.(false);
+    }
+  }, [selectedOrderId, onDetailViewChange]);
+
   // Exchange detail view
   if (exchangeClaimId !== null) {
     const claimItem = mockClaimItems.find((c) => c.id === exchangeClaimId);
@@ -715,8 +683,7 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
         />
       );
     }
-    // No tracking data — go back
-    handleBackFromTracking();
+    return null;
   }
 
   // Exchange / Return wizard view
@@ -790,14 +757,10 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
         />
       );
     }
-    handleBackToList();
   }
 
   return (
     <div className="space-y-4">
-      {/* Status Summary Bar */}
-      <OrderStatusBar orders={mockBookOrders} />
-
       {/* Quick Period Buttons + 상세조회 + Summary */}
       <div className="my-5 flex flex-wrap items-center justify-between gap-y-2">
         <div className="flex flex-wrap items-center gap-2">

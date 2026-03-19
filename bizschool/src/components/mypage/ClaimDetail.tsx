@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import type { ClaimItem, PickupScheduleInfo, PickupRequestLocation } from "@/types";
 import { mockCancelDetail, mockReturnDetail, mockExchangeDetail } from "@/data/mypage";
 
@@ -357,9 +358,10 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
           <button
             type="button"
             onClick={onBack}
-            className="rounded-lg bg-[var(--color-primary)] px-12 py-2.5 text-sm font-medium text-white"
+            className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
           >
-            목록
+            <ArrowLeft size={16} />
+            주문/배송 목록
           </button>
         </div>
 
@@ -539,9 +541,10 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
           <button
             type="button"
             onClick={onBack}
-            className="rounded-lg bg-[var(--color-primary)] px-12 py-2.5 text-sm font-medium text-white"
+            className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
           >
-            목록
+            <ArrowLeft size={16} />
+            주문/배송 목록
           </button>
         </div>
 
@@ -719,9 +722,10 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg bg-[var(--color-primary)] px-12 py-2.5 text-sm font-medium text-white"
+          className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)] mx-auto"
         >
-          목록
+          <ArrowLeft size={16} />
+          주문/배송 목록
         </button>
       </div>
 

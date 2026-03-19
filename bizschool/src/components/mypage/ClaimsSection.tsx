@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import type { ClaimSubTab, ClaimType, ClaimItem } from "@/types";
 import { mockClaimItems } from "@/data/mypage";
 import ClaimDetail from "./ClaimDetail";
@@ -51,6 +53,7 @@ function detailButtonLabel(type: ClaimType): string {
 }
 
 export default function ClaimsSection() {
+  const router = useRouter();
   const [activeSubTab, setActiveSubTab] = useState<ClaimSubTab>("claims");
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
 
@@ -192,6 +195,18 @@ export default function ClaimsSection() {
           ))}
         </div>
       )}
+
+      {/* 주문/배송 목록 이동 버튼 */}
+      <div className="mt-8 text-center">
+        <button
+          type="button"
+          onClick={() => router.push("/mypage?tab=purchases")}
+          className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-3 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+        >
+          <ArrowLeft size={16} />
+          주문/배송 목록
+        </button>
+      </div>
     </div>
   );
 }
