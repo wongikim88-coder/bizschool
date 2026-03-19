@@ -155,8 +155,7 @@ export interface MyCourse {
 
 // ── 도서 주문내역 (구매내역) ──
 
-export type ExchangeSubStatus = "교환접수" | "수거중" | "수거완료" | "교환배송중" | "교환완료";
-export type OrderStatus = "배송준비" | "배송중" | "배송완료" | "취소" | "반품" | "교환";
+export type OrderStatus = "배송준비" | "배송중" | "배송완료" | "취소" | "반품";
 export type PaymentMethod = "신용카드" | "무통장입금" | "카카오페이" | "네이버페이";
 
 export interface BookOrder {
@@ -170,7 +169,6 @@ export interface BookOrder {
   paymentMethod: PaymentMethod;
   paymentStatus: "결제완료";
   orderStatus: OrderStatus;
-  exchangeStatus?: ExchangeSubStatus;
 }
 
 export type PeriodPreset = "1m" | "3m" | "6m" | "custom";

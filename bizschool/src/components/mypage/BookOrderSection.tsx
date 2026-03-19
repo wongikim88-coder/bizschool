@@ -11,7 +11,6 @@ import {
   X,
   RotateCcw,
   ArrowLeftRight,
-  RefreshCw,
   MoreVertical,
   BookOpen,
   CheckCircle,
@@ -24,7 +23,6 @@ import type {
   OrderStatusFilter,
   PeriodPreset,
   BookOrderFilter,
-  ExchangeSubStatus,
 } from "@/types";
 import { mockBookOrders, mockBookOrderDetails, mockShippingTracking, ORDERS_PER_PAGE } from "@/data/mypage";
 import DatePicker from "./DatePicker";
@@ -88,7 +86,6 @@ const orderStatusOptions: OrderStatusFilter[] = [
   "배송완료",
   "취소",
   "반품",
-  "교환",
 ];
 
 function formatDotDate(date: string): string {
@@ -107,8 +104,6 @@ function getStatusColor(status: OrderStatus): string {
       return "text-red-500";
     case "반품":
       return "text-red-500";
-    case "교환":
-      return "text-amber-600";
   }
 }
 
@@ -121,7 +116,6 @@ const statusItems = [
   { label: "배송완료", icon: CheckCircle, key: "배송완료" as const },
   { label: "취소", icon: X, key: "취소" as const },
   { label: "반품", icon: ArrowLeftRight, key: "반품" as const },
-  { label: "교환", icon: RefreshCw, key: "교환" as const },
 ];
 
 function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
@@ -135,7 +129,7 @@ function OrderStatusBar({ orders }: { orders: BookOrder[] }) {
 
   return (
     <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <div className="grid grid-cols-4 gap-4 md:grid-cols-7">
+      <div className="grid grid-cols-3 gap-4 md:grid-cols-6">
         {statusItems.map((item) => {
           const Icon = item.icon;
           const count = counts[item.key] || 0;
@@ -542,10 +536,6 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
   };
 
   const handleShowReturnWizard = (id: string, orderStatus: OrderStatus) => {
-    if (orderStatus === "교환") {
-      setReturnBlockedAlert("교환이 진행 중인 건입니다.");
-      return;
-    }
     if (orderStatus === "반품") {
       setReturnBlockedAlert("이미 반품된 건입니다.");
       return;
@@ -855,15 +845,6 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                                 {formatDotDate(order.orderedAt)} 배송완료
                               </p>
                             )}
-                            {order.orderStatus === "교환" && order.exchangeStatus && (
-                              <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                                order.exchangeStatus === "교환완료"
-                                  ? "bg-green-50 text-green-600"
-                                  : "bg-amber-50 text-amber-600"
-                              }`}>
-                                {order.exchangeStatus}
-                              </span>
-                            )}
                           </div>
                           <div className="flex shrink-0 flex-col gap-2">
                             <button
@@ -911,15 +892,6 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
                               <p className={`text-sm font-bold ${getStatusColor(order.orderStatus)}`}>
                                 {order.orderStatus}
                               </p>
-                              {order.orderStatus === "교환" && order.exchangeStatus && (
-                                <span className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                                  order.exchangeStatus === "교환완료"
-                                    ? "bg-green-50 text-green-600"
-                                    : "bg-amber-50 text-amber-600"
-                                }`}>
-                                  {order.exchangeStatus}
-                                </span>
-                              )}
                             </div>
                           </div>
                           <div className="mt-3 flex gap-2">

@@ -406,8 +406,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 18000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "교환",
-    exchangeStatus: "수거중",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-012",
@@ -467,8 +466,7 @@ export const mockBookOrders: BookOrder[] = [
     price: 22500,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "교환",
-    exchangeStatus: "교환배송중",
+    orderStatus: "배송완료",
   },
   {
     id: "ORD-2026-017",
