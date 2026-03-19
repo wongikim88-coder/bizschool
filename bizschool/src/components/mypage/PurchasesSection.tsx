@@ -2,16 +2,18 @@
 
 import { useState } from "react";
 import type { PurchaseSubTab } from "@/types";
+import { mockCourseOrders, mockBookOrders } from "@/data/mypage";
 import BookOrderSection from "./BookOrderSection";
 import CourseOrderSection from "./CourseOrderSection";
 
-const subTabs: { key: PurchaseSubTab; label: string }[] = [
-  { key: "books", label: "도서 구매내역" },
-  { key: "courses", label: "강의 구매내역" },
+const subTabs: { key: PurchaseSubTab; label: string; count: number }[] = [
+  { key: "courses", label: "강의 구매내역", count: mockCourseOrders.length },
+  { key: "books", label: "도서 구매내역", count: mockBookOrders.length },
 ];
 
 export default function PurchasesSection() {
-  const [activeSubTab, setActiveSubTab] = useState<PurchaseSubTab>("books");
+  const [activeSubTab, setActiveSubTab] =
+    useState<PurchaseSubTab>("courses");
   const [isDetailView, setIsDetailView] = useState(false);
 
   return (
@@ -36,6 +38,15 @@ export default function PurchasesSection() {
               }`}
             >
               {tab.label}
+              <span
+                className={`ml-1.5 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                  activeSubTab === tab.key
+                    ? "bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+                    : "bg-[var(--color-light-bg)] text-[var(--color-muted)]"
+                }`}
+              >
+                {tab.count}
+              </span>
             </button>
           ))}
         </div>
@@ -43,8 +54,12 @@ export default function PurchasesSection() {
 
       {/* 콘텐츠 */}
       <div className={isDetailView ? "" : "mt-4"}>
-        {activeSubTab === "books" && <BookOrderSection onDetailViewChange={setIsDetailView} />}
-        {activeSubTab === "courses" && <CourseOrderSection />}
+        {activeSubTab === "courses" && (
+          <CourseOrderSection onDetailViewChange={setIsDetailView} />
+        )}
+        {activeSubTab === "books" && (
+          <BookOrderSection onDetailViewChange={setIsDetailView} />
+        )}
       </div>
     </div>
   );

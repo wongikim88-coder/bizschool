@@ -1,27 +1,31 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import {
-  ClipboardList,
-  Clock,
-  CreditCard,
-  PlayCircle,
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Calendar,
   X,
   RotateCcw,
+  Download,
 } from "lucide-react";
 import type {
   CourseOrder,
   CourseOrderStatus,
-  CourseOrderStatusFilter,
   PeriodPreset,
   CourseOrderFilter,
 } from "@/types";
-import { mockCourseOrders, COURSE_ORDERS_PER_PAGE } from "@/data/mypage";
+import {
+  mockCourseOrders,
+  mockCourseOrderDetails,
+  COURSE_ORDERS_PER_PAGE,
+} from "@/data/mypage";
 import DatePicker from "./DatePicker";
+import CourseOrderDetail from "./CourseOrderDetail";
+
+// ── Types ──
+
+type CourseTypeFilterKey = "전체" | "온라인" | "현장";
 
 // ── Helpers ──
 
@@ -64,6 +68,29 @@ function getDefaultFilter(): CourseOrderFilter {
   };
 }
 
+const QUICK_PERIODS: { key: string; label: string }[] = [
+  { key: "6m", label: "6개월" },
+  { key: "2026", label: "2026" },
+  { key: "2025", label: "2025" },
+  { key: "2024", label: "2024" },
+  { key: "2023", label: "2023" },
+  { key: "2022", label: "2022" },
+];
+
+function getQuickPeriodFilter(key: string): { dateFrom: string; dateTo: string } {
+  if (key === "6m") {
+    return { dateFrom: getDateBefore(180), dateTo: getToday() };
+  }
+  // Year filter
+  const year = parseInt(key, 10);
+  const today = getToday();
+  const yearEnd = `${year}-12-31`;
+  return {
+    dateFrom: `${year}-01-01`,
+    dateTo: yearEnd <= today ? yearEnd : today,
+  };
+}
+
 const periodPresetOptions: { key: PeriodPreset; label: string }[] = [
   { key: "1m", label: "최근 1개월" },
   { key: "3m", label: "최근 3개월" },
@@ -71,13 +98,19 @@ const periodPresetOptions: { key: PeriodPreset; label: string }[] = [
   { key: "custom", label: "직접입력" },
 ];
 
-const courseOrderStatusOptions: CourseOrderStatusFilter[] = [
-  "전체",
-  "결제대기",
-  "결제완료",
-  "수강중",
-  "수강완료",
+const COURSE_TYPE_OPTIONS: { key: CourseTypeFilterKey; label: string }[] = [
+  { key: "전체", label: "전체" },
+  { key: "온라인", label: "온라인" },
+  { key: "현장", label: "현장교육" },
 ];
+
+function canDownloadReceipt(order: CourseOrder): boolean {
+  return (
+    order.paymentStatus === "결제완료" &&
+    order.orderStatus !== "취소" &&
+    order.orderStatus !== "결제대기"
+  );
+}
 
 // ── Sub-components ──
 
@@ -87,6 +120,9 @@ function CourseOrderStatusBadge({ status }: { status: CourseOrderStatus }) {
     결제완료: "bg-blue-50 text-blue-600",
     수강중: "bg-purple-50 text-purple-600",
     수강완료: "bg-emerald-50 text-emerald-600",
+    환불신청: "bg-orange-50 text-orange-600",
+    환불완료: "bg-gray-100 text-gray-500",
+    취소: "bg-red-50 text-red-500",
   };
 
   return (
@@ -98,64 +134,7 @@ function CourseOrderStatusBadge({ status }: { status: CourseOrderStatus }) {
   );
 }
 
-function PaymentStatusBadge({
-  status,
-}: {
-  status: "결제완료" | "결제대기";
-}) {
-  if (status === "결제완료") {
-    return (
-      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-600">
-        결제완료
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600">
-      결제대기
-    </span>
-  );
-}
-
-const statusItems = [
-  { label: "주문건수", icon: ClipboardList, key: "total" as const },
-  { label: "결제대기", icon: Clock, key: "결제대기" as const },
-  { label: "결제완료", icon: CreditCard, key: "결제완료" as const },
-  { label: "수강중", icon: PlayCircle, key: "수강중" as const },
-  { label: "수강완료", icon: CheckCircle, key: "수강완료" as const },
-];
-
-function CourseOrderStatusBar({ orders }: { orders: CourseOrder[] }) {
-  const counts = useMemo(() => {
-    const map: Record<string, number> = { total: orders.length };
-    for (const order of orders) {
-      map[order.orderStatus] = (map[order.orderStatus] || 0) + 1;
-    }
-    return map;
-  }, [orders]);
-
-  return (
-    <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <div className="grid grid-cols-3 gap-4 md:grid-cols-5">
-        {statusItems.map((item) => {
-          const Icon = item.icon;
-          const count = counts[item.key] || 0;
-          return (
-            <div key={item.key} className="flex flex-col items-center gap-1.5">
-              <Icon size={24} className="text-[var(--color-muted)]" />
-              <span className="text-xs text-[var(--color-muted)]">
-                {item.label}
-              </span>
-              <span className="text-lg font-bold text-[var(--color-dark)]">
-                {count}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+// ── Pagination ──
 
 function Pagination({
   currentPage,
@@ -229,14 +208,17 @@ function Pagination({
 
 function DetailSearchModal({
   currentFilter,
+  currentCourseType,
   onApply,
   onClose,
 }: {
   currentFilter: CourseOrderFilter;
-  onApply: (filter: CourseOrderFilter) => void;
+  currentCourseType: CourseTypeFilterKey;
+  onApply: (filter: CourseOrderFilter, courseType: CourseTypeFilterKey) => void;
   onClose: () => void;
 }) {
   const [local, setLocal] = useState<CourseOrderFilter>(currentFilter);
+  const [localCourseType, setLocalCourseType] = useState<CourseTypeFilterKey>(currentCourseType);
   const [rangeError, setRangeError] = useState("");
 
   const handlePresetChange = (preset: PeriodPreset) => {
@@ -262,6 +244,7 @@ function DetailSearchModal({
   const handleReset = () => {
     setRangeError("");
     setLocal(getDefaultFilter());
+    setLocalCourseType("전체");
   };
 
   const handleApply = () => {
@@ -274,7 +257,7 @@ function DetailSearchModal({
       setRangeError("조회기간은 최대 5년까지 가능합니다.");
       return;
     }
-    onApply(local);
+    onApply(local, localCourseType);
     onClose();
   };
 
@@ -312,16 +295,6 @@ function DetailSearchModal({
 
         <hr className="my-4 border-[var(--color-border)]" />
 
-        <div className="rounded-lg bg-[var(--color-light-bg)] p-4 text-sm text-[var(--color-muted)]">
-          <ul className="list-disc space-y-1 pl-4">
-            <li>
-              조회기간 설정은 6개월 단위이며, 주문정보 조회는 최대 5년까지
-              가능합니다.
-            </li>
-            <li>필터 이용 시 선택한 주문정보만 조회 가능합니다.</li>
-          </ul>
-        </div>
-
         {/* 기간조회 */}
         <div className="mt-6">
           <h3 className="font-bold text-[var(--color-dark)]">기간조회</h3>
@@ -356,47 +329,41 @@ function DetailSearchModal({
           )}
         </div>
 
-        {/* 수강 상태 */}
+        {/* 강의유형 */}
         <div className="mt-6">
-          <h3 className="font-bold text-[var(--color-dark)]">수강 상태</h3>
-          <select
-            value={local.orderStatus}
-            onChange={(e) =>
-              setLocal((prev) => ({
-                ...prev,
-                orderStatus: e.target.value as CourseOrderStatusFilter,
-              }))
-            }
-            className="mt-3 w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)]"
-          >
-            {courseOrderStatusOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
+          <h3 className="font-bold text-[var(--color-dark)]">강의유형</h3>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {COURSE_TYPE_OPTIONS.map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => setLocalCourseType(opt.key)}
+                className={`cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                  localCourseType === opt.key
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                    : "border-[var(--color-border)] bg-white text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
+                }`}
+              >
+                {opt.label}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         {/* 검색 */}
         <div className="mt-6">
           <h3 className="font-bold text-[var(--color-dark)]">검색</h3>
-          <div className="mt-3 flex gap-2">
-            <select className="shrink-0 rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none focus:border-[var(--color-primary)]">
-              <option>강좌명</option>
-            </select>
-            <input
-              type="text"
-              value={local.searchKeyword}
-              onChange={(e) =>
-                setLocal((prev) => ({
-                  ...prev,
-                  searchKeyword: e.target.value,
-                }))
-              }
-              placeholder="강좌명을 입력해 주세요."
-              className="flex-1 rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
-            />
-          </div>
+          <input
+            type="text"
+            value={local.searchKeyword}
+            onChange={(e) =>
+              setLocal((prev) => ({
+                ...prev,
+                searchKeyword: e.target.value,
+              }))
+            }
+            placeholder="강좌명을 입력해 주세요."
+            className="mt-3 w-full rounded-lg border border-[var(--color-border)] px-3 py-2.5 text-sm text-[var(--color-body)] outline-none placeholder:text-gray-400 focus:border-[var(--color-primary)]"
+          />
         </div>
 
         {/* Buttons */}
@@ -422,91 +389,243 @@ function DetailSearchModal({
 
 // ── Main Component ──
 
-export default function CourseOrderSection() {
-  const [filter, setFilter] = useState<CourseOrderFilter>(getDefaultFilter);
+export default function CourseOrderSection({
+  onDetailViewChange,
+}: {
+  onDetailViewChange?: (isDetail: boolean) => void;
+}) {
+  const [filter, setFilter] = useState<CourseOrderFilter>(() => ({
+    ...getDefaultFilter(),
+    periodPreset: "custom" as PeriodPreset,
+    dateFrom: getDateBefore(180),
+    dateTo: getToday(),
+  }));
+  const [quickPeriod, setQuickPeriod] = useState<string | null>("6m");
+  const [courseTypeFilter, setCourseTypeFilter] =
+    useState<CourseTypeFilterKey>("전체");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
-  const handleApplyFilter = (newFilter: CourseOrderFilter) => {
+  const handleApplyFilter = (newFilter: CourseOrderFilter, courseType: CourseTypeFilterKey) => {
     setFilter(newFilter);
+    setCourseTypeFilter(courseType);
+    setQuickPeriod(null);
     setCurrentPage(1);
   };
 
+  const handleQuickPeriod = (key: string) => {
+    const { dateFrom, dateTo } = getQuickPeriodFilter(key);
+    setQuickPeriod(key);
+    setFilter((prev) => ({
+      ...prev,
+      periodPreset: "custom" as PeriodPreset,
+      dateFrom,
+      dateTo,
+    }));
+    setCurrentPage(1);
+  };
+
+  const handleSelectOrder = useCallback(
+    (id: string) => {
+      setSelectedOrderId(id);
+      onDetailViewChange?.(true);
+    },
+    [onDetailViewChange],
+  );
+
+  const handleBackToList = useCallback(() => {
+    setSelectedOrderId(null);
+    onDetailViewChange?.(false);
+  }, [onDetailViewChange]);
+
+  const handleDownloadReceipt = useCallback((orderId: string) => {
+    console.info("[Receipt] download requested:", orderId);
+  }, []);
+
   const filteredOrders = useMemo(() => {
     let orders = mockCourseOrders.filter(
-      (order) =>
-        order.orderedAt >= filter.dateFrom && order.orderedAt <= filter.dateTo
+      (o) => o.orderedAt >= filter.dateFrom && o.orderedAt <= filter.dateTo,
     );
 
     if (filter.orderStatus !== "전체") {
+      orders = orders.filter((o) => o.orderStatus === filter.orderStatus);
+    }
+
+    if (courseTypeFilter !== "전체") {
+      const typeMap = { 온라인: "온라인", 현장: "공개교육" } as const;
       orders = orders.filter(
-        (order) => order.orderStatus === filter.orderStatus
+        (o) => o.courseType === typeMap[courseTypeFilter],
       );
     }
 
     if (filter.searchKeyword.trim()) {
       const keyword = filter.searchKeyword.trim().toLowerCase();
-      orders = orders.filter((order) =>
-        order.courseTitle.toLowerCase().includes(keyword)
+      orders = orders.filter((o) =>
+        o.courseTitle.toLowerCase().includes(keyword),
       );
     }
 
     return orders;
-  }, [filter]);
+  }, [filter.dateFrom, filter.dateTo, filter.orderStatus, filter.searchKeyword, courseTypeFilter]);
 
   const totalPages = Math.ceil(filteredOrders.length / COURSE_ORDERS_PER_PAGE);
   const startIndex = (currentPage - 1) * COURSE_ORDERS_PER_PAGE;
   const paginatedOrders = filteredOrders.slice(
     startIndex,
-    startIndex + COURSE_ORDERS_PER_PAGE
+    startIndex + COURSE_ORDERS_PER_PAGE,
   );
 
-  const activeFilters: string[] = [];
-  if (filter.orderStatus !== "전체") activeFilters.push(filter.orderStatus);
-  if (filter.searchKeyword.trim())
-    activeFilters.push(`"${filter.searchKeyword}"`);
+  const hasActiveFilters =
+    filter.orderStatus !== "전체" ||
+    courseTypeFilter !== "전체" ||
+    filter.searchKeyword.trim() !== "";
 
+  const handleResetAllFilters = () => {
+    const defaultFilter = getDefaultFilter();
+    setFilter({
+      ...defaultFilter,
+      periodPreset: "custom" as PeriodPreset,
+      dateFrom: getDateBefore(180),
+      dateTo: getToday(),
+    });
+    setQuickPeriod("6m");
+    setCourseTypeFilter("전체");
+    setCurrentPage(1);
+  };
+
+  const handleRemoveStatusFilter = () => {
+    setFilter((prev) => ({ ...prev, orderStatus: "전체" }));
+    setCurrentPage(1);
+  };
+
+  const handleRemoveCourseTypeFilter = () => {
+    setCourseTypeFilter("전체");
+    setCurrentPage(1);
+  };
+
+  const handleRemoveKeywordFilter = () => {
+    setFilter((prev) => ({ ...prev, searchKeyword: "" }));
+    setCurrentPage(1);
+  };
+
+  // ── Detail View ──
+  if (selectedOrderId !== null) {
+    const detail = mockCourseOrderDetails[selectedOrderId];
+    if (detail) {
+      return <CourseOrderDetail order={detail} onBack={handleBackToList} />;
+    }
+    // Fallback: no detail data, create from basic order
+    const basicOrder = mockCourseOrders.find((o) => o.id === selectedOrderId);
+    if (basicOrder) {
+      const fallbackDetail = {
+        ...basicOrder,
+        orderedTime: "00:00",
+        payment: {
+          courseFee: basicOrder.price,
+          discountAmount: 0,
+          totalAmount: basicOrder.price,
+          paidAt:
+            basicOrder.paymentStatus === "결제완료"
+              ? basicOrder.orderedAt
+              : undefined,
+        },
+      };
+      return (
+        <CourseOrderDetail order={fallbackDetail} onBack={handleBackToList} />
+      );
+    }
+  }
+
+  // ── List View ──
   return (
     <div className="space-y-4">
-      {/* Status Summary Bar */}
-      <CourseOrderStatusBar orders={mockCourseOrders} />
-
-      {/* Filter Bar */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            {filter.periodPreset !== "custom" && (
-              <p className="text-sm font-medium text-[var(--color-dark)]">
-                {periodPresetOptions.find((o) => o.key === filter.periodPreset)?.label} 주문내역 입니다.
-              </p>
-            )}
-            <p className={`text-sm text-[var(--color-body)]${filter.periodPreset !== "custom" ? " mt-1" : ""}`}>
-              {filter.dateFrom} ~ {filter.dateTo} 주문내역 (총{" "}
-              <span className="font-bold text-[var(--color-primary)]">
-                {filteredOrders.length}
-              </span>
-              건)
-            </p>
-            {activeFilters.length > 0 && (
-              <p className="mt-1 text-xs text-[var(--color-primary)]">
-                필터: {activeFilters.join(", ")}
-              </p>
-            )}
-          </div>
+      {/* Quick Period Buttons + 상세조회 + Summary */}
+      <div className="flex flex-wrap items-center justify-between gap-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {QUICK_PERIODS.map((p) => (
+            <button
+              key={p.key}
+              onClick={() => handleQuickPeriod(p.key)}
+              className={`cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                quickPeriod === p.key
+                  ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white"
+                  : "border-[var(--color-border)] bg-white text-[var(--color-body)] hover:bg-[var(--color-light-bg)]"
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
           >
             <Calendar size={16} />
             상세조회
           </button>
         </div>
+        <div className="w-full text-left sm:w-auto sm:text-right">
+          <p className="text-sm text-[var(--color-body)]">
+            {filter.dateFrom} ~ {filter.dateTo} (총{" "}
+            <span className="font-bold text-[var(--color-primary)]">
+              {filteredOrders.length}
+            </span>
+            건)
+          </p>
+        </div>
       </div>
+
+      {/* Active Filter Tags */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          {filter.orderStatus !== "전체" && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
+              {filter.orderStatus}
+              <button
+                onClick={handleRemoveStatusFilter}
+                className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+              >
+                <X size={12} />
+              </button>
+            </span>
+          )}
+          {courseTypeFilter !== "전체" && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
+              {courseTypeFilter === "온라인" ? "온라인" : "현장교육"}
+              <button
+                onClick={handleRemoveCourseTypeFilter}
+                className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+              >
+                <X size={12} />
+              </button>
+            </span>
+          )}
+          {filter.searchKeyword.trim() && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
+              검색: {filter.searchKeyword}
+              <button
+                onClick={handleRemoveKeywordFilter}
+                className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+              >
+                <X size={12} />
+              </button>
+            </span>
+          )}
+          <button
+            onClick={handleResetAllFilters}
+            className="flex cursor-pointer items-center gap-1 rounded-full border border-[var(--color-border)] px-3 py-1 text-xs font-medium text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)] hover:text-[var(--color-body)]"
+          >
+            <RotateCcw size={11} />
+            검색 초기화
+          </button>
+        </div>
+      )}
 
       {/* Detail Search Modal */}
       {isModalOpen && (
         <DetailSearchModal
           currentFilter={filter}
+          currentCourseType={courseTypeFilter}
           onApply={handleApplyFilter}
           onClose={() => setIsModalOpen(false)}
         />
@@ -521,22 +640,21 @@ export default function CourseOrderSection() {
         </div>
       ) : (
         <>
-          {/* Desktop: Table */}
+          {/* Desktop: Table (6 columns) */}
           <div className="hidden min-h-[572px] overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-white md:block">
             <table className="w-full table-fixed text-sm">
               <colgroup>
-                <col className="w-[11%]" />
-                <col className="w-[28%]" />
                 <col className="w-[10%]" />
-                <col className="w-[14%]" />
-                <col className="w-[12%]" />
-                <col className="w-[12%]" />
+                <col className="w-[30%]" />
+                <col className="w-[10%]" />
+                <col className="w-[15%]" />
                 <col className="w-[13%]" />
+                <col className="w-[22%]" />
               </colgroup>
               <thead>
                 <tr className="bg-[var(--color-light-bg)]">
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    날짜
+                    주문일
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-[var(--color-muted)]">
                     강좌명
@@ -548,13 +666,10 @@ export default function CourseOrderSection() {
                     결제금액
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    결제방식
+                    결제수단
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    결제여부
-                  </th>
-                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    주문상태
+                    상태
                   </th>
                 </tr>
               </thead>
@@ -568,12 +683,15 @@ export default function CourseOrderSection() {
                       {order.orderedAt}
                     </td>
                     <td className="px-4 py-4">
-                      <p className="font-medium text-[var(--color-dark)]">
+                      <button
+                        onClick={() => handleSelectOrder(order.id)}
+                        className="cursor-pointer text-left font-medium text-[var(--color-dark)] transition-colors hover:text-[var(--color-primary)]"
+                      >
                         {order.courseTitle}
-                      </p>
+                      </button>
                     </td>
                     <td className="px-4 py-4 text-center text-[var(--color-body)]">
-                      {order.courseType}
+                      {order.courseType === "온라인" ? "온라인" : "현장"}
                     </td>
                     <td className="px-4 py-4 text-center font-medium text-[var(--color-dark)]">
                       {order.price.toLocaleString()}원
@@ -582,10 +700,24 @@ export default function CourseOrderSection() {
                       {order.paymentMethod}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <PaymentStatusBadge status={order.paymentStatus} />
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      <CourseOrderStatusBadge status={order.orderStatus} />
+                      <div className="flex flex-col items-center gap-1.5">
+                        <CourseOrderStatusBadge status={order.orderStatus} />
+                        {canDownloadReceipt(order) && (
+                          <button
+                            onClick={() => handleDownloadReceipt(order.id)}
+                            className="flex cursor-pointer items-center gap-1 text-xs text-[var(--color-muted)] transition-colors hover:text-[var(--color-primary)]"
+                          >
+                            <Download size={12} />
+                            영수증
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleSelectOrder(order.id)}
+                          className="cursor-pointer text-xs text-[var(--color-body)] transition-colors hover:text-[var(--color-primary)]"
+                        >
+                          상세보기 &gt;
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -593,7 +725,7 @@ export default function CourseOrderSection() {
             </table>
           </div>
 
-          {/* Mobile: Cards */}
+          {/* Mobile: Cards (optimized) */}
           <div className="min-h-[480px] space-y-3 md:hidden">
             {paginatedOrders.map((order) => (
               <div
@@ -610,12 +742,27 @@ export default function CourseOrderSection() {
                   {order.courseTitle}
                 </h4>
                 <p className="mt-0.5 text-sm text-[var(--color-muted)]">
-                  {order.courseType} | {order.price.toLocaleString()}원
+                  {order.courseType === "온라인" ? "온라인" : "현장교육"} ·{" "}
+                  {order.price.toLocaleString()}원
                 </p>
-                <div className="mt-2 flex items-center gap-2 text-sm text-[var(--color-body)]">
-                  <span>{order.paymentMethod}</span>
-                  <span>·</span>
-                  <PaymentStatusBadge status={order.paymentStatus} />
+                <div className="mt-3 flex items-center justify-between border-t border-[var(--color-border)] pt-3">
+                  <div className="flex gap-2">
+                    {canDownloadReceipt(order) && (
+                      <button
+                        onClick={() => handleDownloadReceipt(order.id)}
+                        className="flex cursor-pointer items-center gap-1 rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                      >
+                        <Download size={12} />
+                        영수증
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleSelectOrder(order.id)}
+                    className="cursor-pointer text-xs font-medium text-[var(--color-primary)] transition-colors hover:opacity-80"
+                  >
+                    상세보기 &gt;
+                  </button>
                 </div>
               </div>
             ))}

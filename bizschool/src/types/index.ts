@@ -362,7 +362,14 @@ export interface ShippingTrackingInfo {
 
 export type PurchaseSubTab = "books" | "courses";
 
-export type CourseOrderStatus = "결제대기" | "결제완료" | "수강중" | "수강완료";
+export type CourseOrderStatus =
+  | "결제대기"
+  | "결제완료"
+  | "수강중"
+  | "수강완료"
+  | "환불신청"
+  | "환불완료"
+  | "취소";
 
 export interface CourseOrder {
   id: string;
@@ -383,6 +390,26 @@ export interface CourseOrderFilter {
   dateTo: string;
   orderStatus: CourseOrderStatusFilter;
   searchKeyword: string;
+}
+
+export interface CourseOrderDetailType extends CourseOrder {
+  orderedTime: string;
+  coursePeriodStart?: string;
+  coursePeriodEnd?: string;
+  payment: {
+    courseFee: number;
+    discountAmount: number;
+    totalAmount: number;
+    paidAt?: string;
+  };
+  refund?: {
+    requestedAt: string;
+    reason: string;
+    refundAmount: number;
+    completedAt?: string;
+  };
+  cancelledAt?: string;
+  cancelReason?: string;
 }
 
 // ── 공개교육 ──

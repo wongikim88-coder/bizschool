@@ -1,4 +1,4 @@
-import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, ShippingTrackingInfo, CourseOrder, ClaimItem, CancelDetailInfo, ReturnDetailInfo, ExchangeDetailInfo } from "@/types";
+import type { MockUser, Inquiry, InquiryCategory, MypageTab, MyCourse, BookOrder, BookOrderDetail, ShippingTrackingInfo, CourseOrder, CourseOrderDetailType, ClaimItem, CancelDetailInfo, ReturnDetailInfo, ExchangeDetailInfo } from "@/types";
 
 export const mockUser: MockUser = {
   id: "user-001",
@@ -888,7 +888,145 @@ export const mockCourseOrders: CourseOrder[] = [
     paymentStatus: "결제완료",
     orderStatus: "수강완료",
   },
+  {
+    id: "CRS-2026-019",
+    orderedAt: "2025-11-20",
+    courseTitle: "경영전략 심화과정",
+    courseType: "공개교육",
+    price: 450000,
+    paymentMethod: "신용카드",
+    paymentStatus: "결제완료",
+    orderStatus: "환불신청",
+  },
+  {
+    id: "CRS-2026-020",
+    orderedAt: "2025-10-05",
+    courseTitle: "마케팅 기초",
+    courseType: "온라인",
+    price: 89000,
+    paymentMethod: "카카오페이",
+    paymentStatus: "결제완료",
+    orderStatus: "환불완료",
+  },
+  {
+    id: "CRS-2026-021",
+    orderedAt: "2025-09-12",
+    courseTitle: "Python 데이터분석",
+    courseType: "온라인",
+    price: 120000,
+    paymentMethod: "네이버페이",
+    paymentStatus: "결제대기",
+    orderStatus: "취소",
+  },
 ];
+
+// ── 강의 주문 상세 ──
+
+export const mockCourseOrderDetails: Record<string, CourseOrderDetailType> = {
+  "CRS-2026-001": {
+    ...mockCourseOrders[0],
+    orderedTime: "14:30",
+    coursePeriodStart: "2026-01-15",
+    coursePeriodEnd: "2026-07-15",
+    payment: {
+      courseFee: 150000,
+      discountAmount: 0,
+      totalAmount: 150000,
+      paidAt: "2026-03-14",
+    },
+  },
+  "CRS-2026-002": {
+    ...mockCourseOrders[1],
+    orderedTime: "10:15",
+    coursePeriodStart: "2026-03-10",
+    coursePeriodEnd: "2026-03-12",
+    payment: {
+      courseFee: 350000,
+      discountAmount: 0,
+      totalAmount: 350000,
+      paidAt: "2026-03-12",
+    },
+  },
+  "CRS-2026-003": {
+    ...mockCourseOrders[2],
+    orderedTime: "09:00",
+    coursePeriodStart: "2026-02-01",
+    coursePeriodEnd: "2026-04-01",
+    payment: {
+      courseFee: 120000,
+      discountAmount: 0,
+      totalAmount: 120000,
+    },
+  },
+  "CRS-2026-004": {
+    ...mockCourseOrders[3],
+    orderedTime: "16:45",
+    coursePeriodStart: "2026-04-01",
+    coursePeriodEnd: "2026-04-03",
+    payment: {
+      courseFee: 400000,
+      discountAmount: 0,
+      totalAmount: 400000,
+      paidAt: "2026-03-08",
+    },
+  },
+  "CRS-2026-005": {
+    ...mockCourseOrders[4],
+    orderedTime: "11:20",
+    coursePeriodStart: "2026-03-01",
+    coursePeriodEnd: "2026-06-30",
+    payment: {
+      courseFee: 99000,
+      discountAmount: 0,
+      totalAmount: 99000,
+      paidAt: "2026-03-05",
+    },
+  },
+  "CRS-2026-019": {
+    ...mockCourseOrders[18],
+    orderedTime: "13:00",
+    coursePeriodStart: "2025-12-01",
+    coursePeriodEnd: "2025-12-03",
+    payment: {
+      courseFee: 450000,
+      discountAmount: 0,
+      totalAmount: 450000,
+      paidAt: "2025-11-20",
+    },
+    refund: {
+      requestedAt: "2025-11-25",
+      reason: "개인사정으로 수강 불가",
+      refundAmount: 450000,
+    },
+  },
+  "CRS-2026-020": {
+    ...mockCourseOrders[19],
+    orderedTime: "15:30",
+    payment: {
+      courseFee: 89000,
+      discountAmount: 0,
+      totalAmount: 89000,
+      paidAt: "2025-10-05",
+    },
+    refund: {
+      requestedAt: "2025-10-10",
+      reason: "강의 내용이 기대와 다름",
+      refundAmount: 89000,
+      completedAt: "2025-10-15",
+    },
+  },
+  "CRS-2026-021": {
+    ...mockCourseOrders[20],
+    orderedTime: "08:45",
+    payment: {
+      courseFee: 120000,
+      discountAmount: 0,
+      totalAmount: 120000,
+    },
+    cancelledAt: "2025-09-13",
+    cancelReason: "단순 변심",
+  },
+};
 
 // ── 취소/반품/교환/환불내역 ──
 
