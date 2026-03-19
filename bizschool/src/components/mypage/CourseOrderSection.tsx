@@ -541,7 +541,7 @@ export default function CourseOrderSection({
   return (
     <div className="space-y-4">
       {/* Quick Period Buttons + 상세조회 + Summary */}
-      <div className="flex flex-wrap items-center justify-between gap-y-2">
+      <div className="my-5 flex flex-wrap items-center justify-between gap-y-2">
         <div className="flex flex-wrap items-center gap-2">
           {QUICK_PERIODS.map((p) => (
             <button

@@ -623,10 +623,30 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
     startIndex + ORDERS_PER_PAGE
   );
 
-  const activeFilters: string[] = [];
-  if (filter.orderStatus !== "전체") activeFilters.push(filter.orderStatus);
-  if (filter.searchKeyword.trim())
-    activeFilters.push(`"${filter.searchKeyword}"`);
+  const hasActiveFilters =
+    filter.orderStatus !== "전체" ||
+    filter.searchKeyword.trim() !== "";
+
+  const handleResetAllFilters = () => {
+    setFilter({
+      ...getDefaultFilter(),
+      periodPreset: "custom" as PeriodPreset,
+      dateFrom: getDateBefore(180),
+      dateTo: getToday(),
+    });
+    setQuickPeriod("6m");
+    setCurrentPage(1);
+  };
+
+  const handleRemoveStatusFilter = () => {
+    setFilter((prev) => ({ ...prev, orderStatus: "전체" }));
+    setCurrentPage(1);
+  };
+
+  const handleRemoveKeywordFilter = () => {
+    setFilter((prev) => ({ ...prev, searchKeyword: "" }));
+    setCurrentPage(1);
+  };
 
   const groupedOrders = useMemo(() => {
     const groups: { date: string; orders: BookOrder[] }[] = [];
@@ -793,13 +813,43 @@ export default function BookOrderSection({ onDetailViewChange }: BookOrderSectio
             </span>
             건)
           </p>
-          {activeFilters.length > 0 && (
-            <p className="text-xs text-[var(--color-primary)]">
-              필터: {activeFilters.join(", ")}
-            </p>
-          )}
         </div>
       </div>
+
+      {/* Active Filter Tags */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          {filter.orderStatus !== "전체" && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
+              {filter.orderStatus}
+              <button
+                onClick={handleRemoveStatusFilter}
+                className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+              >
+                <X size={12} />
+              </button>
+            </span>
+          )}
+          {filter.searchKeyword.trim() && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
+              검색: {filter.searchKeyword}
+              <button
+                onClick={handleRemoveKeywordFilter}
+                className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-[var(--color-primary)] hover:text-white"
+              >
+                <X size={12} />
+              </button>
+            </span>
+          )}
+          <button
+            onClick={handleResetAllFilters}
+            className="flex cursor-pointer items-center gap-1 rounded-full border border-[var(--color-border)] px-3 py-1 text-xs font-medium text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)] hover:text-[var(--color-body)]"
+          >
+            <RotateCcw size={11} />
+            검색 초기화
+          </button>
+        </div>
+      )}
 
       {/* Detail Search Modal */}
       {isModalOpen && (
