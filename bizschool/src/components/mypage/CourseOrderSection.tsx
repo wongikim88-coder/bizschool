@@ -7,11 +7,10 @@ import {
   Calendar,
   X,
   RotateCcw,
-  Download,
 } from "lucide-react";
 import type {
   CourseOrder,
-  CourseOrderStatus,
+  CourseUnifiedStatus,
   PeriodPreset,
   CourseOrderFilter,
 } from "@/types";
@@ -63,7 +62,7 @@ function getDefaultFilter(): CourseOrderFilter {
     periodPreset: "1m",
     dateFrom: getDateBefore(30),
     dateTo: getToday(),
-    orderStatus: "전체",
+    statusFilter: "전체",
     searchKeyword: "",
   };
 }
@@ -104,33 +103,28 @@ const COURSE_TYPE_OPTIONS: { key: CourseTypeFilterKey; label: string }[] = [
   { key: "현장", label: "현장교육" },
 ];
 
-function canDownloadReceipt(order: CourseOrder): boolean {
-  return (
-    order.paymentStatus === "결제완료" &&
-    order.orderStatus !== "취소" &&
-    order.orderStatus !== "결제대기"
-  );
-}
-
 // ── Sub-components ──
 
-function CourseOrderStatusBadge({ status }: { status: CourseOrderStatus }) {
-  const variantMap: Record<CourseOrderStatus, string> = {
-    결제대기: "bg-amber-50 text-amber-600",
-    결제완료: "bg-blue-50 text-blue-600",
-    수강중: "bg-purple-50 text-purple-600",
-    수강완료: "bg-emerald-50 text-emerald-600",
-    환불신청: "bg-orange-50 text-orange-600",
-    환불완료: "bg-gray-100 text-gray-500",
-    취소: "bg-red-50 text-red-500",
-  };
+function getUnifiedStatus(order: CourseOrder): CourseUnifiedStatus {
+  if (order.claimStatus) return order.claimStatus;
+  if (order.paymentStatus === "결제대기") return "결제대기";
+  if (order.enrollStatus === "수강전") return "수강전";
+  if (order.enrollStatus === "수강중") return "수강중";
+  return "수강완료";
+}
 
+function OrderStatusBadge({ status }: { status: CourseUnifiedStatus }) {
+  const colorMap: Record<CourseUnifiedStatus, string> = {
+    결제대기: "text-[var(--color-muted)]",
+    수강전: "text-[var(--color-muted)]",
+    수강중: "text-[var(--color-dark)]",
+    수강완료: "text-[var(--color-primary)]",
+    환불신청: "text-[var(--color-muted)]",
+    환불완료: "text-[var(--color-dark)]",
+    취소: "text-red-500",
+  };
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${variantMap[status]}`}
-    >
-      {status}
-    </span>
+    <span className={`text-sm font-medium ${colorMap[status]}`}>{status}</span>
   );
 }
 
@@ -439,17 +433,15 @@ export default function CourseOrderSection({
     onDetailViewChange?.(false);
   }, [onDetailViewChange]);
 
-  const handleDownloadReceipt = useCallback((orderId: string) => {
-    console.info("[Receipt] download requested:", orderId);
-  }, []);
-
   const filteredOrders = useMemo(() => {
     let orders = mockCourseOrders.filter(
       (o) => o.orderedAt >= filter.dateFrom && o.orderedAt <= filter.dateTo,
     );
 
-    if (filter.orderStatus !== "전체") {
-      orders = orders.filter((o) => o.orderStatus === filter.orderStatus);
+    if (filter.statusFilter !== "전체") {
+      orders = orders.filter(
+        (o) => getUnifiedStatus(o) === filter.statusFilter,
+      );
     }
 
     if (courseTypeFilter !== "전체") {
@@ -467,7 +459,7 @@ export default function CourseOrderSection({
     }
 
     return orders;
-  }, [filter.dateFrom, filter.dateTo, filter.orderStatus, filter.searchKeyword, courseTypeFilter]);
+  }, [filter.dateFrom, filter.dateTo, filter.statusFilter, filter.searchKeyword, courseTypeFilter]);
 
   const totalPages = Math.ceil(filteredOrders.length / COURSE_ORDERS_PER_PAGE);
   const startIndex = (currentPage - 1) * COURSE_ORDERS_PER_PAGE;
@@ -477,7 +469,7 @@ export default function CourseOrderSection({
   );
 
   const hasActiveFilters =
-    filter.orderStatus !== "전체" ||
+    filter.statusFilter !== "전체" ||
     courseTypeFilter !== "전체" ||
     filter.searchKeyword.trim() !== "";
 
@@ -495,7 +487,7 @@ export default function CourseOrderSection({
   };
 
   const handleRemoveStatusFilter = () => {
-    setFilter((prev) => ({ ...prev, orderStatus: "전체" }));
+    setFilter((prev) => ({ ...prev, statusFilter: "전체" }));
     setCurrentPage(1);
   };
 
@@ -578,9 +570,9 @@ export default function CourseOrderSection({
       {/* Active Filter Tags */}
       {hasActiveFilters && (
         <div className="flex flex-wrap items-center gap-2">
-          {filter.orderStatus !== "전체" && (
+          {filter.statusFilter !== "전체" && (
             <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
-              {filter.orderStatus}
+              {filter.statusFilter}
               <button
                 onClick={handleRemoveStatusFilter}
                 className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-[var(--color-primary)] hover:text-white"
@@ -640,23 +632,23 @@ export default function CourseOrderSection({
         </div>
       ) : (
         <>
-          {/* Desktop: Table (6 columns) */}
+          {/* Desktop: Table */}
           <div className="hidden min-h-[572px] overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-white md:block">
             <table className="w-full table-fixed text-sm">
               <colgroup>
-                <col className="w-[10%]" />
-                <col className="w-[30%]" />
-                <col className="w-[10%]" />
-                <col className="w-[15%]" />
+                <col className="w-[14%]" />
+                <col className="w-[38%]" />
+                <col className="w-[8%]" />
                 <col className="w-[13%]" />
-                <col className="w-[22%]" />
+                <col className="w-[14%]" />
+                <col className="w-[13%]" />
               </colgroup>
               <thead>
                 <tr className="bg-[var(--color-light-bg)]">
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
                     주문일
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-[var(--color-muted)]">
+                  <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
                     강좌명
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
@@ -666,10 +658,10 @@ export default function CourseOrderSection({
                     결제금액
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    결제수단
+                    주문상태
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    상태
+                    주문상세
                   </th>
                 </tr>
               </thead>
@@ -682,10 +674,10 @@ export default function CourseOrderSection({
                     <td className="px-4 py-4 text-center text-[var(--color-body)]">
                       {order.orderedAt}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 text-center">
                       <button
                         onClick={() => handleSelectOrder(order.id)}
-                        className="cursor-pointer text-left font-medium text-[var(--color-dark)] transition-colors hover:text-[var(--color-primary)]"
+                        className="cursor-pointer font-medium text-[var(--color-dark)] transition-colors hover:text-[var(--color-primary)]"
                       >
                         {order.courseTitle}
                       </button>
@@ -696,28 +688,16 @@ export default function CourseOrderSection({
                     <td className="px-4 py-4 text-center font-medium text-[var(--color-dark)]">
                       {order.price.toLocaleString()}원
                     </td>
-                    <td className="px-4 py-4 text-center text-[var(--color-body)]">
-                      {order.paymentMethod}
+                    <td className="px-4 py-4 text-center">
+                      <OrderStatusBadge status={getUnifiedStatus(order)} />
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <CourseOrderStatusBadge status={order.orderStatus} />
-                        {canDownloadReceipt(order) && (
-                          <button
-                            onClick={() => handleDownloadReceipt(order.id)}
-                            className="flex cursor-pointer items-center gap-1 text-xs text-[var(--color-muted)] transition-colors hover:text-[var(--color-primary)]"
-                          >
-                            <Download size={12} />
-                            영수증
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleSelectOrder(order.id)}
-                          className="cursor-pointer text-xs text-[var(--color-body)] transition-colors hover:text-[var(--color-primary)]"
-                        >
-                          상세보기 &gt;
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => handleSelectOrder(order.id)}
+                        className="cursor-pointer text-sm text-[var(--color-body)] transition-colors hover:text-[var(--color-primary)]"
+                      >
+                        상세보기 &gt;
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -733,7 +713,7 @@ export default function CourseOrderSection({
                 className="rounded-xl border border-[var(--color-border)] bg-white p-4"
               >
                 <div className="flex items-center justify-between">
-                  <CourseOrderStatusBadge status={order.orderStatus} />
+                  <OrderStatusBadge status={getUnifiedStatus(order)} />
                   <span className="text-xs text-[var(--color-muted)]">
                     {order.orderedAt}
                   </span>
@@ -745,18 +725,7 @@ export default function CourseOrderSection({
                   {order.courseType === "온라인" ? "온라인" : "현장교육"} ·{" "}
                   {order.price.toLocaleString()}원
                 </p>
-                <div className="mt-3 flex items-center justify-between border-t border-[var(--color-border)] pt-3">
-                  <div className="flex gap-2">
-                    {canDownloadReceipt(order) && (
-                      <button
-                        onClick={() => handleDownloadReceipt(order.id)}
-                        className="flex cursor-pointer items-center gap-1 rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
-                      >
-                        <Download size={12} />
-                        영수증
-                      </button>
-                    )}
-                  </div>
+                <div className="mt-3 flex items-center justify-end border-t border-[var(--color-border)] pt-3">
                   <button
                     onClick={() => handleSelectOrder(order.id)}
                     className="cursor-pointer text-xs font-medium text-[var(--color-primary)] transition-colors hover:opacity-80"

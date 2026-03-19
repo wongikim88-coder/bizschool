@@ -716,7 +716,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 150000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "수강중",
+    enrollStatus: "수강중",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-002",
@@ -726,7 +727,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 350000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강중",
+    enrollStatus: "수강중",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-003",
@@ -736,7 +738,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 120000,
     paymentMethod: "무통장입금",
     paymentStatus: "결제대기",
-    orderStatus: "결제대기",
+    enrollStatus: "수강전",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-004",
@@ -746,7 +749,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 400000,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-005",
@@ -756,7 +760,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 99000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "수강중",
+    enrollStatus: "수강중",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-006",
@@ -766,7 +771,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 180000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "결제완료",
+    enrollStatus: "수강전",
+    claimStatus: "환불신청",
   },
   {
     id: "CRS-2026-007",
@@ -776,7 +782,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 130000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-008",
@@ -786,7 +793,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 300000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강전",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-009",
@@ -796,7 +804,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 110000,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: "환불완료",
   },
   {
     id: "CRS-2026-010",
@@ -806,7 +815,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 89000,
     paymentMethod: "무통장입금",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-011",
@@ -816,7 +826,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 160000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-012",
@@ -826,7 +837,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 280000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-013",
@@ -836,7 +848,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 75000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-014",
@@ -846,7 +859,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 140000,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-015",
@@ -856,7 +870,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 95000,
     paymentMethod: "무통장입금",
     paymentStatus: "결제대기",
-    orderStatus: "결제대기",
+    enrollStatus: "수강전",
+    claimStatus: "취소",
   },
   {
     id: "CRS-2026-016",
@@ -866,7 +881,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 320000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-017",
@@ -876,7 +892,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 105000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-018",
@@ -886,7 +903,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 380000,
     paymentMethod: "네이버페이",
     paymentStatus: "결제완료",
-    orderStatus: "수강완료",
+    enrollStatus: "수강완료",
+    claimStatus: null,
   },
   {
     id: "CRS-2026-019",
@@ -896,7 +914,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 450000,
     paymentMethod: "신용카드",
     paymentStatus: "결제완료",
-    orderStatus: "환불신청",
+    enrollStatus: "수강전",
+    claimStatus: "환불신청",
   },
   {
     id: "CRS-2026-020",
@@ -906,7 +925,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 89000,
     paymentMethod: "카카오페이",
     paymentStatus: "결제완료",
-    orderStatus: "환불완료",
+    enrollStatus: "수강중",
+    claimStatus: "환불완료",
   },
   {
     id: "CRS-2026-021",
@@ -916,7 +936,8 @@ export const mockCourseOrders: CourseOrder[] = [
     price: 120000,
     paymentMethod: "네이버페이",
     paymentStatus: "결제대기",
-    orderStatus: "취소",
+    enrollStatus: "수강전",
+    claimStatus: "취소",
   },
 ];
 

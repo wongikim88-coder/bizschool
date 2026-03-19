@@ -362,14 +362,9 @@ export interface ShippingTrackingInfo {
 
 export type PurchaseSubTab = "books" | "courses";
 
-export type CourseOrderStatus =
-  | "결제대기"
-  | "결제완료"
-  | "수강중"
-  | "수강완료"
-  | "환불신청"
-  | "환불완료"
-  | "취소";
+export type CourseOrderPaymentStatus = "결제대기" | "결제완료";
+export type CourseEnrollStatus = "수강전" | "수강중" | "수강완료";
+export type CourseClaimStatus = "환불신청" | "환불완료" | "취소";
 
 export interface CourseOrder {
   id: string;
@@ -378,17 +373,20 @@ export interface CourseOrder {
   courseType: "온라인" | "공개교육";
   price: number;
   paymentMethod: PaymentMethod;
-  paymentStatus: "결제완료" | "결제대기";
-  orderStatus: CourseOrderStatus;
+  paymentStatus: CourseOrderPaymentStatus;
+  enrollStatus: CourseEnrollStatus | null;
+  claimStatus: CourseClaimStatus | null;
 }
 
-export type CourseOrderStatusFilter = "전체" | CourseOrderStatus;
+export type CourseUnifiedStatus = "결제대기" | "수강전" | "수강중" | "수강완료" | "환불신청" | "환불완료" | "취소";
+
+export type CourseOrderStatusFilter = "전체" | CourseUnifiedStatus;
 
 export interface CourseOrderFilter {
   periodPreset: PeriodPreset;
   dateFrom: string;
   dateTo: string;
-  orderStatus: CourseOrderStatusFilter;
+  statusFilter: CourseOrderStatusFilter;
   searchKeyword: string;
 }
 

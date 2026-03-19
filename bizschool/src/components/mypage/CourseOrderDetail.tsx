@@ -1,25 +1,48 @@
 "use client";
 
 import { ChevronLeft, Download, FileText } from "lucide-react";
-import type { CourseOrderDetailType, CourseOrderStatus } from "@/types";
+import type {
+  CourseOrderDetailType,
+  CourseOrderPaymentStatus,
+  CourseEnrollStatus,
+  CourseClaimStatus,
+} from "@/types";
 
-// ── Status Badge ──
+// ── Status Badges ──
 
-function StatusBadge({ status }: { status: CourseOrderStatus }) {
-  const variantMap: Record<CourseOrderStatus, string> = {
+function PaymentBadge({ status }: { status: CourseOrderPaymentStatus }) {
+  const map: Record<CourseOrderPaymentStatus, string> = {
     결제대기: "bg-amber-50 text-amber-600",
     결제완료: "bg-blue-50 text-blue-600",
+  };
+  return (
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${map[status]}`}>
+      {status}
+    </span>
+  );
+}
+
+function EnrollBadge({ status }: { status: CourseEnrollStatus }) {
+  const map: Record<CourseEnrollStatus, string> = {
+    수강전: "bg-gray-100 text-gray-500",
     수강중: "bg-purple-50 text-purple-600",
     수강완료: "bg-emerald-50 text-emerald-600",
+  };
+  return (
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${map[status]}`}>
+      {status}
+    </span>
+  );
+}
+
+function ClaimBadge({ status }: { status: CourseClaimStatus }) {
+  const map: Record<CourseClaimStatus, string> = {
     환불신청: "bg-orange-50 text-orange-600",
     환불완료: "bg-gray-100 text-gray-500",
     취소: "bg-red-50 text-red-500",
   };
-
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${variantMap[status]}`}
-    >
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${map[status]}`}>
       {status}
     </span>
   );
@@ -79,9 +102,7 @@ export default function CourseOrderDetail({
   };
 
   const canDownloadReceipt =
-    order.paymentStatus === "결제완료" &&
-    order.orderStatus !== "취소" &&
-    order.orderStatus !== "결제대기";
+    order.paymentStatus === "결제완료" && !order.claimStatus;
 
   return (
     <div className="space-y-4">
@@ -107,7 +128,12 @@ export default function CourseOrderDetail({
             <span className="text-sm text-[var(--color-muted)]">
               {order.orderedAt} {order.orderedTime}
             </span>
-            <StatusBadge status={order.orderStatus} />
+            <PaymentBadge status={order.paymentStatus} />
+            {order.claimStatus ? (
+              <ClaimBadge status={order.claimStatus} />
+            ) : order.enrollStatus ? (
+              <EnrollBadge status={order.enrollStatus} />
+            ) : null}
           </div>
         </div>
       </div>
@@ -152,11 +178,11 @@ export default function CourseOrderDetail({
       </SectionCard>
 
       {/* Refund Info (conditional) */}
-      {order.refund && (
+      {order.refund && order.claimStatus && (
         <SectionCard title="환불 정보">
           <InfoRow
             label="환불 상태"
-            value={<StatusBadge status={order.orderStatus} />}
+            value={<ClaimBadge status={order.claimStatus} />}
           />
           <InfoRow label="신청일" value={order.refund.requestedAt} />
           <InfoRow label="환불사유" value={order.refund.reason} />
@@ -172,11 +198,11 @@ export default function CourseOrderDetail({
       )}
 
       {/* Cancel Info (conditional) */}
-      {order.orderStatus === "취소" && order.cancelledAt && (
+      {order.claimStatus === "취소" && order.cancelledAt && (
         <SectionCard title="취소 정보">
           <InfoRow
             label="취소 상태"
-            value={<StatusBadge status="취소" />}
+            value={<ClaimBadge status="취소" />}
           />
           <InfoRow label="취소일" value={order.cancelledAt} />
           {order.cancelReason && (
@@ -187,7 +213,7 @@ export default function CourseOrderDetail({
 
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-3">
-        {order.orderStatus === "결제대기" && (
+        {order.paymentStatus === "결제대기" && !order.claimStatus && (
           <>
             <button className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90">
               결제하기
@@ -206,8 +232,9 @@ export default function CourseOrderDetail({
             영수증 다운로드
           </button>
         )}
-        {(order.orderStatus === "결제완료" ||
-          order.orderStatus === "수강중") && (
+        {order.paymentStatus === "결제완료" &&
+          !order.claimStatus &&
+          (order.enrollStatus === "수강전" || order.enrollStatus === "수강중") && (
           <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
             <FileText size={16} />
             환불 신청
