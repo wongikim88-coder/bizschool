@@ -1,39 +1,15 @@
 "use client";
 
-import { ChevronLeft, Download, FileText } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, FileText, GraduationCap, CreditCard } from "lucide-react";
 import type {
   CourseOrderDetailType,
-  CourseOrderPaymentStatus,
-  CourseEnrollStatus,
   CourseClaimStatus,
 } from "@/types";
+import { CardReceiptModal, TransactionStatementModal } from "./BookOrderReceiptModals";
+import type { ReceiptOrderData } from "./BookOrderReceiptModals";
 
 // ── Status Badges ──
-
-function PaymentBadge({ status }: { status: CourseOrderPaymentStatus }) {
-  const map: Record<CourseOrderPaymentStatus, string> = {
-    결제대기: "bg-amber-50 text-amber-600",
-    결제완료: "bg-blue-50 text-blue-600",
-  };
-  return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${map[status]}`}>
-      {status}
-    </span>
-  );
-}
-
-function EnrollBadge({ status }: { status: CourseEnrollStatus }) {
-  const map: Record<CourseEnrollStatus, string> = {
-    수강전: "bg-gray-100 text-gray-500",
-    수강중: "bg-purple-50 text-purple-600",
-    수강완료: "bg-emerald-50 text-emerald-600",
-  };
-  return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${map[status]}`}>
-      {status}
-    </span>
-  );
-}
 
 function ClaimBadge({ status }: { status: CourseClaimStatus }) {
   const map: Record<CourseClaimStatus, string> = {
@@ -75,14 +51,19 @@ function InfoRow({
 
 function SectionCard({
   title,
+  icon: Icon,
   children,
 }: {
   title: string;
+  icon?: React.ComponentType<{ size?: number; className?: string }>;
   children: React.ReactNode;
 }) {
   return (
     <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-      <h3 className="mb-3 font-bold text-[var(--color-dark)]">{title}</h3>
+      <h3 className="mb-3 flex items-center gap-2 font-bold text-[var(--color-dark)]">
+        {Icon && <Icon size={18} className="text-[var(--color-muted)]" />}
+        {title}
+      </h3>
       {children}
     </div>
   );
@@ -97,49 +78,38 @@ export default function CourseOrderDetail({
   order: CourseOrderDetailType;
   onBack: () => void;
 }) {
-  const handleDownloadReceipt = () => {
-    console.info("[Receipt] download requested:", order.id);
+  const [receiptModal, setReceiptModal] = useState<"card" | "transaction" | null>(null);
+
+  const receiptData: ReceiptOrderData = {
+    id: order.id,
+    orderedAt: order.orderedAt,
+    productName: order.courseTitle,
+    quantity: 1,
+    paymentMethod: order.paymentMethod,
+    totalAmount: order.payment.totalAmount,
+    productTotal: order.payment.courseFee,
+    shippingFee: 0,
+    discountAmount: order.payment.discountAmount,
+    receipt: order.receipt,
   };
 
-  const canDownloadReceipt =
-    order.paymentStatus === "결제완료" && !order.claimStatus;
-
   return (
+    <>
     <div className="space-y-4">
-      {/* Back Button */}
-      <button
-        onClick={onBack}
-        className="flex cursor-pointer items-center gap-1 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-      >
-        <ChevronLeft size={16} />
-        강의 구매 목록으로
-      </button>
-
       {/* Order Header */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-[var(--color-muted)]">주문번호</p>
-            <p className="text-lg font-bold text-[var(--color-dark)]">
-              {order.id}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-[var(--color-muted)]">
-              {order.orderedAt} {order.orderedTime}
-            </span>
-            <PaymentBadge status={order.paymentStatus} />
-            {order.claimStatus ? (
-              <ClaimBadge status={order.claimStatus} />
-            ) : order.enrollStatus ? (
-              <EnrollBadge status={order.enrollStatus} />
-            ) : null}
-          </div>
+        <h2 className="text-lg font-bold text-[var(--color-dark)]">
+          주문 상세
+        </h2>
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-body)]">
+          <span>주문일: {order.orderedAt}</span>
+          <span className="text-[var(--color-muted)]">|</span>
+          <span>주문번호: {order.id}</span>
         </div>
       </div>
 
       {/* Course Info */}
-      <SectionCard title="강의 정보">
+      <SectionCard title="강의 정보" icon={GraduationCap}>
         <InfoRow label="강좌명" value={order.courseTitle} bold />
         <InfoRow
           label="강의유형"
@@ -154,7 +124,7 @@ export default function CourseOrderDetail({
       </SectionCard>
 
       {/* Payment Detail */}
-      <SectionCard title="결제 정보">
+      <SectionCard title="결제 정보" icon={CreditCard}>
         <InfoRow
           label="수강료"
           value={`${order.payment.courseFee.toLocaleString()}원`}
@@ -171,7 +141,7 @@ export default function CourseOrderDetail({
           value={`${order.payment.totalAmount.toLocaleString()}원`}
           bold
         />
-        <InfoRow label="결제수단" value={order.paymentMethod} />
+        <InfoRow label="결제수단" value={order.paymentMethodDetail || order.paymentMethod} />
         {order.payment.paidAt && (
           <InfoRow label="결제일" value={order.payment.paidAt} />
         )}
@@ -223,23 +193,40 @@ export default function CourseOrderDetail({
             </button>
           </>
         )}
-        {canDownloadReceipt && (
-          <button
-            onClick={handleDownloadReceipt}
-            className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
-          >
-            <Download size={16} />
-            영수증 다운로드
-          </button>
-        )}
-        {order.paymentStatus === "결제완료" &&
-          !order.claimStatus &&
-          (order.enrollStatus === "수강전" || order.enrollStatus === "수강중") && (
-          <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
-            <FileText size={16} />
-            환불 신청
-          </button>
-        )}
+      </div>
+
+      {/* 결제영수증 정보 */}
+      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+        <h3 className="flex items-center gap-2 font-bold text-[var(--color-dark)]">
+          <FileText size={18} className="text-[var(--color-muted)]" />
+          결제영수증 정보
+        </h3>
+        <div className="mt-4 space-y-0 divide-y divide-[var(--color-border)]">
+          <div className="flex items-center justify-between py-4 first:pt-0">
+            <span className="text-sm text-[var(--color-body)]">
+              해당 주문건에 대해 구매 카드영수증 확인이 가능합니다.
+            </span>
+            <button
+              type="button"
+              onClick={() => setReceiptModal("card")}
+              className="shrink-0 ml-4 rounded-md border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-dark)] transition-colors hover:bg-gray-50"
+            >
+              카드영수증
+            </button>
+          </div>
+          <div className="flex items-center justify-between py-4">
+            <span className="text-sm text-[var(--color-body)]">
+              해당 주문건에 대해 거래명세서 확인이 가능합니다.
+            </span>
+            <button
+              type="button"
+              onClick={() => setReceiptModal("transaction")}
+              className="shrink-0 ml-4 rounded-md border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-dark)] transition-colors hover:bg-gray-50"
+            >
+              거래명세서
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Policy Note */}
@@ -254,6 +241,26 @@ export default function CourseOrderDetail({
           </li>
         </ul>
       </div>
+
+      {/* Back Button */}
+      <div className="flex justify-center py-4">
+        <button
+          onClick={onBack}
+          className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+        >
+          <ArrowLeft size={16} />
+          주문/배송 목록
+        </button>
+      </div>
     </div>
+
+    {/* 모달 — space-y-4 밖에서 렌더링 */}
+    {receiptModal === "card" && (
+      <CardReceiptModal order={receiptData} onClose={() => setReceiptModal(null)} />
+    )}
+    {receiptModal === "transaction" && (
+      <TransactionStatementModal order={receiptData} onClose={() => setReceiptModal(null)} />
+    )}
+    </>
   );
 }

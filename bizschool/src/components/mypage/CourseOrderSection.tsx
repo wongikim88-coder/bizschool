@@ -658,7 +658,7 @@ export default function CourseOrderSection({
                     결제금액
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
-                    주문상태
+                    수강상태
                   </th>
                   <th className="px-4 py-3 text-center font-medium text-[var(--color-muted)]">
                     주문상세

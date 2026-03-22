@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   BookOpen,
   MessageCircle,
@@ -8,8 +7,6 @@ import {
   GraduationCap,
   Share2,
   TrendingUp,
-  Monitor,
-  Laptop,
 } from "lucide-react";
 
 const features = [
@@ -104,29 +101,6 @@ const historyData = [
       "더존 네오플러스 실무용 버전 설치",
       "12월부터 사업주 훈련 교육 실시",
     ],
-  },
-];
-
-const facilityFeatures = [
-  {
-    icon: Monitor,
-    title: "1인 1PC 환경",
-    description: "인터넷 연결 가능한 PC 및 노트북 비치",
-  },
-  {
-    icon: Users,
-    title: "40석 규모",
-    description: "총 40석 규모의 독립 강의장 운영",
-  },
-  {
-    icon: Laptop,
-    title: "더존 Smart A",
-    description: "실무용 버전 프로그램 설치 완비",
-  },
-  {
-    icon: BookOpen,
-    title: "실무 교육",
-    description: "이론 + 실습 통합 멀티미디어 교육",
   },
 ];
 
@@ -371,54 +345,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 5: 강의장 소개 */}
-      <section className="bg-[var(--color-light-bg)]">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
-          <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
-            강의장 소개
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-[var(--color-muted)]">
-            실무 교육에 최적화된 멀티미디어 강의 환경
-          </p>
-
-          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image
-                src="/images/about/bzschool_img_3.jpg"
-                alt="비즈스쿨 강의장"
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 50vw"
-              />
-            </div>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image
-                src="/images/about/bzschool_img_4.jpg"
-                alt="비즈스쿨 강의장"
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, 50vw"
-              />
-            </div>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-4">
-            {facilityFeatures.map((feat) => (
-              <div key={feat.title} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)]">
-                  <feat.icon size={24} />
-                </div>
-                <h3 className="mt-3 text-sm font-bold text-[var(--color-dark)]">
-                  {feat.title}
-                </h3>
-                <p className="mt-1 text-xs text-[var(--color-muted)]">
-                  {feat.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

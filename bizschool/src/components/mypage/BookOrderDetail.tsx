@@ -1,67 +1,24 @@
 "use client";
 
-import { ArrowLeft, Package, Truck, Clock, CreditCard } from "lucide-react";
-import type { BookOrderDetail as BookOrderDetailType, OrderStatus } from "@/types";
+import { useState } from "react";
+import { ArrowLeft, Package, Truck, Clock, CreditCard, FileText } from "lucide-react";
+import type { BookOrderDetail as BookOrderDetailType } from "@/types";
+import { CardReceiptModal, TransactionStatementModal, bookOrderToReceiptData } from "./BookOrderReceiptModals";
 
 interface BookOrderDetailProps {
   order: BookOrderDetailType;
   onBack: () => void;
 }
 
-function DeliveryStatusStep({ status }: { status: OrderStatus }) {
-  const steps: { label: string; key: OrderStatus }[] = [
-    { label: "상품준비", key: "상품준비" },
-    { label: "배송준비", key: "배송준비" },
-    { label: "배송중", key: "배송중" },
-    { label: "배송완료", key: "배송완료" },
-  ];
-
-  const statusOrder: OrderStatus[] = ["상품준비", "배송준비", "배송중", "배송완료"];
-  const currentIdx = statusOrder.indexOf(status);
-
-  return (
-    <div className="flex items-center justify-between">
-      {steps.map((step, idx) => {
-        const isActive = idx <= currentIdx;
-        const isCurrent = idx === currentIdx;
-        return (
-          <div key={step.key} className="flex flex-1 flex-col items-center gap-1.5">
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-                isCurrent
-                  ? "bg-[var(--color-primary)] text-white"
-                  : isActive
-                    ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)]"
-                    : "bg-gray-100 text-gray-400"
-              }`}
-            >
-              {idx + 1}
-            </div>
-            <span
-              className={`text-xs ${
-                isCurrent
-                  ? "font-bold text-[var(--color-primary)]"
-                  : isActive
-                    ? "text-[var(--color-body)]"
-                    : "text-gray-400"
-              }`}
-            >
-              {step.label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps) {
+  const [receiptModal, setReceiptModal] = useState<"card" | "transaction" | null>(null);
   return (
+    <>
     <div className="space-y-4">
       {/* Header */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
         <h2 className="text-lg font-bold text-[var(--color-dark)]">
-          주문/배송 조회 상세
+          주문 상세
         </h2>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-body)]">
           <span>주문일: {order.orderedAt}</span>
@@ -70,22 +27,12 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
         </div>
       </div>
 
-      {/* 배송 현황 */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <h3 className="font-bold text-[var(--color-dark)]">배송 현황</h3>
-        <div className="mt-4">
-          <DeliveryStatusStep status={order.orderStatus} />
-        </div>
-        {order.trackingNumber && (
-          <p className="mt-3 text-center text-xs text-[var(--color-muted)]">
-            운송장번호: {order.trackingNumber}
-          </p>
-        )}
-      </div>
-
       {/* 상품 정보 */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-        <h3 className="font-bold text-[var(--color-dark)]">상품 정보</h3>
+        <h3 className="flex items-center gap-2 font-bold text-[var(--color-dark)]">
+          <Package size={18} className="text-[var(--color-muted)]" />
+          상품 정보
+        </h3>
         <div className="mt-4 flex items-start gap-4">
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[var(--color-light-bg)]">
             <Package size={24} className="text-[var(--color-muted)]" />
@@ -144,8 +91,8 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
           결제 정보
         </h3>
 
-        {/* Desktop: 3-column layout */}
-        <div className="mt-4 hidden gap-0 md:grid md:grid-cols-3">
+        {/* Desktop: 4-column layout */}
+        <div className="mt-4 hidden gap-0 md:grid md:grid-cols-4">
           {/* 주문금액 */}
           <div className="border-r border-[var(--color-border)] px-4 text-center">
             <p className="text-sm text-[var(--color-muted)]">주문금액</p>
@@ -180,13 +127,18 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
           </div>
 
           {/* 결제금액 */}
-          <div className="px-4 text-center">
+          <div className="border-r border-[var(--color-border)] px-4 text-center">
             <p className="text-sm text-[var(--color-muted)]">결제금액</p>
             <p className="mt-2 text-xl font-bold text-[var(--color-primary)]">
               {order.payment.totalAmount.toLocaleString()}원
             </p>
-            <p className="mt-1 text-xs text-[var(--color-muted)]">
-              {order.payment.paymentMethod}
+          </div>
+
+          {/* 결제수단 */}
+          <div className="px-4 text-center">
+            <p className="text-sm text-[var(--color-muted)]">결제수단</p>
+            <p className="mt-2 text-sm font-medium text-[var(--color-body)]">
+              {order.payment.paymentMethodDetail || order.payment.paymentMethod}
             </p>
           </div>
         </div>
@@ -230,9 +182,14 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
               {order.payment.totalAmount.toLocaleString()}원
             </span>
           </div>
-          <p className="text-right text-xs text-[var(--color-muted)]">
-            {order.payment.paymentMethod}
-          </p>
+          {order.payment.paymentMethodDetail && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[var(--color-muted)]">결제수단</span>
+              <span className="text-sm text-[var(--color-body)]">
+                {order.payment.paymentMethodDetail}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -250,6 +207,40 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
         </div>
       </div>
 
+      {/* 결제영수증 정보 */}
+      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+        <h3 className="flex items-center gap-2 font-bold text-[var(--color-dark)]">
+          <FileText size={18} className="text-[var(--color-muted)]" />
+          결제영수증 정보
+        </h3>
+        <div className="mt-4 space-y-0 divide-y divide-[var(--color-border)]">
+          <div className="flex items-center justify-between py-4 first:pt-0">
+            <span className="text-sm text-[var(--color-body)]">
+              해당 주문건에 대해 구매 카드영수증 확인이 가능합니다.
+            </span>
+            <button
+              type="button"
+              onClick={() => setReceiptModal("card")}
+              className="shrink-0 ml-4 rounded-md border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-dark)] transition-colors hover:bg-gray-50"
+            >
+              카드영수증
+            </button>
+          </div>
+          <div className="flex items-center justify-between py-4">
+            <span className="text-sm text-[var(--color-body)]">
+              해당 주문건에 대해 거래명세서 확인이 가능합니다.
+            </span>
+            <button
+              type="button"
+              onClick={() => setReceiptModal("transaction")}
+              className="shrink-0 ml-4 rounded-md border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-dark)] transition-colors hover:bg-gray-50"
+            >
+              거래명세서
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Back Button */}
       <div className="flex justify-center py-4">
         <button
@@ -261,5 +252,14 @@ export default function BookOrderDetail({ order, onBack }: BookOrderDetailProps)
         </button>
       </div>
     </div>
+
+    {/* 모달 — space-y-4 밖에서 렌더링 */}
+    {receiptModal === "card" && (
+      <CardReceiptModal order={bookOrderToReceiptData(order)} onClose={() => setReceiptModal(null)} />
+    )}
+    {receiptModal === "transaction" && (
+      <TransactionStatementModal order={bookOrderToReceiptData(order)} onClose={() => setReceiptModal(null)} />
+    )}
+  </>
   );
 }

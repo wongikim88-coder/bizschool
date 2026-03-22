@@ -258,19 +258,78 @@ export interface CancelReceiptInfo {
   receiptAmount: number;
 }
 
-// ── 나의 강의실 (수강내역) ──
+// ── 내 학습 (수강내역) ──
 
-export type CourseGroupType = "online" | "public" | "completed";
-export type CoursePaymentStatus = "결제완료" | "미결제";
+export type CourseCategory = "온라인 강의" | "현장 강의" | "인재키움 프리미엄 훈련";
+
+export type MyLearningTab = CourseCategory | "강의 Q&A" | "수료증";
+
+export type CourseLearningStatus = "수강 전" | "수강 중" | "수강완료";
+
+export type CourseLearningStatusFilter = "전체" | CourseLearningStatus;
 
 export interface MyCourse {
   id: string;
   title: string;
-  periodStart: string;
-  periodEnd: string;
-  paymentStatus: CoursePaymentStatus;
-  isInsuranceRefund?: boolean;
-  groupType: CourseGroupType;
+  thumbnailUrl: string;
+  category: CourseCategory;
+  totalLessons: number;
+  completedLessons: number;
+  progressPercent: number;
+  learningStatus: CourseLearningStatus;
+  periodLabel: string;
+  isReviewable?: boolean;
+  isExpired?: boolean;
+  instructorName?: string;
+}
+
+// ── 현장 강의 / 인재키움 프리미엄 훈련 (내 학습) ──
+
+export type OfflineCourseStatus = "수강 전" | "수강 중" | "수강완료";
+
+export type OfflineCourseStatusFilter = "전체" | OfflineCourseStatus;
+
+export type OfflineCourseCategory = "현장 강의" | "인재키움 프리미엄 훈련";
+
+export interface OfflineCourseVenue {
+  name: string;
+  address?: string;
+  mapUrl?: string;
+}
+
+export interface GovernmentTrainingInfo {
+  trainingOrg: string;
+  courseCode: string;
+  fullFee: number;
+  subsidyAmount: number;
+  selfPayAmount: number;
+}
+
+export type AttendanceStatus = "출석" | "결석" | "미진행";
+
+export interface CourseSession {
+  date: string;                  // ISO "2026-04-01"
+  label: string;                 // "4/1(화)" 표시용
+  attendance: AttendanceStatus;
+}
+
+export interface MyOfflineCourse {
+  id: string;
+  category: OfflineCourseCategory;
+  title: string;
+  instructorName?: string;
+  status: OfflineCourseStatus;
+  dateRangeLabel: string;
+  timeLabel: string;
+  venue: OfflineCourseVenue;
+  enrollmentDeadline?: string;
+  totalSeats?: number;
+  remainingSeats?: number;
+  enrolledAt: string;
+  paidAmount: number;
+  governmentTraining?: GovernmentTrainingInfo;
+  certificateUrl?: string;
+  sessions?: CourseSession[];
 }
 
 // ── 도서 주문내역 (구매내역) ──
@@ -321,6 +380,7 @@ export interface BookOrderPaymentDetail {
   shippingFee: number;
   totalAmount: number;
   paymentMethod: PaymentMethod;
+  paymentMethodDetail?: string;
   paidAmount: number;
 }
 
@@ -329,11 +389,21 @@ export interface BookOrderPointsInfo {
   usedPoints: number;
 }
 
+export interface BookOrderReceiptInfo {
+  cardType: string;
+  transactionType: string;
+  installment: string;
+  cardNumber: string;
+  transactionDatetime: string;
+  approvalNumber: string;
+}
+
 export interface BookOrderDetail extends BookOrder {
   shipping: BookOrderShippingInfo;
   payment: BookOrderPaymentDetail;
   points: BookOrderPointsInfo;
   trackingNumber?: string;
+  receipt?: BookOrderReceiptInfo;
 }
 
 // ── 배송 추적 ──
@@ -394,12 +464,14 @@ export interface CourseOrderDetailType extends CourseOrder {
   orderedTime: string;
   coursePeriodStart?: string;
   coursePeriodEnd?: string;
+  paymentMethodDetail?: string;
   payment: {
     courseFee: number;
     discountAmount: number;
     totalAmount: number;
     paidAt?: string;
   };
+  receipt?: BookOrderReceiptInfo;
   refund?: {
     requestedAt: string;
     reason: string;
@@ -421,4 +493,82 @@ export interface EducationCourse {
   fee: number;
   instructor: string;
   status: "open" | "closed";
+}
+
+// ── 강의 Q&A ──
+
+export type QnaAnswerStatus = "답변대기" | "답변완료";
+
+export type QnaAnswerStatusFilter = "전체" | QnaAnswerStatus;
+
+export type QnaCategoryFilter = "전체" | CourseCategory;
+
+export interface CourseQna {
+  id: string;
+  courseId: string;
+  courseTitle: string;
+  courseCategory: CourseCategory;
+  title: string;
+  content: string;
+  createdAt: string;
+  answerStatus: QnaAnswerStatus;
+  answer?: CourseQnaAnswer;
+}
+
+export interface CourseQnaAnswer {
+  content: string;
+  answeredAt: string;
+  instructorName: string;
+}
+
+// ── 공지사항 ──
+
+export interface Notice {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  createdAt: string;
+  views: number;
+  isImportant: boolean;
+}
+
+// ── 수료증 ──
+
+export interface CertificateCourse {
+  id: string;
+  title: string;
+  category: "온라인 강의" | "현장 강의" | "인재키움 프리미엄 훈련";
+  instructorName?: string;
+  periodLabel: string;
+  thumbnailUrl: string;
+}
+
+// ── 강의 상세 (플레이어) ──
+
+export type CoursePlayerTab = "curriculum" | "qna" | "materials";
+
+export interface CourseSection {
+  id: string;
+  title: string;
+  totalDuration: string;
+  lessons: CourseLesson[];
+}
+
+export interface CourseLesson {
+  id: string;
+  title: string;
+  duration: string;
+  isCompleted: boolean;
+}
+
+export interface CourseMaterial {
+  id: string;
+  courseId: string;
+  title: string;
+  fileType: "PDF" | "XLSX" | "HWP" | "ZIP" | "PPTX";
+  fileSize: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedAt: string;
 }

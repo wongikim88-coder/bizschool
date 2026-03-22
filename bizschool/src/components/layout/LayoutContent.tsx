@@ -12,8 +12,14 @@ export default function LayoutContent({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const isCoursePlayer = pathname.startsWith("/course/");
   const isConsulting = pathname === "/consulting";
-  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions" || pathname === "/mypage";
+  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname.startsWith("/notice");
+
+  // 강의 플레이어 페이지: 헤더/푸터 없이 전체 화면
+  if (isCoursePlayer) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
