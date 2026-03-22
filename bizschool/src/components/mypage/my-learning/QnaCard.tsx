@@ -17,14 +17,14 @@ const categoryShortLabel: Record<CourseCategory, string> = {
 function StatusBadge({ status }: { status: QnaAnswerStatus }) {
   if (status === "답변대기") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600">
+      <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
         <Clock size={12} />
         답변대기
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-600">
+    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)]">
       <CheckCircle size={12} />
       답변완료
     </span>

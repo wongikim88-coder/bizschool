@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, FileText, GraduationCap, CreditCard } from "lucide-react";
+import { ArrowLeft, FileText, GraduationCap, CreditCard, AlertCircle } from "lucide-react";
 import type {
   CourseOrderDetailType,
   CourseClaimStatus,
 } from "@/types";
 import { CardReceiptModal, TransactionStatementModal } from "./BookOrderReceiptModals";
 import type { ReceiptOrderData } from "./BookOrderReceiptModals";
+import CourseRefundWizard from "./CourseRefundWizard";
 
 // ── Status Badges ──
 
@@ -79,6 +80,22 @@ export default function CourseOrderDetail({
   onBack: () => void;
 }) {
   const [receiptModal, setReceiptModal] = useState<"card" | "transaction" | null>(null);
+  const [showRefundWizard, setShowRefundWizard] = useState(false);
+
+  const canRequestRefund =
+    order.paymentStatus === "결제완료" &&
+    !order.claimStatus &&
+    (order.enrollStatus === "수강전" || order.enrollStatus === "수강중");
+
+  if (showRefundWizard) {
+    return (
+      <CourseRefundWizard
+        order={order}
+        onBack={() => setShowRefundWizard(false)}
+        onComplete={onBack}
+      />
+    );
+  }
 
   const receiptData: ReceiptOrderData = {
     id: order.id,
@@ -181,19 +198,17 @@ export default function CourseOrderDetail({
         </SectionCard>
       )}
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-3">
-        {order.paymentStatus === "결제대기" && !order.claimStatus && (
-          <>
-            <button className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90">
-              결제하기
-            </button>
-            <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
-              주문취소
-            </button>
-          </>
-        )}
-      </div>
+      {/* Action Buttons (결제대기) */}
+      {order.paymentStatus === "결제대기" && !order.claimStatus && (
+        <div className="flex flex-wrap gap-3">
+          <button className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90">
+            결제하기
+          </button>
+          <button className="flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]">
+            주문취소
+          </button>
+        </div>
+      )}
 
       {/* 결제영수증 정보 */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
@@ -229,18 +244,30 @@ export default function CourseOrderDetail({
         </div>
       </div>
 
-      {/* Policy Note */}
-      <div className="rounded-lg bg-[var(--color-light-bg)] p-4 text-sm text-[var(--color-muted)]">
-        <ul className="list-disc space-y-1 pl-4">
-          <li>환불 신청은 수강 시작 후 7일 이내에 가능합니다.</li>
-          <li>
-            현장 강의는 교육 시작 3일 전까지 취소 시 전액 환불됩니다.
-          </li>
-          <li>
-            영수증 및 세금계산서 관련 문의는 고객센터로 연락해 주세요.
-          </li>
-        </ul>
-      </div>
+      {/* 환불 신청 카드 */}
+      {canRequestRefund && (
+        <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
+          <h3 className="flex items-center gap-2 font-bold text-[var(--color-dark)]">
+            <AlertCircle size={18} className="text-[var(--color-muted)]" />
+            환불 신청
+          </h3>
+          <ul className="mt-3 list-disc space-y-1 pl-4 text-sm text-[var(--color-body)]">
+            <li>온라인 강의 : 수강 시작 후 7일 이내, 수강률 25% 미만인 경우 환불을 신청하실 수 있습니다.</li>
+            <li>현장 강의 : 교육 시작 3일 전까지 환불 신청을 하셔야 전액 환불 받으실 수 있습니다.</li>
+            <li>환불 완료까지 영업일 기준 3~5일이 소요됩니다.</li>
+            <li>환불 신청 후에는 수강이 즉시 중단됩니다.</li>
+          </ul>
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setShowRefundWizard(true)}
+              className="shrink-0 rounded-md border border-[var(--color-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--color-dark)] transition-colors hover:bg-gray-50"
+            >
+              환불 신청
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Back Button */}
       <div className="flex justify-center py-4">
@@ -249,7 +276,7 @@ export default function CourseOrderDetail({
           className="flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--color-primary)] px-8 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
         >
           <ArrowLeft size={16} />
-          주문/배송 목록
+          주문 목록
         </button>
       </div>
     </div>

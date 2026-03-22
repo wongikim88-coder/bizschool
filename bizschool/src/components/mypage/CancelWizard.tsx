@@ -103,7 +103,7 @@ export default function CancelWizard({
                     alt={order.bookTitle}
                     className="h-full w-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/images/books/book-1.jpg";
+                      (e.target as HTMLImageElement).style.display = "none";
                     }}
                   />
                 </div>
@@ -203,7 +203,7 @@ export default function CancelWizard({
                       alt={order.bookTitle}
                       className="h-full w-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/images/books/book-1.jpg";
+                        (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
                   </div>
@@ -298,7 +298,7 @@ export default function CancelWizard({
                       alt={order.bookTitle}
                       className="h-full w-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/images/books/book-1.jpg";
+                        (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
                   </div>

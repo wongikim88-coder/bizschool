@@ -1,4 +1,4 @@
-import type { CourseSection, CourseMaterial } from "@/types";
+import type { CourseSection, CourseMaterial, CourseQna } from "@/types";
 
 // ── 강의 커리큘럼 (섹션 + 차시) ──
 
@@ -362,6 +362,146 @@ export const courseMaterials: Record<string, CourseMaterial[]> = {
   ],
 };
 
+// ── 강의별 Q&A ──
+
+export const courseQnas: Record<string, CourseQna[]> = {
+  "mc-001": [
+    {
+      id: "cq-001-01",
+      courseId: "mc-001",
+      courseTitle: "세무회계 실무 기초",
+      courseCategory: "온라인 강의",
+      title: "제4강 부가세 신고 관련 질문이 있습니다",
+      content:
+        "부가세 신고 시 매입세액 공제가 안 되는 경우에 대해 좀 더 자세한 설명이 필요합니다. 강의에서 3가지 경우를 말씀하셨는데, 비영업용 소형승용차 외에 나머지 두 가지가 기억이 나지 않습니다.",
+      createdAt: "2026-03-18",
+      answerStatus: "답변완료",
+      answer: {
+        content:
+          "매입세액 공제가 안 되는 경우는 크게 세 가지입니다.\n\n1. 비영업용 소형승용차 관련 매입세액\n2. 접대비 관련 매입세액\n3. 면세사업 관련 매입세액\n\n각 항목에 대한 자세한 내용은 제5강에서 추가로 다루게 됩니다. 참고로 교안 42페이지에 정리표가 있으니 확인해 보시기 바랍니다.",
+        answeredAt: "2026-03-19",
+        instructorName: "김세무",
+      },
+    },
+    {
+      id: "cq-001-02",
+      courseId: "mc-001",
+      courseTitle: "세무회계 실무 기초",
+      courseCategory: "온라인 강의",
+      title: "원천징수 세율 계산 방법이 헷갈립니다",
+      content:
+        "제8강에서 원천징수 세율을 계산하는 부분이 이해가 잘 안됩니다. 특히 일용직 근로자와 정규직 근로자의 원천징수 계산 방식의 차이를 좀 더 쉽게 설명해 주실 수 있나요?",
+      createdAt: "2026-03-15",
+      answerStatus: "답변완료",
+      answer: {
+        content:
+          "원천징수 계산의 핵심 차이점을 정리해 드립니다.\n\n- 정규직: 간이세액표 기준 원천징수 (월급여 기준)\n- 일용직: 일급 15만원 초과분 × 6% (원천징수세율)\n\n교안 67페이지의 비교표를 참고하시고, 제9강에서 실습 예제를 통해 다시 다룰 예정입니다.",
+        answeredAt: "2026-03-16",
+        instructorName: "김세무",
+      },
+    },
+    {
+      id: "cq-001-03",
+      courseId: "mc-001",
+      courseTitle: "세무회계 실무 기초",
+      courseCategory: "온라인 강의",
+      title: "전자세금계산서 발행 기한이 궁금합니다",
+      content:
+        "전자세금계산서 의무 발행 대상인 경우, 발행 기한이 정확히 언제까지인가요? 공급일이 속한 달의 다음 달 10일까지라고 이해했는데 맞나요?",
+      createdAt: "2026-03-20",
+      answerStatus: "답변대기",
+    },
+    {
+      id: "cq-001-04",
+      courseId: "mc-001",
+      courseTitle: "세무회계 실무 기초",
+      courseCategory: "온라인 강의",
+      title: "종합소득세 신고 시 필요경비 인정 범위",
+      content:
+        "프리랜서로 일하고 있는데, 종합소득세 신고 시 필요경비로 인정받을 수 있는 항목이 어디까지인지 강의에서 다루나요? 사무실 임차료, 통신비 등이 포함되는지 궁금합니다.",
+      createdAt: "2026-03-21",
+      answerStatus: "답변대기",
+    },
+  ],
+  "mc-002": [
+    {
+      id: "cq-002-01",
+      courseId: "mc-002",
+      courseTitle: "경영전략 핵심 노트",
+      courseCategory: "온라인 강의",
+      title: "SWOT 분석 사례에서 궁금한 점이 있습니다",
+      content:
+        "제2강에서 삼성전자의 SWOT 분석 사례를 다루셨는데, Threats 항목에서 언급하신 '기술 패러다임 전환'이 구체적으로 어떤 것을 의미하는지 궁금합니다.",
+      createdAt: "2026-03-17",
+      answerStatus: "답변완료",
+      answer: {
+        content:
+          "'기술 패러다임 전환'은 기존 반도체 중심의 사업 구조에서 AI, 클라우드 등 소프트웨어 중심으로의 전환을 의미합니다. 하드웨어 제조 강점이 소프트웨어 경쟁에서는 약점이 될 수 있다는 분석입니다.\n\n관련 자료로 교안 28페이지의 참고문헌을 확인해 보시면 도움이 될 것입니다.",
+        answeredAt: "2026-03-18",
+        instructorName: "이전략",
+      },
+    },
+    {
+      id: "cq-002-02",
+      courseId: "mc-002",
+      courseTitle: "경영전략 핵심 노트",
+      courseCategory: "온라인 강의",
+      title: "블루오션 전략의 현실적 적용이 가능한가요?",
+      content:
+        "강의에서 블루오션 전략 사례를 들어주셨는데, 실제 중소기업에서 적용 가능한 수준인지 궁금합니다. 혹시 중소기업 적용 사례가 있으면 알려주세요.",
+      createdAt: "2026-03-19",
+      answerStatus: "답변대기",
+    },
+    {
+      id: "cq-002-03",
+      courseId: "mc-002",
+      courseTitle: "경영전략 핵심 노트",
+      courseCategory: "온라인 강의",
+      title: "포터의 5 Forces 분석 실습 관련",
+      content:
+        "5 Forces 분석을 실제 프로젝트에 적용해보고 싶은데, 분석 템플릿이나 워크시트가 있나요?",
+      createdAt: "2026-03-14",
+      answerStatus: "답변완료",
+      answer: {
+        content:
+          "강의자료 탭에서 'SWOT 분석 워크시트' 파일을 다운로드하시면 5 Forces 분석 템플릿도 함께 포함되어 있습니다. 시트 2번 탭에서 확인하실 수 있습니다.",
+        answeredAt: "2026-03-15",
+        instructorName: "이전략",
+      },
+    },
+  ],
+  "mc-003": [
+    {
+      id: "cq-003-01",
+      courseId: "mc-003",
+      courseTitle: "인사노무관리 입문",
+      courseCategory: "온라인 강의",
+      title: "연차유급휴가 계산 방법이 복잡합니다",
+      content:
+        "입사 1년 미만 근로자의 연차 계산과 1년 이상 근로자의 연차 계산이 다른 것은 알겠는데, 정확한 계산 방법이 헷갈립니다. 예시를 들어 설명해 주실 수 있나요?",
+      createdAt: "2026-03-20",
+      answerStatus: "답변대기",
+    },
+    {
+      id: "cq-003-02",
+      courseId: "mc-003",
+      courseTitle: "인사노무관리 입문",
+      courseCategory: "온라인 강의",
+      title: "4대보험 취득신고 기한 문의",
+      content:
+        "신규 직원 입사 시 4대보험 취득신고를 언제까지 해야 하나요? 입사일 기준인지, 다음 달까지 가능한지 궁금합니다.",
+      createdAt: "2026-03-18",
+      answerStatus: "답변완료",
+      answer: {
+        content:
+          "4대보험 취득신고 기한은 다음과 같습니다.\n\n- 국민연금/건강보험: 입사일이 속한 달의 다음 달 15일까지\n- 고용보험/산재보험: 입사일 다음 달 15일까지\n\n실무적으로는 입사일 기준 14일 이내에 통합 신고하시는 것을 권장드립니다.",
+        answeredAt: "2026-03-19",
+        instructorName: "박인사",
+      },
+    },
+  ],
+};
+
 /** 강의 ID로 커리큘럼 조회 */
 export function getCourseSections(courseId: string): CourseSection[] {
   return courseSections[courseId] ?? [];
@@ -370,4 +510,9 @@ export function getCourseSections(courseId: string): CourseSection[] {
 /** 강의 ID로 강의자료 조회 */
 export function getCourseMaterials(courseId: string): CourseMaterial[] {
   return courseMaterials[courseId] ?? [];
+}
+
+/** 강의 ID로 Q&A 조회 */
+export function getCourseQnas(courseId: string): CourseQna[] {
+  return courseQnas[courseId] ?? [];
 }

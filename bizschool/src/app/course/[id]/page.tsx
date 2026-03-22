@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { mockMyCourses } from "@/data/mypage";
-import { getCourseSections, getCourseMaterials } from "@/data/course-detail";
+import { getCourseSections, getCourseMaterials, getCourseQnas } from "@/data/course-detail";
 import CoursePlayerLayout from "@/components/course/CoursePlayerLayout";
 
 interface CoursePageProps {
@@ -32,12 +32,14 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   const sections = getCourseSections(id);
   const materials = getCourseMaterials(id);
+  const qnas = getCourseQnas(id);
 
   return (
     <CoursePlayerLayout
       course={course}
       sections={sections}
       materials={materials}
+      qnas={qnas}
     />
   );
 }

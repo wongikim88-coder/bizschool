@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Search } from "lucide-react";
+import { PenSquare, Search } from "lucide-react";
 import type { QnaCategoryFilter, QnaAnswerStatusFilter, CourseCategory } from "@/types";
 
 interface QnaFilterBarProps {
@@ -50,7 +50,7 @@ export default function QnaFilterBar({
   return (
     <div className="space-y-3">
       {/* Row 1: 답변 상태 필터 + 질문하기 버튼 */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="flex gap-2">
           {statusFilters.map((f) => (
             <button
@@ -68,9 +68,9 @@ export default function QnaFilterBar({
         </div>
         <button
           onClick={onWriteClick}
-          className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
+          className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 md:w-auto"
         >
-          <Plus size={16} />
+          <PenSquare size={16} />
           질문하기
         </button>
       </div>

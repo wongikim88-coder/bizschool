@@ -669,18 +669,14 @@ export default function CourseOrderSection({
                 {paginatedOrders.map((order) => (
                   <tr
                     key={order.id}
-                    className="border-b border-[var(--color-border)] last:border-0"
+                    onClick={() => handleSelectOrder(order.id)}
+                    className="cursor-pointer border-b border-[var(--color-border)] transition-colors hover:bg-[var(--color-light-bg)] last:border-0"
                   >
                     <td className="px-4 py-4 text-center text-[var(--color-body)]">
                       {order.orderedAt}
                     </td>
-                    <td className="px-4 py-4 text-center">
-                      <button
-                        onClick={() => handleSelectOrder(order.id)}
-                        className="cursor-pointer font-medium text-[var(--color-dark)] transition-colors hover:text-[var(--color-primary)]"
-                      >
-                        {order.courseTitle}
-                      </button>
+                    <td className="px-4 py-4 text-center font-medium text-[var(--color-dark)]">
+                      {order.courseTitle}
                     </td>
                     <td className="px-4 py-4 text-center text-[var(--color-body)]">
                       {order.courseType === "온라인" ? "온라인" : "현장"}
@@ -710,7 +706,8 @@ export default function CourseOrderSection({
             {paginatedOrders.map((order) => (
               <div
                 key={order.id}
-                className="rounded-xl border border-[var(--color-border)] bg-white p-4"
+                onClick={() => handleSelectOrder(order.id)}
+                className="cursor-pointer rounded-xl border border-[var(--color-border)] bg-white p-4 transition-colors hover:border-[var(--color-primary)]"
               >
                 <div className="flex items-center justify-between">
                   <OrderStatusBadge status={getUnifiedStatus(order)} />

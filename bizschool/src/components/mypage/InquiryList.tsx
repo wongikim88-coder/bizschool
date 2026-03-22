@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Plus, Clock, CheckCircle } from "lucide-react";
+import { PenSquare, Clock, CheckCircle } from "lucide-react";
 import type { Inquiry, InquiryFilter } from "@/types";
 import MypagePagination from "./MypagePagination";
 import { INQUIRIES_PER_PAGE } from "@/data/mypage";
@@ -21,14 +21,14 @@ const filterLabels: { key: InquiryFilter; label: string }[] = [
 function StatusBadge({ status }: { status: "pending" | "answered" }) {
   if (status === "pending") {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600">
+      <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
         <Clock size={12} />
         대기중
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-600">
+    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-primary)]">
       <CheckCircle size={12} />
       답변완료
     </span>
@@ -71,7 +71,7 @@ export default function InquiryList({ inquiries, filter, page }: InquiryListProp
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2">
           <p className="text-sm text-[var(--color-muted)]">
             총 {filtered.length}건의 문의
@@ -79,9 +79,9 @@ export default function InquiryList({ inquiries, filter, page }: InquiryListProp
         </div>
         <button
           onClick={() => router.push("/mypage?tab=inquiry&write=true")}
-          className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
+          className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 md:w-auto"
         >
-          <Plus size={16} />
+          <PenSquare size={16} />
           문의하기
         </button>
       </div>

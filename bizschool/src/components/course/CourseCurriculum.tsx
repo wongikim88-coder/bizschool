@@ -79,7 +79,7 @@ export default function CourseCurriculum({ sections }: CourseCurriculumProps) {
                     {lesson.isCompleted ? (
                       <CheckCircle2
                         size={18}
-                        className="shrink-0 text-green-500"
+                        className="shrink-0 text-[var(--color-primary)]"
                       />
                     ) : (
                       <Circle

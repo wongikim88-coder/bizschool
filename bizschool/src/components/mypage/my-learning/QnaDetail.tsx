@@ -20,12 +20,12 @@ export default function QnaDetail({ qna, onBack }: QnaDetailProps) {
       {/* Header */}
       <div className="flex items-center justify-end">
         {qna.answerStatus === "답변대기" ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-600">
+          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
             <Clock size={12} />
             답변대기
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary-light)] px-3 py-1 text-xs font-medium text-[var(--color-primary)]">
             <CheckCircle size={12} />
             답변완료
           </span>
@@ -50,22 +50,22 @@ export default function QnaDetail({ qna, onBack }: QnaDetailProps) {
 
       {/* Question */}
       <div className="mt-6 rounded-2xl border border-[var(--color-border)] bg-white p-6">
-        <p className="text-lg font-bold text-[var(--color-primary)]">Q</p>
-        <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[var(--color-body)]">
+        <p className="text-lg font-bold text-[var(--color-dark)]">Q</p>
+        <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[var(--color-dark)]">
           {qna.content}
         </p>
       </div>
 
       {/* Answer */}
       {qna.answerStatus === "답변완료" && qna.answer ? (
-        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6">
+        <div className="mt-4 rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary-light)] p-6">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-bold text-emerald-600">A</p>
+            <p className="text-lg font-bold text-[var(--color-primary)]">A</p>
             <p className="text-sm text-[var(--color-muted)]">
               {qna.answer.instructorName} 강사 &nbsp;|&nbsp; {qna.answer.answeredAt}
             </p>
           </div>
-          <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[var(--color-body)]">
+          <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-[var(--color-dark)]">
             {qna.answer.content}
           </p>
         </div>

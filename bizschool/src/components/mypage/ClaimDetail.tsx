@@ -248,7 +248,7 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
                   alt={item.product.name}
                   className="h-full w-full object-cover"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/images/books/book-1.jpg";
+                    (e.target as HTMLImageElement).style.display = "none";
                   }}
                 />
               </div>

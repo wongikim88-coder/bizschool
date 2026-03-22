@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { Inquiry, InquiryCategory } from "@/types";
@@ -17,7 +18,18 @@ export default function InquiryForm({ onSubmit, nextId }: InquiryFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+
   const isValid = category !== "" && title.trim() !== "" && content.trim() !== "";
+  const hasDraft = category !== "" || title.trim() !== "" || content.trim() !== "";
+
+  const handleGoBack = () => {
+    if (hasDraft) {
+      setShowLeaveModal(true);
+    } else {
+      router.push("/mypage?tab=inquiry");
+    }
+  };
 
   const handleSubmit = () => {
     if (!isValid) return;
@@ -37,16 +49,7 @@ export default function InquiryForm({ onSubmit, nextId }: InquiryFormProps) {
 
   return (
     <div>
-      {/* Back */}
-      <button
-        onClick={() => router.push("/mypage?tab=inquiry")}
-        className="flex items-center gap-1 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-      >
-        <ArrowLeft size={16} />
-        목록으로
-      </button>
-
-      <h2 className="mt-4 text-xl font-bold text-[var(--color-dark)]">
+      <h2 className="text-xl font-bold text-[var(--color-dark)]">
         1:1 문의하기
       </h2>
 
@@ -98,12 +101,13 @@ export default function InquiryForm({ onSubmit, nextId }: InquiryFormProps) {
         </div>
 
         {/* Buttons */}
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex items-center justify-center gap-3 pt-2">
           <button
-            onClick={() => router.push("/mypage?tab=inquiry")}
-            className="rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+            onClick={handleGoBack}
+            className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
           >
-            취소
+            <ArrowLeft size={16} />
+            목록으로
           </button>
           <button
             onClick={handleSubmit}
@@ -114,6 +118,46 @@ export default function InquiryForm({ onSubmit, nextId }: InquiryFormProps) {
           </button>
         </div>
       </div>
+
+      {/* Leave confirmation modal */}
+      {showLeaveModal &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 bg-black/50"
+            onClick={() => setShowLeaveModal(false)}
+          >
+            <div
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-xs -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+            >
+              <p className="mb-2 text-center font-medium text-[var(--color-dark)]">
+                작성 중인 내용이 저장되지 않습니다.
+              </p>
+              <p className="mb-6 text-center text-sm text-[var(--color-muted)]">
+                목록으로 이동하시겠습니까?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowLeaveModal(false)}
+                  className="flex-1 rounded-lg border border-[var(--color-border)] py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                >
+                  계속 작성
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/mypage?tab=inquiry")}
+                  className="flex-1 rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+                >
+                  목록으로 이동
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
