@@ -14,7 +14,7 @@ export default function LayoutContent({
   const pathname = usePathname();
   const isCoursePlayer = pathname.startsWith("/course/");
   const isConsulting = pathname === "/consulting";
-  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname.startsWith("/notice");
+  const hideSearchBar = isConsulting || pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname.startsWith("/notice") || pathname.startsWith("/resources") || /^\/books\/.+/.test(pathname);
 
   // 강의 플레이어 페이지: 헤더/푸터 없이 전체 화면
   if (isCoursePlayer) {

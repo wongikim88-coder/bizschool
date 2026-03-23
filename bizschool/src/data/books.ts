@@ -24,6 +24,7 @@ export const sampleBooks: Book[] = [
     rating: 4.7,
     reviewCount: 89,
     badges: [{ label: "베스트셀러", variant: "green" }],
+    specs: { pages: 336, size: "152×225mm", isbn: "978-89-6626-108-2", binding: "반양장(소프트커버)", weight: "480g" },
   },
   {
     id: "b2",
@@ -36,6 +37,7 @@ export const sampleBooks: Book[] = [
     rating: 4.8,
     reviewCount: 156,
     badges: [{ label: "베스트셀러", variant: "green" }],
+    specs: { pages: 260, size: "145×210mm", isbn: "978-89-255-0820-5", binding: "반양장(소프트커버)", weight: "380g" },
   },
   {
     id: "b3",
@@ -45,6 +47,7 @@ export const sampleBooks: Book[] = [
     price: 19800,
     rating: 4.5,
     reviewCount: 45,
+    specs: { pages: 392, size: "152×225mm", isbn: "978-89-349-9876-3", binding: "양장(하드커버)", weight: "560g" },
   },
   {
     id: "b4",
@@ -57,6 +60,7 @@ export const sampleBooks: Book[] = [
     rating: 4.9,
     reviewCount: 234,
     badges: [{ label: "New", variant: "primary" }],
+    specs: { pages: 304, size: "148×210mm", isbn: "978-89-6051-923-1", binding: "반양장(소프트커버)", weight: "420g" },
   },
   {
     id: "b5",
@@ -69,6 +73,7 @@ export const sampleBooks: Book[] = [
     rating: 4.8,
     reviewCount: 567,
     badges: [{ label: "베스트셀러", variant: "green" }],
+    specs: { pages: 636, size: "152×225mm", isbn: "978-89-349-7056-1", binding: "양장(하드커버)", weight: "820g" },
   },
   {
     id: "b6",
@@ -120,6 +125,44 @@ export const allBooks: Book[] = [
     publishDate: "2024년 03월 15일",
     description: "린 스타트업은 낭비를 줄이고 지속적인 혁신을 통해 성공적인 사업을 구축하는 방법론을 제시합니다. 가설 검증과 빠른 실험을 통해 시장에서 살아남는 법을 배울 수 있습니다.",
     category: "경영전략",
+    reviews: [
+      { reviewer: "김경영", rating: 5, content: "스타트업을 준비하는 사람이라면 반드시 읽어야 할 책입니다. 가설 검증과 MVP 개념을 실무에 바로 적용할 수 있었습니다.", date: "2025-12-15" },
+      { reviewer: "이혁신", rating: 4, content: "린 방법론의 핵심을 잘 정리한 책. 다만 후반부는 다소 반복적인 느낌이 있습니다.", date: "2025-11-20" },
+      { reviewer: "박창업", rating: 5, content: "창업 3년차인데 이 책을 더 일찍 읽었더라면 시행착오를 많이 줄일 수 있었을 것 같습니다.", date: "2025-10-05" },
+    ],
+    preview: {
+      toc: [
+        { chapter: "Part 1", title: "비전", page: 3 },
+        { chapter: "제1장", title: "시작", page: 9 },
+        { chapter: "제2장", title: "정의", page: 25 },
+        { chapter: "제3장", title: "배움", page: 43 },
+        { chapter: "Part 2", title: "조종", page: 65 },
+        { chapter: "제4장", title: "실험", page: 71 },
+        { chapter: "제5장", title: "도약", page: 93 },
+        { chapter: "제6장", title: "테스트", page: 115 },
+        { chapter: "제7장", title: "측정", page: 139 },
+        { chapter: "제8장", title: "피벗", page: 167 },
+      ],
+      totalPages: 15,
+      pages: [
+        { pageNumber: 1, label: "표지" },
+        { pageNumber: 2, label: "서문" },
+        { pageNumber: 3 },
+        { pageNumber: 4 },
+        { pageNumber: 5 },
+        { pageNumber: 6 },
+        { pageNumber: 7 },
+        { pageNumber: 8 },
+        { pageNumber: 9 },
+        { pageNumber: 10 },
+        { pageNumber: 11 },
+        { pageNumber: 12 },
+        { pageNumber: 13 },
+        { pageNumber: 14 },
+        { pageNumber: 15 },
+      ],
+    },
+    specs: { pages: 336, size: "152×225mm", isbn: "978-89-6626-108-2", binding: "반양장(소프트커버)", weight: "480g" },
   },
   {
     id: "ab2",
@@ -136,6 +179,36 @@ export const allBooks: Book[] = [
     publishDate: "2023년 11월 20일",
     description: "페이팔 공동 창업자 피터 틸이 스탠퍼드 대학에서 진행한 창업 강의를 바탕으로, 0에서 1을 만드는 혁신의 원리를 설명합니다.",
     category: "경영전략",
+    reviews: [
+      { reviewer: "정실리콘", rating: 5, content: "경쟁하지 말고 독점하라는 메시지가 인상적입니다. 사업 아이디어를 평가하는 새로운 관점을 얻었습니다.", date: "2025-12-01" },
+      { reviewer: "최스타트", rating: 5, content: "스타트업의 본질을 꿰뚫는 책. 짧지만 내용이 매우 밀도 있습니다.", date: "2025-09-18" },
+    ],
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "미래의 도전", page: 5 },
+        { chapter: "제2장", title: "1999년의 교훈", page: 19 },
+        { chapter: "제3장", title: "경쟁하지 마라", page: 35 },
+        { chapter: "제4장", title: "경쟁의 이데올로기", page: 51 },
+        { chapter: "제5장", title: "라스트 무버 어드밴티지", page: 67 },
+        { chapter: "제6장", title: "당신은 복권이 아니다", page: 85 },
+        { chapter: "제7장", title: "돈의 흐름을 따르라", page: 103 },
+      ],
+      totalPages: 12,
+      pages: [
+        { pageNumber: 1, label: "표지" },
+        { pageNumber: 2, label: "추천사" },
+        { pageNumber: 3, label: "서문" },
+        { pageNumber: 4 },
+        { pageNumber: 5 },
+        { pageNumber: 6 },
+        { pageNumber: 7 },
+        { pageNumber: 8 },
+        { pageNumber: 9 },
+        { pageNumber: 10 },
+        { pageNumber: 11 },
+        { pageNumber: 12 },
+      ],
+    },
   },
   {
     id: "ab3",
@@ -210,6 +283,10 @@ export const allBooks: Book[] = [
     publishDate: "2023년 07월 12일",
     description: "왜 위대한 기업들이 혁신에 실패하는가? 파괴적 혁신 이론의 창시자가 제시하는 기업 혁신의 역설과 해법을 담고 있습니다.",
     category: "경영전략",
+    reviews: [
+      { reviewer: "한전략", rating: 5, content: "파괴적 혁신의 개념을 이해하는 데 필수적인 책. 기존 대기업이 왜 혁신에 실패하는지 명쾌하게 설명합니다.", date: "2025-11-10" },
+      { reviewer: "윤기술", rating: 4, content: "IT 업계뿐 아니라 모든 산업에 적용 가능한 통찰을 제공합니다.", date: "2025-08-22" },
+    ],
   },
   // 마케팅 (6권)
   {
@@ -257,6 +334,21 @@ export const allBooks: Book[] = [
     publishDate: "2025년 12월 20일",
     description: "구글 애즈, 메타 광고, 네이버 검색광고 등 주요 디지털 광고 플랫폼을 활용한 퍼포먼스 마케팅 실전 가이드입니다.",
     category: "마케팅",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "퍼포먼스 마케팅의 이해", page: 7 },
+        { chapter: "제2장", title: "구글 애즈 완전 정복", page: 31 },
+        { chapter: "제3장", title: "메타 광고 실전", page: 67 },
+        { chapter: "제4장", title: "네이버 검색광고", page: 101 },
+        { chapter: "제5장", title: "데이터 분석과 최적화", page: 135 },
+        { chapter: "제6장", title: "A/B 테스트 전략", page: 169 },
+      ],
+      totalPages: 18,
+      pages: Array.from({ length: 18 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "머리말" } : {}),
+      })),
+    },
   },
   {
     id: "ab11",
@@ -317,6 +409,11 @@ export const allBooks: Book[] = [
     publishDate: "2024년 01월 05일",
     description: "회계사 출신 저자가 투자자의 관점에서 재무제표 읽는 법을 쉽게 설명합니다. 실제 기업 사례를 통해 숫자 뒤에 숨겨진 기업의 진짜 모습을 파악하는 방법을 배웁니다.",
     category: "재무회계",
+    reviews: [
+      { reviewer: "강투자", rating: 5, content: "재무제표를 전혀 몰랐는데 이 책 덕분에 기업 분석의 기초를 다질 수 있었습니다.", date: "2025-12-08" },
+      { reviewer: "오회계", rating: 5, content: "회계 비전공자도 쉽게 이해할 수 있도록 실제 사례 중심으로 잘 설명되어 있습니다.", date: "2025-10-30" },
+      { reviewer: "서분석", rating: 4, content: "투자를 위한 재무제표 분석 입문서로 최적입니다. 다만 심화 내용은 별도 학습이 필요합니다.", date: "2025-09-15" },
+    ],
   },
   {
     id: "ab15",
@@ -332,6 +429,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 03월 20일",
     description: "회계를 처음 접하는 비전공자도 쉽게 이해할 수 있도록 구성된 회계 입문서. 실무에서 바로 활용할 수 있는 기초 회계 지식을 담았습니다.",
     category: "재무회계",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "회계의 기초 개념", page: 5 },
+        { chapter: "제2장", title: "재무제표의 이해", page: 29 },
+        { chapter: "제3장", title: "계정과목과 분개", page: 55 },
+        { chapter: "제4장", title: "결산과 수정분개", page: 83 },
+        { chapter: "제5장", title: "현금흐름표", page: 111 },
+        { chapter: "제6장", title: "원가회계 기초", page: 141 },
+        { chapter: "제7장", title: "관리회계 입문", page: 175 },
+        { chapter: "제8장", title: "세무회계 기초", page: 203 },
+      ],
+      totalPages: 16,
+      pages: Array.from({ length: 16 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "저자 소개" } : i === 2 ? { label: "서문" } : {}),
+      })),
+    },
   },
   {
     id: "ab16",
@@ -450,6 +564,11 @@ export const allBooks: Book[] = [
     publishDate: "2023년 08월 12일",
     description: "매일 1%씩 나아지는 것의 놀라운 힘. 작고 쉬운 습관부터 시작해 삶을 완전히 변화시키는 4단계 습관 형성 법칙을 소개합니다.",
     category: "자기계발",
+    reviews: [
+      { reviewer: "김습관", rating: 5, content: "이 책을 읽고 나서 아침 루틴을 완전히 바꿨습니다. 작은 변화가 큰 차이를 만든다는 것을 실감합니다.", date: "2025-12-20" },
+      { reviewer: "이성장", rating: 5, content: "자기계발서 중 가장 실용적인 책. 이론이 아닌 구체적 방법론을 제시합니다.", date: "2025-11-05" },
+      { reviewer: "박변화", rating: 4, content: "습관의 4단계 법칙이 매우 체계적입니다. 누구나 바로 실천할 수 있어요.", date: "2025-08-12" },
+    ],
   },
   {
     id: "ab24",
@@ -529,6 +648,22 @@ export const allBooks: Book[] = [
     publishDate: "2024년 10월 01일",
     description: "인텔의 전설적 CEO 앤디 그로브가 전하는 관리의 정수. 팀의 성과를 극대화하는 실전 경영 기법을 배울 수 있습니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "서문", title: "매니저의 역할", page: 3 },
+        { chapter: "제1장", title: "생산의 기본", page: 15 },
+        { chapter: "제2장", title: "아침식사 공장 운영하기", page: 33 },
+        { chapter: "제3장", title: "매니저의 레버리지", page: 55 },
+        { chapter: "제4장", title: "회의의 기술", page: 79 },
+        { chapter: "제5장", title: "의사결정", page: 101 },
+        { chapter: "제6장", title: "계획 수립", page: 125 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
   },
   {
     id: "ab29",
@@ -664,6 +799,29 @@ export const allBooks: Book[] = [
     publishDate: "2023년 03월 01일",
     description: "소프트웨어 개발의 바이블. 읽기 좋은 코드를 작성하는 방법과 지속 가능한 소프트웨어 개발의 원칙을 다룹니다.",
     category: "IT기술",
+    reviews: [
+      { reviewer: "개발자A", rating: 5, content: "개발자라면 반드시 읽어야 할 필독서. 코드 품질에 대한 기준이 완전히 달라집니다.", date: "2025-12-10" },
+      { reviewer: "코딩러버", rating: 5, content: "주니어 때 읽고 시니어가 되어 다시 읽으니 또 다른 깨달음이 있습니다.", date: "2025-10-25" },
+      { reviewer: "SW엔지니어", rating: 4, content: "자바 중심의 예제가 많지만, 원칙 자체는 어떤 언어에도 적용 가능합니다.", date: "2025-07-18" },
+    ],
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "깨끗한 코드", page: 5 },
+        { chapter: "제2장", title: "의미 있는 이름", page: 21 },
+        { chapter: "제3장", title: "함수", page: 45 },
+        { chapter: "제4장", title: "주석", page: 69 },
+        { chapter: "제5장", title: "형식 맞추기", page: 91 },
+        { chapter: "제6장", title: "객체와 자료 구조", page: 113 },
+        { chapter: "제7장", title: "오류 처리", page: 137 },
+        { chapter: "제8장", title: "경계", page: 157 },
+        { chapter: "제9장", title: "단위 테스트", page: 175 },
+      ],
+      totalPages: 20,
+      pages: Array.from({ length: 20 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "역자 서문" } : i === 2 ? { label: "추천사" } : {}),
+      })),
+    },
   },
   {
     id: "ab38",

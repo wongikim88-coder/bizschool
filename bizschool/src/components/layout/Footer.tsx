@@ -33,6 +33,7 @@ const footerLinks = [
       { label: "FAQ", href: "/faq" },
       { label: "1:1 문의", href: "/contact" },
       { label: "공지사항", href: "/notice" },
+      { label: "자료실", href: "/resources" },
     ],
   },
 ];

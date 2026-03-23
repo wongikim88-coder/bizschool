@@ -28,6 +28,47 @@ export interface Book {
   description?: string;
   category?: string;
   isSoldOut?: boolean;
+  preview?: BookPreview;
+  reviews?: BookReview[];
+  specs?: BookSpecs;
+}
+
+export interface BookSpecs {
+  pages?: number;
+  size?: string;
+  isbn?: string;
+  binding?: string;
+  weight?: string;
+}
+
+// ── 도서 리뷰 ──
+
+export interface BookReview {
+  reviewer: string;
+  rating: number;
+  content: string;
+  date: string;
+}
+
+// ── 도서 미리보기 ──
+
+export type PreviewViewMode = "spread" | "single" | "grid";
+
+export interface BookTocItem {
+  chapter: string;
+  title: string;
+  page: number;
+}
+
+export interface BookPreviewPage {
+  pageNumber: number;
+  label?: string;
+}
+
+export interface BookPreview {
+  toc: BookTocItem[];
+  totalPages: number;
+  pages: BookPreviewPage[];
 }
 
 export interface Badge {
@@ -571,4 +612,24 @@ export interface CourseMaterial {
   fileName: string;
   fileUrl: string;
   uploadedAt: string;
+}
+
+// ── 자료실 ──
+
+export type ResourceCategory = "신청서·양식" | "정오표" | "교육자료" | "참고자료";
+
+export type ResourceFileType = "PDF" | "XLSX" | "HWP" | "ZIP" | "PPTX";
+
+export type ResourceCategoryFilter = "전체" | ResourceCategory;
+
+export interface Resource {
+  id: number;
+  title: string;
+  category: ResourceCategory;
+  content: string;
+  fileType: ResourceFileType;
+  fileSize: string;
+  fileName: string;
+  fileUrl: string;
+  createdAt: string;
 }

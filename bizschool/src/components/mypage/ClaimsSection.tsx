@@ -78,9 +78,12 @@ export default function ClaimsSection() {
   return (
     <div>
       {/* Title */}
-      <h2 className="mb-6 text-xl font-bold text-[var(--color-dark)]">
-        취소/반품/교환/환불내역
+      <h2 className="mb-2 text-xl font-bold text-[var(--color-dark)]">
+        취소/반품/교환/환불
       </h2>
+      <p className="mb-6 text-sm text-[var(--color-muted)]">
+        취소/반품/교환 신청한 내역을 확인할 수 있습니다.
+      </p>
 
       {/* Sub Tabs */}
       <div className="mb-4 flex border-b border-[var(--color-border)]">
@@ -103,17 +106,7 @@ export default function ClaimsSection() {
       </div>
 
       {/* Notice */}
-      <div className="mb-6 flex items-start justify-between text-sm text-[var(--color-muted)]">
-        <div>
-          <p>- 취소/반품/교환 신청한 내역을 확인할 수 있습니다.</p>
-          <p>
-            - 하단 상품목록에 없는 상품은{" "}
-            <span className="cursor-pointer text-[var(--color-primary)] underline">
-              1:1문의
-            </span>{" "}
-            또는 고객센터(1577-7011)로 문의주세요.
-          </p>
-        </div>
+      <div className="mb-6 flex justify-end text-sm">
         <button
           type="button"
           className="shrink-0 text-sm text-[var(--color-muted)] hover:text-[var(--color-body)]"

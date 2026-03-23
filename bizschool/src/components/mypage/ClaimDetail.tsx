@@ -283,7 +283,7 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
     return (
       <div>
         <h2 className="mb-1 text-xl font-bold text-[var(--color-dark)]">
-          취소/반품/교환/환불내역 상세
+          취소/반품/교환/환불 상세
         </h2>
         <p className="mb-6 text-sm text-[var(--color-muted)]">
           주문일 : {claimItem.orderDate} | 주문번호 : {claimItem.orderNumber}
@@ -378,7 +378,7 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
     return (
       <div>
         <h2 className="mb-1 text-xl font-bold text-[var(--color-dark)]">
-          취소/반품/교환/환불내역 상세
+          취소/반품/교환/환불 상세
         </h2>
         <p className="mb-6 text-sm text-[var(--color-muted)]">
           주문일 : {claimItem.orderDate} | 주문번호 : {claimItem.orderNumber}
@@ -573,7 +573,7 @@ export default function ClaimDetail({ claimItem, onBack }: ClaimDetailProps) {
   return (
     <div>
       <h2 className="mb-1 text-xl font-bold text-[var(--color-dark)]">
-        취소/반품/교환/환불내역 상세
+        취소/반품/교환/환불 상세
       </h2>
       <p className="mb-6 text-sm text-[var(--color-muted)]">
         주문일 : {claimItem.orderDate} | 주문번호 : {claimItem.orderNumber}

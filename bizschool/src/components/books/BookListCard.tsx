@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { ShoppingCart, CreditCard } from "lucide-react";
 import type { Book } from "@/types";
+import BookPreviewButton from "./BookPreviewButton";
 
 export default function BookListCard({ book }: { book: Book }) {
   const hasDiscount = book.originalPrice && book.discountRate;
@@ -8,7 +10,7 @@ export default function BookListCard({ book }: { book: Book }) {
     <article className="border-b border-[var(--color-border)] py-6 last:border-b-0">
       <div className="flex gap-4 md:gap-6">
         {/* Book Cover */}
-        <div className="h-[160px] w-[120px] flex-shrink-0 overflow-hidden rounded-lg shadow-sm md:h-[240px] md:w-[180px]">
+        <Link href={`/books/${book.id}`} className="relative h-[160px] w-[120px] flex-shrink-0 overflow-hidden rounded-lg shadow-sm transition-shadow hover:shadow-md md:h-[240px] md:w-[180px]">
           <div className="flex h-full flex-col items-center justify-center bg-gradient-to-b from-gray-200 to-gray-300 p-3">
             <div className="text-center">
               <p className="text-[10px] font-bold leading-tight text-gray-600 md:text-xs">
@@ -17,13 +19,21 @@ export default function BookListCard({ book }: { book: Book }) {
               <p className="mt-1 text-[8px] text-gray-500 md:mt-2 md:text-[10px]">{book.author}</p>
             </div>
           </div>
-        </div>
+          {/* Preview Button Overlay (Desktop) */}
+          {book.preview && (
+            <div className="absolute inset-x-0 bottom-0 hidden md:block">
+              <BookPreviewButton book={book} variant="overlay" />
+            </div>
+          )}
+        </Link>
 
         {/* Book Info */}
         <div className="flex min-w-0 flex-1 flex-col">
           {/* Title */}
           <h3 className="text-base font-bold text-[var(--color-dark)] md:text-xl">
-            {book.title}
+            <Link href={`/books/${book.id}`} className="hover:text-[var(--color-primary)] hover:underline">
+              {book.title}
+            </Link>
             {book.isSoldOut && (
               <span className="ml-1 text-sm font-bold text-[var(--color-red)] md:text-base">[품절]</span>
             )}
@@ -94,6 +104,7 @@ export default function BookListCard({ book }: { book: Book }) {
 
       {/* Buttons (Mobile) */}
       <div className="mt-3 flex gap-2 md:hidden">
+        {book.preview && <BookPreviewButton book={book} variant="inline" />}
         <button
           className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
           aria-label={`${book.title} 장바구니에 담기`}
