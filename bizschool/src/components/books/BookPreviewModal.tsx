@@ -11,6 +11,8 @@ import {
   Heart,
   ShoppingCart,
   ZoomIn,
+  Minus,
+  Plus,
 } from "lucide-react";
 import type { Book, PreviewViewMode } from "@/types";
 import BookPreviewViewer from "./BookPreviewViewer";
@@ -27,6 +29,8 @@ export default function BookPreviewModal({
   const [currentPage, setCurrentPage] = useState(1);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [pageInput, setPageInput] = useState("1");
+  const [sidebarPadTop, setSidebarPadTop] = useState(36);
+  const [quantity, setQuantity] = useState(1);
 
   const hasDiscount = book.originalPrice && book.discountRate;
 
@@ -95,15 +99,12 @@ export default function BookPreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-label={`${book.title} 미리보기`}
     >
-      <div className="flex h-full w-full flex-col bg-white md:mx-auto md:my-[2vh] md:h-[96vh] md:max-w-[1280px] md:rounded-2xl md:shadow-2xl">
+      <div className="flex h-full w-full flex-col bg-white md:mx-auto md:my-[2vh] md:h-[96vh] md:max-w-[clamp(1280px,calc(144vh_+_174px),96vw)] md:rounded-2xl md:shadow-2xl">
         {/* ── Header ── */}
         <div className="flex h-12 flex-shrink-0 items-center gap-2 border-b bg-white px-4 md:rounded-t-2xl">
           <span className="rounded-full border border-gray-300 px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-muted)]">
@@ -131,7 +132,7 @@ export default function BookPreviewModal({
                 <button
                   onClick={handlePrev}
                   disabled={currentPage <= 1}
-                  className="absolute left-2 z-10 rounded-full bg-gray-400/60 p-2 text-white transition-colors hover:bg-gray-500/70 disabled:opacity-30 md:left-4 md:p-2.5"
+                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-gray-400/60 p-2 text-white transition-colors hover:bg-gray-500/70 disabled:opacity-30 md:left-4 md:p-2.5"
                   aria-label="이전 페이지"
                 >
                   <ChevronLeft size={22} />
@@ -139,7 +140,7 @@ export default function BookPreviewModal({
                 <button
                   onClick={handleNext}
                   disabled={currentPage >= preview.totalPages}
-                  className="absolute right-2 z-10 rounded-full bg-gray-400/60 p-2 text-white transition-colors hover:bg-gray-500/70 disabled:opacity-30 md:right-4 md:p-2.5"
+                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-gray-400/60 p-2 text-white transition-colors hover:bg-gray-500/70 disabled:opacity-30 md:right-4 md:p-2.5"
                   aria-label="다음 페이지"
                 >
                   <ChevronRight size={22} />
@@ -154,17 +155,21 @@ export default function BookPreviewModal({
               zoomLevel={zoomLevel}
               viewMode={viewMode}
               onPageChange={handleGridPageClick}
+              onPageTopChange={setSidebarPadTop}
             />
           </div>
 
           {/* ── Sidebar ── */}
-          <div className="flex flex-shrink-0 flex-col gap-3 bg-gray-50 p-3 md:w-[280px] md:p-4">
+          <div className="flex flex-shrink-0 flex-col gap-3 bg-gray-50 p-3 md:w-[280px] md:p-4 md:pl-0" style={{ paddingTop: sidebarPadTop }}>
             {/* View Mode Buttons — Box */}
             <div className="flex items-center justify-center gap-1 rounded-xl bg-white p-3 shadow-sm">
               {viewModeButtons.map(({ mode, icon, label }) => (
                 <button
                   key={mode}
-                  onClick={() => setViewMode(mode)}
+                  onClick={() => {
+                    setViewMode(mode);
+                    if (mode === "grid") setZoomLevel(100);
+                  }}
                   className={`rounded-lg border px-4 py-2.5 transition-colors ${
                     viewMode === mode
                       ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 text-[var(--color-primary)]"
@@ -178,8 +183,8 @@ export default function BookPreviewModal({
               ))}
             </div>
 
-            {/* Zoom Slider — Box */}
-            <div className="flex items-center gap-2 rounded-xl bg-white px-4 py-3 shadow-sm">
+            {/* Zoom Slider — Box (hidden in grid mode) */}
+            <div className={`items-center gap-2 rounded-xl bg-white px-4 py-3 shadow-sm ${viewMode === "grid" ? "hidden" : "flex"}`}>
               <input
                 type="range"
                 min={100}
@@ -218,6 +223,38 @@ export default function BookPreviewModal({
                   {book.price.toLocaleString()}
                 </span>
                 <span className="text-sm text-[var(--color-dark)]">원</span>
+              </div>
+
+              {/* Quantity */}
+              <div className="mt-3 flex items-center justify-between">
+                <div className="flex items-center rounded-lg border border-gray-200">
+                  <button
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="flex h-8 w-8 items-center justify-center text-[var(--color-muted)] transition-colors hover:bg-gray-50 disabled:opacity-30"
+                    disabled={quantity <= 1}
+                    aria-label="수량 감소"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="flex h-8 w-9 items-center justify-center border-x border-gray-200 text-sm font-medium tabular-nums text-[var(--color-dark)]">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity((q) => Math.min(99, q + 1))}
+                    className="flex h-8 w-8 items-center justify-center text-[var(--color-muted)] transition-colors hover:bg-gray-50 disabled:opacity-30"
+                    disabled={quantity >= 99}
+                    aria-label="수량 증가"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-[var(--color-muted)]">총 상품금액</p>
+                  <p className="text-base font-bold text-[var(--color-dark)]">
+                    {(book.price * quantity).toLocaleString()}
+                    <span className="text-xs font-normal">원</span>
+                  </p>
+                </div>
               </div>
 
               {/* Actions */}

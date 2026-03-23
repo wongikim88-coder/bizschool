@@ -36,9 +36,9 @@ function StarRating({ rating }: { rating: number }) {
             size={18}
             className={
               filled
-                ? "fill-yellow-400 text-yellow-400"
+                ? "fill-[var(--color-primary)] text-[var(--color-primary)]"
                 : half
-                  ? "fill-yellow-400/50 text-yellow-400"
+                  ? "fill-[var(--color-primary)]/50 text-[var(--color-primary)]"
                   : "text-gray-300"
             }
           />
@@ -62,7 +62,7 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
       <div className="flex flex-col gap-6 md:flex-row md:gap-20">
         {/* Cover + Preview */}
         <div className="mx-auto flex-shrink-0 md:mx-0">
-          <div className="relative mx-auto h-[380px] w-[270px] overflow-hidden rounded-lg shadow-md md:h-[580px] md:w-[420px]">
+          <div className="relative mx-auto h-[439px] w-[312px] overflow-hidden rounded-lg shadow-md md:h-[670px] md:w-[485px]">
             <div className="flex h-full flex-col items-center justify-center bg-gradient-to-b from-gray-200 to-gray-300 p-6">
               <p className="text-center text-sm font-bold leading-tight text-gray-600 md:text-lg">
                 {book.title.length > 30 ? book.title.slice(0, 30) + "..." : book.title}
@@ -95,7 +95,7 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
           </div>
           {/* Preview Button below cover */}
           {book.preview && (
-            <div className="mt-2 mx-auto w-[270px] md:w-[420px]">
+            <div className="mt-2 mx-auto w-[312px] md:w-[485px]">
               <BookPreviewButton book={book} variant="inline" />
             </div>
           )}
@@ -119,13 +119,13 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
             </p>
 
             {/* Rating */}
-            <div className="mt-3 flex items-center gap-2">
+            <a href="#reviews" className="mt-3 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
               <StarRating rating={book.rating} />
               <span className="text-sm font-bold text-[var(--color-dark)]">{book.rating}</span>
-              <span className="text-sm text-[var(--color-muted)]">
+              <span className="text-sm text-[var(--color-muted)] hover:underline">
                 ({book.reviewCount}개의 리뷰)
               </span>
-            </div>
+            </a>
           </div>
 
           {/* Price */}
@@ -155,7 +155,7 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
           </div>
 
           {/* 적립/혜택 */}
-          <div className="mt-4 flex items-center gap-2 border-t border-[var(--color-dark)] pt-4">
+          <div className="mt-4 flex items-center gap-2 border-t border-[var(--color-border)] pt-4">
             <span className="text-sm font-bold text-[var(--color-dark)]">적립</span>
             <span className="flex items-center text-sm font-bold text-[var(--color-primary)]">
               {Math.floor((book.originalPrice ?? book.price) * 0.05).toLocaleString()}P
@@ -221,16 +221,88 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
 
       {/* ── 중단: 도서 설명 ── */}
       {book.description && (
-        <section className="mt-10 border-t border-[var(--color-dark)] pt-8">
+        <>
+        <div className="relative mt-10">
+          <div className="absolute left-1/2 w-screen -translate-x-1/2 border-t border-[var(--color-dark)]" />
+        </div>
+        <section className="pt-8">
           <h2 className="text-lg font-bold text-[var(--color-dark)]">도서 소개</h2>
           <p className="mt-4 text-sm leading-relaxed text-[var(--color-body)] md:text-base">
             {book.description}
           </p>
         </section>
+        </>
       )}
 
-      {/* ── 별점/리뷰 섹션 ── */}
+      {/* ── 목차 ── */}
+      {book.preview?.toc && book.preview.toc.length > 0 && (
+        <section className="mt-10 border-t border-[var(--color-border)] pt-8">
+          <h2 className="text-lg font-bold text-[var(--color-dark)]">목차</h2>
+          <ul className="mt-4">
+            {book.preview.toc.map((item, idx) => (
+              <li key={idx} className="flex items-baseline gap-3 py-3 first:pt-0">
+                <span className="shrink-0 text-sm font-bold text-[var(--color-body)]">
+                  {item.chapter}
+                </span>
+                <span className="text-sm text-[var(--color-body)]">{item.title}</span>
+                <span className="ml-auto shrink-0 text-sm text-[var(--color-body)]">p.{item.page}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* ── 저자 소개 ── */}
       <section className="mt-10 border-t border-[var(--color-border)] pt-8">
+        <h2 className="text-lg font-bold text-[var(--color-dark)]">저자 소개</h2>
+        <div className="mt-4">
+          <h3 className="text-base font-bold text-[var(--color-dark)]">{book.author}</h3>
+          {book.authorBio && (
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-body)]">
+              {book.authorBio}
+            </p>
+          )}
+        </div>
+
+        {/* 동일 저자의 다른 책 */}
+        {(() => {
+          const otherBooks = allBooks
+            .filter((b) => b.author === book.author && b.id !== book.id)
+            .slice(0, 5);
+          if (otherBooks.length === 0) return null;
+          return (
+            <div className="mt-6">
+              <h4 className="text-sm font-bold text-[var(--color-muted)]">
+                {book.author}의 다른 도서
+              </h4>
+              <div className="mt-3 grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-6">
+                {otherBooks.map((ob) => (
+                  <Link
+                    key={ob.id}
+                    href={`/books/${ob.id}`}
+                    className="group rounded-lg border border-[var(--color-border)] p-2 transition-colors hover:border-[var(--color-primary)]"
+                  >
+                    <div className="flex h-[200px] items-center justify-center rounded bg-gradient-to-b from-gray-200 to-gray-300">
+                      <p className="px-2 text-center text-xs font-bold leading-tight text-gray-600">
+                        {ob.title.length > 20 ? ob.title.slice(0, 20) + "..." : ob.title}
+                      </p>
+                    </div>
+                    <p className="mt-2 text-xs font-medium text-[var(--color-dark)] line-clamp-2 group-hover:text-[var(--color-primary)]">
+                      {ob.title}
+                    </p>
+                    <p className="mt-1 text-xs font-bold text-[var(--color-dark)]">
+                      {ob.price.toLocaleString()}원
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </section>
+
+      {/* ── 별점/리뷰 섹션 ── */}
+      <section id="reviews" className="mt-10 border-t border-[var(--color-border)] pt-8 scroll-mt-20">
         <h2 className="text-lg font-bold text-[var(--color-dark)]">
           리뷰
           <span className="ml-2 text-base font-normal text-[var(--color-muted)]">
@@ -265,7 +337,7 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
                         size={14}
                         className={
                           i < review.rating
-                            ? "fill-yellow-400 text-yellow-400"
+                            ? "fill-[var(--color-primary)] text-[var(--color-primary)]"
                             : "text-gray-300"
                         }
                       />

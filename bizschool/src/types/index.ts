@@ -31,6 +31,7 @@ export interface Book {
   preview?: BookPreview;
   reviews?: BookReview[];
   specs?: BookSpecs;
+  authorBio?: string;
 }
 
 export interface BookSpecs {
@@ -81,31 +82,6 @@ export interface MenuItem {
   href: string;
 }
 
-// ── AI 전문가 상담 ──
-
-export interface ConsultationSession {
-  id: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-  messages: ChatMessage[];
-}
-
-export interface ChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  createdAt: string;
-  expertVerification?: ExpertVerification;
-}
-
-export interface ExpertVerification {
-  status: "none" | "pending" | "verified";
-  expertName?: string;
-  verifiedAt?: string;
-  comment?: string;
-}
-
 // ── 커뮤니티 ──
 
 export interface CommunityPost {
@@ -147,6 +123,33 @@ export interface WeeklyActiveUser {
 
 export type CommunityTab = "home" | "questions" | "cases" | "discussion";
 
+// ── 전문가상담 ──
+
+export interface ExpertConsultation {
+  id: string;
+  title: string;
+  content: string;
+  author: string;
+  authorId: string;
+  category: ExpertConsultationCategory;
+  createdAt: string;
+  viewCount: number;
+  status: "pending" | "answered";
+  answer?: ExpertAnswer;
+}
+
+export interface ExpertAnswer {
+  id: string;
+  expertName: string;
+  expertTitle: string;
+  content: string;
+  answeredAt: string;
+}
+
+export type ExpertConsultationCategory = "회계" | "세무" | "4대보험" | "인사·총무";
+
+export type ExpertSortOption = "latest" | "views";
+
 // ── 마이페이지 ──
 
 export interface MockUser {
@@ -177,7 +180,7 @@ export type InquiryCategory = "강의" | "도서" | "결제" | "기술문제" | 
 
 export type InquiryFilter = "all" | "pending" | "answered";
 
-export type MypageTab = "profile" | "inquiry" | "courses" | "purchases" | "claims";
+export type MypageTab = "profile" | "inquiry" | "courses" | "purchases" | "claims" | "expert";
 
 // ── 취소/반품/교환/환불내역 ──
 

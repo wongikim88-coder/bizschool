@@ -10,7 +10,7 @@ export const bookCategories = [
   { key: "IT기술", label: "IT/기술" },
 ] as const;
 
-export const BOOKS_PER_PAGE = 20;
+export const BOOKS_PER_PAGE = 10;
 
 export const sampleBooks: Book[] = [
   {
@@ -163,6 +163,39 @@ export const allBooks: Book[] = [
       ],
     },
     specs: { pages: 336, size: "152×225mm", isbn: "978-89-6626-108-2", binding: "반양장(소프트커버)", weight: "480g" },
+    authorBio: "실리콘밸리의 기업가이자 작가. IMVU의 공동 창업자이며 CTO를 역임했다. 하버드 비즈니스 스쿨의 상주 기업가(Entrepreneur-in-Residence)로도 활동했으며, 린 스타트업 방법론을 창시하여 전 세계 스타트업 생태계에 큰 영향을 미쳤다.",
+  },
+  {
+    id: "ab1-2",
+    title: "스타트업 웨이 - 현대 기업이 린 스타트업을 활용하는 법",
+    author: "에릭 리스",
+    cover: "/images/books/book-6.jpg",
+    price: 19800,
+    originalPrice: 22000,
+    discountRate: 10,
+    rating: 4.5,
+    reviewCount: 62,
+    publisher: "인사이트",
+    publishDate: "2025년 06월 20일",
+    description: "린 스타트업의 후속작. 대기업과 스타트업 모두에게 적용 가능한 기업가적 경영 원칙을 제시하며, 조직의 혁신 역량을 높이는 실전 전략을 담았습니다.",
+    category: "경영전략",
+    authorBio: "실리콘밸리의 기업가이자 작가. IMVU의 공동 창업자이며 CTO를 역임했다. 하버드 비즈니스 스쿨의 상주 기업가(Entrepreneur-in-Residence)로도 활동했으며, 린 스타트업 방법론을 창시하여 전 세계 스타트업 생태계에 큰 영향을 미쳤다.",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "스타트업 웨이란 무엇인가", page: 7 },
+        { chapter: "제2장", title: "기업가적 경영의 원칙", page: 31 },
+        { chapter: "제3장", title: "지속적 혁신 엔진", page: 59 },
+        { chapter: "제4장", title: "대기업에서의 린 스타트업", page: 85 },
+        { chapter: "제5장", title: "조직 변혁의 로드맵", page: 113 },
+        { chapter: "제6장", title: "혁신 회계와 성과 측정", page: 141 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 312, size: "152×225mm", isbn: "978-89-6626-215-8", binding: "반양장(소프트커버)", weight: "450g" },
   },
   {
     id: "ab2",
@@ -179,6 +212,7 @@ export const allBooks: Book[] = [
     publishDate: "2023년 11월 20일",
     description: "페이팔 공동 창업자 피터 틸이 스탠퍼드 대학에서 진행한 창업 강의를 바탕으로, 0에서 1을 만드는 혁신의 원리를 설명합니다.",
     category: "경영전략",
+    authorBio: "페이팔(PayPal)의 공동 창업자이자 팔란티어 테크놀로지스(Palantir Technologies)의 공동 창업자. 실리콘밸리에서 가장 영향력 있는 투자자 중 한 명으로, 페이스북의 첫 번째 외부 투자자이기도 하다.",
     reviews: [
       { reviewer: "정실리콘", rating: 5, content: "경쟁하지 말고 독점하라는 메시지가 인상적입니다. 사업 아이디어를 평가하는 새로운 관점을 얻었습니다.", date: "2025-12-01" },
       { reviewer: "최스타트", rating: 5, content: "스타트업의 본질을 꿰뚫는 책. 짧지만 내용이 매우 밀도 있습니다.", date: "2025-09-18" },
@@ -209,6 +243,7 @@ export const allBooks: Book[] = [
         { pageNumber: 12 },
       ],
     },
+    specs: { pages: 260, size: "148×210mm", isbn: "978-89-255-0820-5", binding: "반양장(소프트커버)", weight: "380g" },
   },
   {
     id: "ab3",
@@ -222,6 +257,24 @@ export const allBooks: Book[] = [
     publishDate: "2024년 01월 10일",
     description: "링크드인 공동 창업자 리드 호프먼이 전하는 초고속 성장 전략. 불확실성 속에서 속도를 우선시하는 스케일업 방법론을 다룹니다.",
     category: "경영전략",
+    authorBio: "링크드인(LinkedIn)의 공동 창업자이자 그레이록 파트너스의 파트너. 실리콘밸리의 대표적인 벤처 투자자이자 기업가로, 페이팔 초기 멤버('페이팔 마피아')이기도 하다.",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "블리츠스케일링이란", page: 9 },
+        { chapter: "제2장", title: "스케일업의 5단계", page: 35 },
+        { chapter: "제3장", title: "불확실성 속의 속도 전략", page: 63 },
+        { chapter: "제4장", title: "네트워크 효과의 힘", page: 89 },
+        { chapter: "제5장", title: "블리츠스케일링의 리스크", page: 117 },
+        { chapter: "제6장", title: "글로벌 블리츠스케일링", page: 145 },
+        { chapter: "제7장", title: "책임있는 블리츠스케일링", page: 171 },
+      ],
+      totalPages: 16,
+      pages: Array.from({ length: 16 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 392, size: "152×225mm", isbn: "978-89-349-9876-3", binding: "양장(하드커버)", weight: "560g" },
   },
   {
     id: "ab4",
@@ -237,6 +290,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 05월 22일",
     description: "전략 분야의 세계적 권위자가 좋은 전략과 나쁜 전략의 차이를 명확하게 구분하고, 효과적인 전략 수립의 핵심 원칙을 제시합니다.",
     category: "경영전략",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "좋은 전략과 나쁜 전략", page: 7 },
+        { chapter: "제2장", title: "나쁜 전략의 특징", page: 33 },
+        { chapter: "제3장", title: "전략의 핵심 구조", page: 61 },
+        { chapter: "제4장", title: "레버리지 포인트 찾기", page: 89 },
+        { chapter: "제5장", title: "가까운 목표 설정", page: 115 },
+        { chapter: "제6장", title: "체인 링크 시스템", page: 143 },
+        { chapter: "제7장", title: "전략적 사고의 과학", page: 169 },
+      ],
+      totalPages: 15,
+      pages: Array.from({ length: 15 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 380, size: "152×225mm", isbn: "978-89-8407-532-4", binding: "반양장(소프트커버)", weight: "530g" },
   },
   {
     id: "ab5",
@@ -252,6 +322,22 @@ export const allBooks: Book[] = [
     publishDate: "2023년 09월 05일",
     description: "빌 게이츠가 '내가 읽은 최고의 경영서'라고 극찬한 책. 기업 경영의 역사적 순간들을 통해 시대를 초월하는 비즈니스 교훈을 전합니다.",
     category: "경영전략",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "주식시장의 변동", page: 5 },
+        { chapter: "제2장", title: "포드의 실패와 교훈", page: 31 },
+        { chapter: "제3장", title: "연방소득세의 탄생", page: 57 },
+        { chapter: "제4장", title: "제록스의 모험", page: 83 },
+        { chapter: "제5장", title: "월스트리트의 내부자들", page: 111 },
+        { chapter: "제6장", title: "기업 커뮤니케이션의 실체", page: 137 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 348, size: "148×210mm", isbn: "978-89-6570-241-9", binding: "반양장(소프트커버)", weight: "480g" },
   },
   {
     id: "ab6",
@@ -267,6 +353,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 02월 18일",
     description: "플랫폼 비즈니스의 작동 원리와 성공 전략을 체계적으로 분석합니다. 우버, 에어비앤비, 아마존 등 글로벌 플랫폼 기업의 사례를 통해 핵심 전략을 배울 수 있습니다.",
     category: "경영전략",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "플랫폼 혁명의 시대", page: 7 },
+        { chapter: "제2장", title: "플랫폼의 핵심 구조", page: 33 },
+        { chapter: "제3장", title: "네트워크 효과와 성장", page: 61 },
+        { chapter: "제4장", title: "플랫폼 전략 수립", page: 91 },
+        { chapter: "제5장", title: "수익 모델 설계", page: 119 },
+        { chapter: "제6장", title: "플랫폼 거버넌스", page: 145 },
+        { chapter: "제7장", title: "플랫폼 경쟁과 규제", page: 173 },
+      ],
+      totalPages: 16,
+      pages: Array.from({ length: 16 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 356, size: "152×225mm", isbn: "978-89-6051-487-8", binding: "반양장(소프트커버)", weight: "500g" },
   },
   {
     id: "ab7",
@@ -283,10 +386,28 @@ export const allBooks: Book[] = [
     publishDate: "2023년 07월 12일",
     description: "왜 위대한 기업들이 혁신에 실패하는가? 파괴적 혁신 이론의 창시자가 제시하는 기업 혁신의 역설과 해법을 담고 있습니다.",
     category: "경영전략",
+    authorBio: "하버드 비즈니스 스쿨 교수이자 '파괴적 혁신(Disruptive Innovation)' 이론의 창시자. 경영학 분야에서 가장 영향력 있는 사상가 중 한 명으로 꼽히며, 혁신과 성장에 관한 수많은 저서를 남겼다.",
     reviews: [
       { reviewer: "한전략", rating: 5, content: "파괴적 혁신의 개념을 이해하는 데 필수적인 책. 기존 대기업이 왜 혁신에 실패하는지 명쾌하게 설명합니다.", date: "2025-11-10" },
       { reviewer: "윤기술", rating: 4, content: "IT 업계뿐 아니라 모든 산업에 적용 가능한 통찰을 제공합니다.", date: "2025-08-22" },
     ],
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "파괴적 혁신의 원리", page: 9 },
+        { chapter: "제2장", title: "가치 네트워크와 혁신", page: 37 },
+        { chapter: "제3장", title: "디스크 드라이브 산업의 교훈", page: 63 },
+        { chapter: "제4장", title: "기존 기업의 한계", page: 91 },
+        { chapter: "제5장", title: "파괴적 기술의 특성", page: 117 },
+        { chapter: "제6장", title: "조직의 역량과 한계", page: 145 },
+        { chapter: "제7장", title: "혁신의 딜레마 해결", page: 171 },
+      ],
+      totalPages: 15,
+      pages: Array.from({ length: 15 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 328, size: "152×225mm", isbn: "978-89-8407-198-2", binding: "양장(하드커버)", weight: "490g" },
   },
   // 마케팅 (6권)
   {
@@ -303,6 +424,24 @@ export const allBooks: Book[] = [
     publishDate: "2024년 04월 01일",
     description: "마케팅 분야의 고전 중의 고전. 시대가 변해도 변하지 않는 22가지 마케팅의 핵심 법칙을 명쾌하게 설명합니다.",
     category: "마케팅",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "선도자의 법칙", page: 5 },
+        { chapter: "제2장", title: "영역의 법칙", page: 23 },
+        { chapter: "제3장", title: "기억의 법칙", page: 41 },
+        { chapter: "제4장", title: "인식의 법칙", page: 59 },
+        { chapter: "제5장", title: "집중의 법칙", page: 77 },
+        { chapter: "제6장", title: "독점의 법칙", page: 95 },
+        { chapter: "제7장", title: "사다리의 법칙", page: 113 },
+        { chapter: "제8장", title: "이원성의 법칙", page: 131 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 232, size: "128×188mm", isbn: "978-89-6370-115-3", binding: "반양장(소프트커버)", weight: "310g" },
   },
   {
     id: "ab9",
@@ -318,6 +457,22 @@ export const allBooks: Book[] = [
     publishDate: "2024년 06월 15일",
     description: "왜 어떤 제품과 아이디어는 유행하고 어떤 것은 그렇지 못할까? 입소문의 과학적 원리와 6가지 핵심 요소를 밝힙니다.",
     category: "마케팅",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "소셜 화폐", page: 7 },
+        { chapter: "제2장", title: "계기", page: 33 },
+        { chapter: "제3장", title: "감성", page: 57 },
+        { chapter: "제4장", title: "대중성", page: 81 },
+        { chapter: "제5장", title: "실용적 가치", page: 107 },
+        { chapter: "제6장", title: "스토리", page: 131 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 280, size: "148×210mm", isbn: "978-89-546-2837-5", binding: "반양장(소프트커버)", weight: "390g" },
   },
   {
     id: "ab10",
@@ -349,6 +504,7 @@ export const allBooks: Book[] = [
         ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "머리말" } : {}),
       })),
     },
+    specs: { pages: 368, size: "152×225mm", isbn: "978-89-6848-392-1", binding: "반양장(소프트커버)", weight: "520g" },
   },
   {
     id: "ab11",
@@ -362,6 +518,23 @@ export const allBooks: Book[] = [
     publishDate: "2023년 10월 08일",
     description: "브랜드의 힘을 극대화하는 22가지 불변의 법칙. 성공적인 브랜드 구축과 관리의 핵심 원칙을 실제 사례와 함께 설명합니다.",
     category: "마케팅",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "확장의 법칙", page: 7 },
+        { chapter: "제2장", title: "축소의 법칙", page: 29 },
+        { chapter: "제3장", title: "홍보의 법칙", page: 51 },
+        { chapter: "제4장", title: "광고의 법칙", page: 73 },
+        { chapter: "제5장", title: "단어의 법칙", page: 97 },
+        { chapter: "제6장", title: "품질의 법칙", page: 121 },
+        { chapter: "제7장", title: "카테고리의 법칙", page: 143 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 248, size: "128×188mm", isbn: "978-89-6370-216-7", binding: "반양장(소프트커버)", weight: "330g" },
   },
   {
     id: "ab12",
@@ -377,6 +550,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 08월 25일",
     description: "드롭박스, 에어비앤비 등 실리콘밸리 기업들의 성장 비결. 데이터 기반의 실험적 마케팅으로 폭발적 성장을 이끄는 그로스 해킹 방법론을 소개합니다.",
     category: "마케팅",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "그로스 해킹이란 무엇인가", page: 9 },
+        { chapter: "제2장", title: "그로스 해킹 팀 구축", page: 35 },
+        { chapter: "제3장", title: "제품-시장 적합성 찾기", page: 59 },
+        { chapter: "제4장", title: "사용자 획득 전략", page: 87 },
+        { chapter: "제5장", title: "활성화와 리텐션", page: 115 },
+        { chapter: "제6장", title: "수익화 최적화", page: 141 },
+        { chapter: "제7장", title: "바이럴 성장 엔진", page: 167 },
+      ],
+      totalPages: 15,
+      pages: Array.from({ length: 15 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 320, size: "152×225mm", isbn: "978-89-6816-145-2", binding: "반양장(소프트커버)", weight: "450g" },
   },
   {
     id: "ab13",
@@ -392,6 +582,22 @@ export const allBooks: Book[] = [
     publishDate: "2025년 01월 10일",
     description: "블로그, 유튜브, SNS 등 다양한 채널에서 효과적인 콘텐츠를 기획하고 제작하는 실전 노하우를 담았습니다.",
     category: "마케팅",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "콘텐츠 마케팅의 본질", page: 7 },
+        { chapter: "제2장", title: "콘텐츠 전략 수립", page: 31 },
+        { chapter: "제3장", title: "블로그 콘텐츠 기획", page: 57 },
+        { chapter: "제4장", title: "영상 콘텐츠 제작", page: 83 },
+        { chapter: "제5장", title: "SNS 채널 운영", page: 109 },
+        { chapter: "제6장", title: "성과 측정과 분석", page: 135 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 296, size: "152×225mm", isbn: "978-89-5913-847-3", binding: "반양장(소프트커버)", weight: "420g" },
   },
   // 재무회계 (7권)
   {
@@ -414,6 +620,23 @@ export const allBooks: Book[] = [
       { reviewer: "오회계", rating: 5, content: "회계 비전공자도 쉽게 이해할 수 있도록 실제 사례 중심으로 잘 설명되어 있습니다.", date: "2025-10-30" },
       { reviewer: "서분석", rating: 4, content: "투자를 위한 재무제표 분석 입문서로 최적입니다. 다만 심화 내용은 별도 학습이 필요합니다.", date: "2025-09-15" },
     ],
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "재무제표란 무엇인가", page: 7 },
+        { chapter: "제2장", title: "손익계산서 읽기", page: 35 },
+        { chapter: "제3장", title: "재무상태표 분석", page: 63 },
+        { chapter: "제4장", title: "현금흐름표의 비밀", page: 91 },
+        { chapter: "제5장", title: "재무비율 분석", page: 119 },
+        { chapter: "제6장", title: "실전 기업 분석 사례", page: 147 },
+        { chapter: "제7장", title: "투자 의사결정에 활용하기", page: 175 },
+      ],
+      totalPages: 16,
+      pages: Array.from({ length: 16 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 312, size: "152×225mm", isbn: "978-89-6368-924-1", binding: "반양장(소프트커버)", weight: "440g" },
   },
   {
     id: "ab15",
@@ -446,6 +669,7 @@ export const allBooks: Book[] = [
         ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "저자 소개" } : i === 2 ? { label: "서문" } : {}),
       })),
     },
+    specs: { pages: 420, size: "152×225mm", isbn: "978-89-5961-734-6", binding: "반양장(소프트커버)", weight: "580g" },
   },
   {
     id: "ab16",
@@ -459,6 +683,22 @@ export const allBooks: Book[] = [
     publishDate: "2023년 12월 15일",
     description: "비즈니스 의사결정에 필수적인 통계학의 핵심 개념을 일상의 사례로 쉽게 풀어냈습니다. 숫자를 두려워하는 사람도 부담 없이 읽을 수 있습니다.",
     category: "재무회계",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "통계학이 필요한 이유", page: 7 },
+        { chapter: "제2장", title: "평균과 분산의 이해", page: 29 },
+        { chapter: "제3장", title: "확률의 기초", page: 53 },
+        { chapter: "제4장", title: "정규분포와 표본", page: 79 },
+        { chapter: "제5장", title: "가설검정의 원리", page: 105 },
+        { chapter: "제6장", title: "회귀분석 입문", page: 131 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 256, size: "148×210mm", isbn: "978-89-5724-618-4", binding: "반양장(소프트커버)", weight: "360g" },
   },
   {
     id: "ab17",
@@ -475,6 +715,24 @@ export const allBooks: Book[] = [
     publishDate: "2026년 02월 10일",
     description: "2026년 개정 세법을 반영한 세무실무 종합서. 법인세, 소득세, 부가가치세 등 주요 세무 실무를 체계적으로 정리했습니다.",
     category: "재무회계",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "세무실무 총론", page: 9 },
+        { chapter: "제2장", title: "법인세 실무", page: 45 },
+        { chapter: "제3장", title: "소득세 실무", page: 121 },
+        { chapter: "제4장", title: "부가가치세 실무", page: 195 },
+        { chapter: "제5장", title: "원천징수 실무", page: 261 },
+        { chapter: "제6장", title: "상속세와 증여세", page: 325 },
+        { chapter: "제7장", title: "지방세 실무", page: 389 },
+        { chapter: "제8장", title: "세무조사 대응", page: 445 },
+      ],
+      totalPages: 20,
+      pages: Array.from({ length: 20 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 688, size: "152×225mm", isbn: "978-89-5765-231-6", binding: "양장(하드커버)", weight: "980g" },
   },
   {
     id: "ab18",
@@ -490,6 +748,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 09월 01일",
     description: "기업의 전략적 의사결정에 필수적인 관리회계의 이론과 실무를 체계적으로 다룹니다. 원가 분석, 예산 관리, 성과 평가 등 핵심 주제를 포함합니다.",
     category: "재무회계",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "관리회계의 기초", page: 7 },
+        { chapter: "제2장", title: "원가의 개념과 분류", page: 39 },
+        { chapter: "제3장", title: "원가-조업도-이익 분석", page: 71 },
+        { chapter: "제4장", title: "종합예산 편성", page: 103 },
+        { chapter: "제5장", title: "표준원가와 차이분석", page: 137 },
+        { chapter: "제6장", title: "활동기준원가계산", page: 169 },
+        { chapter: "제7장", title: "성과평가와 균형성과표", page: 201 },
+      ],
+      totalPages: 17,
+      pages: Array.from({ length: 17 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 456, size: "152×225mm", isbn: "978-89-1847-392-5", binding: "양장(하드커버)", weight: "650g" },
   },
   {
     id: "ab19",
@@ -503,6 +778,22 @@ export const allBooks: Book[] = [
     publishDate: "2025년 04월 04일",
     description: "부동산 취득, 보유, 양도 시 발생하는 각종 세금을 종합적으로 정리한 실무 가이드입니다.",
     category: "재무회계",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "부동산 세금의 기초", page: 5 },
+        { chapter: "제2장", title: "취득세의 모든 것", page: 25 },
+        { chapter: "제3장", title: "보유세: 재산세와 종합부동산세", page: 51 },
+        { chapter: "제4장", title: "양도소득세 완전 정복", page: 79 },
+        { chapter: "제5장", title: "임대소득과 세금", page: 109 },
+        { chapter: "제6장", title: "상속·증여와 부동산", page: 135 },
+      ],
+      totalPages: 12,
+      pages: Array.from({ length: 12 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 224, size: "148×210mm", isbn: "978-89-5765-487-7", binding: "반양장(소프트커버)", weight: "320g" },
   },
   {
     id: "ab20",
@@ -518,6 +809,23 @@ export const allBooks: Book[] = [
     publishDate: "2026년 02월 10일",
     description: "지방자치단체의 지방세를 체계적으로 다룬 전문서. 취득세, 재산세 등 지방세의 이론과 실무를 상세히 해설합니다.",
     category: "재무회계",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "지방세 총론", page: 9 },
+        { chapter: "제2장", title: "취득세", page: 45 },
+        { chapter: "제3장", title: "등록면허세", page: 89 },
+        { chapter: "제4장", title: "재산세", page: 127 },
+        { chapter: "제5장", title: "자동차세", page: 163 },
+        { chapter: "제6장", title: "지방소득세", page: 197 },
+        { chapter: "제7장", title: "지방세 불복 절차", page: 231 },
+      ],
+      totalPages: 18,
+      pages: Array.from({ length: 18 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 520, size: "152×225mm", isbn: "978-89-5765-532-4", binding: "양장(하드커버)", weight: "740g" },
   },
   // 자기계발 (7권)
   {
@@ -535,6 +843,24 @@ export const allBooks: Book[] = [
     publishDate: "2023년 06월 30일",
     description: "인류의 역사를 거시적 관점에서 바라보며, 인지혁명부터 과학혁명까지 인간의 발전 과정을 흥미롭게 풀어냅니다.",
     category: "자기계발",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "인지혁명", page: 9 },
+        { chapter: "제2장", title: "허구의 힘", page: 39 },
+        { chapter: "제3장", title: "농업혁명의 함정", page: 69 },
+        { chapter: "제4장", title: "역사의 방향", page: 99 },
+        { chapter: "제5장", title: "돈의 탄생", page: 131 },
+        { chapter: "제6장", title: "제국의 비전", page: 163 },
+        { chapter: "제7장", title: "과학혁명", page: 195 },
+        { chapter: "제8장", title: "호모 사피엔스의 미래", page: 225 },
+      ],
+      totalPages: 18,
+      pages: Array.from({ length: 18 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 636, size: "152×225mm", isbn: "978-89-349-7056-1", binding: "양장(하드커버)", weight: "820g" },
   },
   {
     id: "ab22",
@@ -548,6 +874,22 @@ export const allBooks: Book[] = [
     publishDate: "2024년 02월 28일",
     description: "노벨 경제학상 수상자가 알려주는 행동경제학의 핵심. 작은 개입으로 더 나은 선택을 이끌어내는 넛지의 원리를 탐구합니다.",
     category: "자기계발",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "선택 설계자", page: 7 },
+        { chapter: "제2장", title: "인간의 편향", page: 31 },
+        { chapter: "제3장", title: "넛지의 원리", page: 57 },
+        { chapter: "제4장", title: "저축 넛지", page: 83 },
+        { chapter: "제5장", title: "건강 넛지", page: 109 },
+        { chapter: "제6장", title: "자유주의적 개입주의", page: 135 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 288, size: "148×210mm", isbn: "978-89-5725-614-5", binding: "반양장(소프트커버)", weight: "400g" },
   },
   {
     id: "ab23",
@@ -569,6 +911,23 @@ export const allBooks: Book[] = [
       { reviewer: "이성장", rating: 5, content: "자기계발서 중 가장 실용적인 책. 이론이 아닌 구체적 방법론을 제시합니다.", date: "2025-11-05" },
       { reviewer: "박변화", rating: 4, content: "습관의 4단계 법칙이 매우 체계적입니다. 누구나 바로 실천할 수 있어요.", date: "2025-08-12" },
     ],
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "작은 습관이 큰 차이를 만든다", page: 7 },
+        { chapter: "제2장", title: "습관의 4단계 법칙", page: 33 },
+        { chapter: "제3장", title: "분명하게 만들어라", page: 57 },
+        { chapter: "제4장", title: "매력적으로 만들어라", page: 83 },
+        { chapter: "제5장", title: "쉽게 만들어라", page: 109 },
+        { chapter: "제6장", title: "만족스럽게 만들어라", page: 137 },
+        { chapter: "제7장", title: "고급 전략", page: 163 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 276, size: "148×210mm", isbn: "978-89-6051-734-3", binding: "반양장(소프트커버)", weight: "380g" },
   },
   {
     id: "ab24",
@@ -584,6 +943,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 04월 20일",
     description: "고정 마인드셋과 성장 마인드셋의 차이가 성공과 실패를 결정한다. 스탠퍼드 심리학 교수가 30년 연구로 밝혀낸 성공의 비밀입니다.",
     category: "자기계발",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "마인드셋이란 무엇인가", page: 7 },
+        { chapter: "제2장", title: "고정 마인드셋의 세계", page: 31 },
+        { chapter: "제3장", title: "성장 마인드셋의 힘", page: 57 },
+        { chapter: "제4장", title: "스포츠에서의 마인드셋", page: 85 },
+        { chapter: "제5장", title: "비즈니스와 리더십", page: 113 },
+        { chapter: "제6장", title: "관계에서의 마인드셋", page: 141 },
+        { chapter: "제7장", title: "마인드셋 바꾸기", page: 167 },
+      ],
+      totalPages: 15,
+      pages: Array.from({ length: 15 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 340, size: "148×210mm", isbn: "978-89-6570-382-9", binding: "반양장(소프트커버)", weight: "470g" },
   },
   {
     id: "ab25",
@@ -599,6 +975,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 07월 15일",
     description: "200명 이상의 세계 최고 성공자들을 인터뷰하여 얻은 일상의 루틴, 습관, 사고방식을 정리한 실용적 자기계발서입니다.",
     category: "자기계발",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "건강한 몸 만들기", page: 9 },
+        { chapter: "제2장", title: "부의 원칙", page: 41 },
+        { chapter: "제3장", title: "현명한 사고법", page: 73 },
+        { chapter: "제4장", title: "아침 루틴의 힘", page: 103 },
+        { chapter: "제5장", title: "명상과 마음 훈련", page: 131 },
+        { chapter: "제6장", title: "실패를 디딤돌로", page: 159 },
+        { chapter: "제7장", title: "삶의 도구 모음", page: 187 },
+      ],
+      totalPages: 16,
+      pages: Array.from({ length: 16 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 412, size: "152×225mm", isbn: "978-89-5913-956-2", binding: "반양장(소프트커버)", weight: "570g" },
   },
   {
     id: "ab26",
@@ -615,6 +1008,23 @@ export const allBooks: Book[] = [
     publishDate: "2023년 11월 05일",
     description: "재능보다 중요한 것은 열정과 끈기다. 펜실베이니아 대학 심리학 교수가 밝히는 성공의 궁극적 비결.",
     category: "자기계발",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "그릿이란 무엇인가", page: 7 },
+        { chapter: "제2장", title: "재능 vs 노력", page: 31 },
+        { chapter: "제3장", title: "노력은 두 번 중요하다", page: 55 },
+        { chapter: "제4장", title: "열정을 키우는 법", page: 81 },
+        { chapter: "제5장", title: "의도적 연습", page: 107 },
+        { chapter: "제6장", title: "목적의식의 힘", page: 133 },
+        { chapter: "제7장", title: "그릿 문화 만들기", page: 159 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 304, size: "148×210mm", isbn: "978-89-6051-845-6", binding: "반양장(소프트커버)", weight: "430g" },
   },
   {
     id: "ab27",
@@ -631,6 +1041,22 @@ export const allBooks: Book[] = [
     description: "절세 이야기를 쉽게 풀어낸 생활밀착형 세금 가이드. 부모와 자녀 간의 돈 거래부터 부동산, 금융 투자까지 절세 노하우를 담았습니다.",
     category: "자기계발",
     isSoldOut: true,
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "세금의 기본 이해", page: 7 },
+        { chapter: "제2장", title: "가족 간 돈 거래와 절세", page: 33 },
+        { chapter: "제3장", title: "부동산 절세 전략", page: 59 },
+        { chapter: "제4장", title: "금융투자와 세금", page: 87 },
+        { chapter: "제5장", title: "사업자를 위한 절세", page: 115 },
+        { chapter: "제6장", title: "연말정산 완전 공략", page: 143 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 268, size: "148×210mm", isbn: "978-89-5765-673-4", binding: "반양장(소프트커버)", weight: "370g" },
   },
   // 리더십 (8권)
   {
@@ -664,6 +1090,7 @@ export const allBooks: Book[] = [
         ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
       })),
     },
+    specs: { pages: 304, size: "148×210mm", isbn: "978-89-6051-923-1", binding: "반양장(소프트커버)", weight: "420g" },
   },
   {
     id: "ab29",
@@ -680,6 +1107,22 @@ export const allBooks: Book[] = [
     publishDate: "2023년 05월 20일",
     description: "삼성전자 반도체 사업을 세계 1위로 이끈 전직 CEO의 경영 철학. 인재, 기술, 조직 문화의 초격차 전략을 생생하게 전합니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "초격차의 시작", page: 7 },
+        { chapter: "제2장", title: "인재 전략", page: 35 },
+        { chapter: "제3장", title: "기술 리더십", page: 63 },
+        { chapter: "제4장", title: "조직 문화의 혁신", page: 89 },
+        { chapter: "제5장", title: "전략적 의사결정", page: 117 },
+        { chapter: "제6장", title: "위기 관리와 돌파", page: 145 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 292, size: "148×210mm", isbn: "978-89-6570-487-1", binding: "반양장(소프트커버)", weight: "410g" },
   },
   {
     id: "ab30",
@@ -695,6 +1138,22 @@ export const allBooks: Book[] = [
     publishDate: "2024년 03월 10일",
     description: "용감한 리더십은 취약함을 인정하는 것에서 시작됩니다. 연구 기반의 리더십 모델로 조직 문화를 변화시키는 방법을 제시합니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "취약성의 용기", page: 7 },
+        { chapter: "제2장", title: "신뢰의 구축", page: 33 },
+        { chapter: "제3장", title: "가치관에 기반한 리더십", page: 59 },
+        { chapter: "제4장", title: "어려운 대화의 기술", page: 87 },
+        { chapter: "제5장", title: "실패에서 배우기", page: 113 },
+        { chapter: "제6장", title: "용감한 문화 만들기", page: 141 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 316, size: "148×210mm", isbn: "978-89-9336-241-8", binding: "반양장(소프트커버)", weight: "440g" },
   },
   {
     id: "ab31",
@@ -710,6 +1169,22 @@ export const allBooks: Book[] = [
     publishDate: "2024년 06월 25일",
     description: "페이스북 디자인 부사장 출신 저자가 전하는 팀 관리의 기술. 신임 관리자부터 경력 리더까지 실질적인 리더십 가이드입니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "매니저가 된다는 것", page: 7 },
+        { chapter: "제2장", title: "첫 3개월 생존기", page: 33 },
+        { chapter: "제3장", title: "1:1 미팅의 기술", page: 57 },
+        { chapter: "제4장", title: "피드백 주고받기", page: 83 },
+        { chapter: "제5장", title: "채용과 팀 빌딩", page: 109 },
+        { chapter: "제6장", title: "성장하는 팀 만들기", page: 137 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 288, size: "148×210mm", isbn: "978-89-5913-743-8", binding: "반양장(소프트커버)", weight: "400g" },
   },
   {
     id: "ab32",
@@ -723,6 +1198,23 @@ export const allBooks: Book[] = [
     publishDate: "2023년 09월 15일",
     description: "하버드 협상연구소에서 20년간 연구한 피드백의 기술. 효과적인 피드백을 주고받는 방법과 조직 소통의 원리를 다룹니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "피드백은 왜 어려운가", page: 7 },
+        { chapter: "제2장", title: "피드백의 세 가지 유형", page: 31 },
+        { chapter: "제3장", title: "진실 트리거", page: 55 },
+        { chapter: "제4장", title: "관계 트리거", page: 81 },
+        { chapter: "제5장", title: "정체성 트리거", page: 107 },
+        { chapter: "제6장", title: "효과적인 피드백 주기", page: 133 },
+        { chapter: "제7장", title: "조직의 피드백 문화", page: 159 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 324, size: "152×225mm", isbn: "978-89-509-7461-3", binding: "반양장(소프트커버)", weight: "460g" },
   },
   {
     id: "ab33",
@@ -739,6 +1231,24 @@ export const allBooks: Book[] = [
     publishDate: "2023년 04월 30일",
     description: "세계 최대 헤지펀드 브리지워터의 창업자 레이 달리오가 40년간 축적한 인생과 경영의 원칙을 집대성한 책입니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "나는 어디서 왔는가", page: 9 },
+        { chapter: "제2장", title: "인생의 원칙", page: 43 },
+        { chapter: "제3장", title: "현실을 받아들이기", page: 75 },
+        { chapter: "제4장", title: "5단계 프로세스", page: 107 },
+        { chapter: "제5장", title: "일의 원칙", page: 141 },
+        { chapter: "제6장", title: "아이디어 성과주의", page: 175 },
+        { chapter: "제7장", title: "올바른 의사결정", page: 209 },
+        { chapter: "제8장", title: "조직의 원칙", page: 243 },
+      ],
+      totalPages: 18,
+      pages: Array.from({ length: 18 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 592, size: "152×225mm", isbn: "978-89-255-1032-1", binding: "양장(하드커버)", weight: "780g" },
   },
   {
     id: "ab34",
@@ -754,6 +1264,22 @@ export const allBooks: Book[] = [
     publishDate: "2024년 11월 08일",
     description: "구글, 애플 출신 저자가 전하는 '완전한 솔직함' 리더십. 칭찬과 비판의 균형을 통해 팀원을 성장시키는 리더의 기술입니다.",
     category: "리더십",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "완전한 솔직함이란", page: 7 },
+        { chapter: "제2장", title: "개인적으로 관심 갖기", page: 33 },
+        { chapter: "제3장", title: "직접적으로 도전하기", page: 59 },
+        { chapter: "제4장", title: "칭찬의 기술", page: 85 },
+        { chapter: "제5장", title: "비판의 기술", page: 113 },
+        { chapter: "제6장", title: "팀과 함께 성장하기", page: 139 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 308, size: "148×210mm", isbn: "978-89-349-8234-5", binding: "반양장(소프트커버)", weight: "430g" },
   },
   {
     id: "ab35",
@@ -768,6 +1294,22 @@ export const allBooks: Book[] = [
     description: "30년간의 리더십 연구를 바탕으로 도출한 5가지 핵심 리더십 원칙. 실질적 행동 지침과 사례를 통해 리더십을 개발할 수 있습니다.",
     category: "리더십",
     isSoldOut: true,
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "모범을 보여라", page: 7 },
+        { chapter: "제2장", title: "비전을 공유하라", page: 35 },
+        { chapter: "제3장", title: "기존 프로세스에 도전하라", page: 63 },
+        { chapter: "제4장", title: "다른 사람이 행동하도록 이끌어라", page: 91 },
+        { chapter: "제5장", title: "마음을 격려하라", page: 119 },
+        { chapter: "제6장", title: "리더십 개발 실천법", page: 147 },
+      ],
+      totalPages: 14,
+      pages: Array.from({ length: 14 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 352, size: "152×225mm", isbn: "978-89-255-1147-2", binding: "반양장(소프트커버)", weight: "490g" },
   },
   // IT/기술 (7권)
   {
@@ -783,6 +1325,22 @@ export const allBooks: Book[] = [
     publishDate: "2025년 11월 15일",
     description: "데이터에서 인과관계를 찾아내는 방법을 실제 비즈니스 사례와 함께 설명합니다. 데이터 기반 의사결정의 핵심을 배울 수 있습니다.",
     category: "IT기술",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "인과관계란 무엇인가", page: 7 },
+        { chapter: "제2장", title: "랜덤화 실험", page: 31 },
+        { chapter: "제3장", title: "자연실험의 활용", page: 55 },
+        { chapter: "제4장", title: "회귀분석과 인과추론", page: 81 },
+        { chapter: "제5장", title: "비즈니스 데이터 분석 사례", page: 107 },
+        { chapter: "제6장", title: "데이터 기반 의사결정", page: 133 },
+      ],
+      totalPages: 13,
+      pages: Array.from({ length: 13 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 264, size: "148×210mm", isbn: "978-89-6848-512-3", binding: "반양장(소프트커버)", weight: "370g" },
   },
   {
     id: "ab37",
@@ -822,6 +1380,7 @@ export const allBooks: Book[] = [
         ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "역자 서문" } : i === 2 ? { label: "추천사" } : {}),
       })),
     },
+    specs: { pages: 464, size: "152×225mm", isbn: "978-89-6626-215-7", binding: "반양장(소프트커버)", weight: "640g" },
   },
   {
     id: "ab38",
@@ -837,6 +1396,23 @@ export const allBooks: Book[] = [
     publishDate: "2025년 06월 10일",
     description: "ChatGPT, 생성형 AI 시대에 기업과 개인이 어떻게 AI를 활용하여 경쟁력을 확보할 수 있는지 실전 전략을 제시합니다.",
     category: "IT기술",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "AI 비즈니스의 현재", page: 7 },
+        { chapter: "제2장", title: "생성형 AI의 이해", page: 35 },
+        { chapter: "제3장", title: "기업의 AI 도입 전략", page: 63 },
+        { chapter: "제4장", title: "산업별 AI 활용 사례", page: 91 },
+        { chapter: "제5장", title: "AI 시대의 인재 전략", page: 121 },
+        { chapter: "제6장", title: "AI 윤리와 규제", page: 149 },
+        { chapter: "제7장", title: "미래 AI 트렌드 전망", page: 175 },
+      ],
+      totalPages: 15,
+      pages: Array.from({ length: 15 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 336, size: "152×225mm", isbn: "978-89-255-1263-9", binding: "반양장(소프트커버)", weight: "470g" },
   },
   {
     id: "ab39",
@@ -852,6 +1428,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 05월 15일",
     description: "실리콘밸리 최고의 프로덕트 매니저가 전하는 제품 관리의 핵심. 사용자 중심의 제품을 만드는 방법론과 조직 운영 기법을 담았습니다.",
     category: "IT기술",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "프로덕트 매니저의 역할", page: 7 },
+        { chapter: "제2장", title: "제품 발견 프로세스", page: 35 },
+        { chapter: "제3장", title: "고객 인터뷰와 리서치", page: 63 },
+        { chapter: "제4장", title: "프로토타이핑", page: 91 },
+        { chapter: "제5장", title: "제품 전략과 로드맵", page: 119 },
+        { chapter: "제6장", title: "애자일 제품 개발", page: 147 },
+        { chapter: "제7장", title: "프로덕트 팀 구축", page: 175 },
+      ],
+      totalPages: 16,
+      pages: Array.from({ length: 16 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 376, size: "152×225mm", isbn: "978-89-6551-324-7", binding: "반양장(소프트커버)", weight: "520g" },
   },
   {
     id: "ab40",
@@ -867,6 +1460,23 @@ export const allBooks: Book[] = [
     publishDate: "2024년 09월 20일",
     description: "직관적인 사용자 경험을 디자인하는 핵심 원칙과 실전 기법. 웹과 앱 서비스의 UX 설계 프로세스를 체계적으로 정리했습니다.",
     category: "IT기술",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "UX 디자인의 기본 원칙", page: 7 },
+        { chapter: "제2장", title: "사용자 리서치 방법론", page: 37 },
+        { chapter: "제3장", title: "정보 구조 설계", page: 67 },
+        { chapter: "제4장", title: "인터랙션 디자인", page: 97 },
+        { chapter: "제5장", title: "UI 패턴과 컴포넌트", page: 127 },
+        { chapter: "제6장", title: "사용성 테스트", page: 157 },
+        { chapter: "제7장", title: "디자인 시스템 구축", page: 187 },
+      ],
+      totalPages: 17,
+      pages: Array.from({ length: 17 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 408, size: "152×225mm", isbn: "978-89-9336-458-0", binding: "반양장(소프트커버)", weight: "560g" },
   },
   {
     id: "ab41",
@@ -882,6 +1492,24 @@ export const allBooks: Book[] = [
     publishDate: "2024년 12월 01일",
     description: "대규모 시스템 설계의 핵심 개념을 면접 질문 형식으로 풀어냈습니다. 웹 크롤러, 채팅 시스템, 뉴스 피드 등 실전 사례를 다룹니다.",
     category: "IT기술",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "시스템 설계 기초", page: 7 },
+        { chapter: "제2장", title: "규모 추정과 설계 원칙", page: 33 },
+        { chapter: "제3장", title: "URL 단축기 설계", page: 59 },
+        { chapter: "제4장", title: "웹 크롤러 설계", page: 87 },
+        { chapter: "제5장", title: "뉴스 피드 시스템", page: 115 },
+        { chapter: "제6장", title: "채팅 시스템 설계", page: 145 },
+        { chapter: "제7장", title: "검색 자동완성 시스템", page: 175 },
+        { chapter: "제8장", title: "알림 시스템 설계", page: 203 },
+      ],
+      totalPages: 17,
+      pages: Array.from({ length: 17 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 432, size: "152×225mm", isbn: "978-89-6626-387-1", binding: "반양장(소프트커버)", weight: "600g" },
   },
   {
     id: "ab42",
@@ -895,5 +1523,21 @@ export const allBooks: Book[] = [
     publishDate: "2023년 10월 25일",
     description: "소프트웨어 개발에서 협력과 학습의 중요성을 강조하는 책. 함께 성장하는 조직을 만드는 애자일의 본질을 탐구합니다.",
     category: "IT기술",
+    preview: {
+      toc: [
+        { chapter: "제1장", title: "자라기", page: 7 },
+        { chapter: "제2장", title: "함께", page: 33 },
+        { chapter: "제3장", title: "애자일", page: 59 },
+        { chapter: "제4장", title: "학습과 협력", page: 83 },
+        { chapter: "제5장", title: "전문성의 함정", page: 109 },
+        { chapter: "제6장", title: "함께 자라는 조직", page: 135 },
+      ],
+      totalPages: 12,
+      pages: Array.from({ length: 12 }, (_, i) => ({
+        pageNumber: i + 1,
+        ...(i === 0 ? { label: "표지" } : i === 1 ? { label: "서문" } : {}),
+      })),
+    },
+    specs: { pages: 244, size: "128×188mm", isbn: "978-89-6626-298-0", binding: "반양장(소프트커버)", weight: "330g" },
   },
 ];
