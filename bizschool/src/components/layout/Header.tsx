@@ -10,7 +10,7 @@ const menuItems: MenuItem[] = [
   { label: "근로자 주도훈련", href: "/training" },
   { label: "강의", href: "/" },
   { label: "도서", href: "/books" },
-  { label: "전문가상담", href: "/consulting" },
+  { label: "전문가상담", href: "/expert-consultation" },
   { label: "커뮤니티", href: "/community" },
 ];
 

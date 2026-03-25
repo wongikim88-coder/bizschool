@@ -88,11 +88,11 @@ export default function BookStickyBar({ price, isSoldOut, book }: BookStickyBarP
           {/* Cart */}
           {!isSoldOut ? (
             <>
-              <button className="flex h-10 items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-4 text-sm font-medium text-white transition-colors hover:opacity-90 md:h-11 md:gap-2 md:px-6">
+              <button className="flex h-10 items-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white px-4 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)] md:h-11 md:gap-2 md:px-6">
                 <ShoppingCart size={16} />
                 <span className="hidden sm:inline">장바구니</span>
               </button>
-              <button className="flex h-10 items-center gap-1.5 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-colors hover:opacity-90 md:h-11 md:gap-2 md:px-6">
+              <button className="flex h-10 items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-4 text-sm font-medium text-white transition-colors hover:opacity-90 md:h-11 md:gap-2 md:px-6">
                 <CreditCard size={16} />
                 <span className="hidden sm:inline">바로구매</span>
               </button>

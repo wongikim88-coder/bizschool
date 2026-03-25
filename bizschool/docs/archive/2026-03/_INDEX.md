@@ -6,3 +6,5 @@
 | directions-map-fix | 100% (Playwright verified) | 2026-03-01 | plan |
 | worker-led-training | 100% | 2026-03-02 | plan, design, analysis, report |
 | course-player-qna-panel | - | 2026-03-22 | report |
+| book-preview-modal | 100% | 2026-03-23 | report |
+| pricing-strategy | Plan phase (전략 수립) | 2026-03-25 | plan x3, report |

@@ -11,6 +11,7 @@ import InquiryForm from "./InquiryForm";
 import CoursesSection from "./CoursesSection";
 import PurchasesSection from "./PurchasesSection";
 import ClaimsSection from "./ClaimsSection";
+import ExpertConsultationSection from "./ExpertConsultationSection";
 
 interface MypageContentProps {
   currentTab: MypageTab;
@@ -20,6 +21,9 @@ interface MypageContentProps {
   writeMode: boolean;
   purchaseResetKey: number;
   onPurchaseReset: () => void;
+  expertViewId: string | null;
+  expertFilter: string;
+  expertCategory: string;
 }
 
 export default function MypageContent({
@@ -30,6 +34,9 @@ export default function MypageContent({
   writeMode,
   purchaseResetKey,
   onPurchaseReset,
+  expertViewId,
+  expertFilter,
+  expertCategory,
 }: MypageContentProps) {
   const router = useRouter();
   const [inquiries, setInquiries] = useState<Inquiry[]>(mockInquiries);
@@ -115,6 +122,15 @@ export default function MypageContent({
         {currentTab === "purchases" && <PurchasesSection key={purchaseResetKey} />}
 
         {currentTab === "claims" && <ClaimsSection />}
+
+        {currentTab === "expert" && (
+          <ExpertConsultationSection
+            page={page}
+            viewId={expertViewId}
+            filter={expertFilter}
+            category={expertCategory}
+          />
+        )}
       </div>
     </div>
   );

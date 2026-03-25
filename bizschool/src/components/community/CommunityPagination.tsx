@@ -8,12 +8,14 @@ interface CommunityPaginationProps {
   currentPage: number;
   totalPages: number;
   currentTab: CommunityTab;
+  extraParams?: Record<string, string>;
 }
 
 export default function CommunityPagination({
   currentPage,
   totalPages,
   currentTab,
+  extraParams,
 }: CommunityPaginationProps) {
   const router = useRouter();
 
@@ -36,7 +38,13 @@ export default function CommunityPagination({
   };
 
   const goToPage = (page: number) => {
-    router.push(`/community?tab=${currentTab}&page=${page}`);
+    const params = new URLSearchParams({ tab: currentTab, page: String(page) });
+    if (extraParams) {
+      Object.entries(extraParams).forEach(([k, v]) => {
+        if (v) params.set(k, v);
+      });
+    }
+    router.push(`/community?${params.toString()}`);
   };
 
   const pages = getPageNumbers();

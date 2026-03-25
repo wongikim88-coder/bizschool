@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ShoppingCart, CreditCard } from "lucide-react";
 import type { Book } from "@/types";
-import BookPreviewButton from "./BookPreviewButton";
 
 export default function BookListCard({ book }: { book: Book }) {
   const hasDiscount = book.originalPrice && book.discountRate;
@@ -19,12 +18,6 @@ export default function BookListCard({ book }: { book: Book }) {
               <p className="mt-1 text-[8px] text-gray-500 md:mt-2 md:text-[10px]">{book.author}</p>
             </div>
           </div>
-          {/* Preview Button Overlay (Desktop) */}
-          {book.preview && (
-            <div className="absolute inset-x-0 bottom-0 hidden md:block">
-              <BookPreviewButton book={book} variant="overlay" />
-            </div>
-          )}
         </Link>
 
         {/* Book Info */}
@@ -79,14 +72,14 @@ export default function BookListCard({ book }: { book: Book }) {
         {/* Buttons (Desktop) */}
         <div className="hidden flex-shrink-0 flex-col gap-2 self-start md:flex">
           <button
-            className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+            className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] bg-white px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
             aria-label={`${book.title} 장바구니에 담기`}
           >
             <ShoppingCart size={16} />
             장바구니
           </button>
           <button
-            className="flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+            className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
             aria-label={`${book.title} 바로구매`}
           >
             <CreditCard size={16} />
@@ -104,16 +97,15 @@ export default function BookListCard({ book }: { book: Book }) {
 
       {/* Buttons (Mobile) */}
       <div className="mt-3 flex gap-2 md:hidden">
-        {book.preview && <BookPreviewButton book={book} variant="inline" />}
-        <button
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+<button
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--color-border)] bg-white py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
           aria-label={`${book.title} 장바구니에 담기`}
         >
           <ShoppingCart size={14} />
           장바구니
         </button>
         <button
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
           aria-label={`${book.title} 바로구매`}
         >
           <CreditCard size={14} />

@@ -13,6 +13,7 @@ export const mypageTabs: { key: MypageTab; label: string }[] = [
   { key: "courses", label: "내 학습" },
   { key: "purchases", label: "구매내역" },
   { key: "claims", label: "취소/반품/교환/환불" },
+  { key: "expert", label: "전문가상담" },
 ];
 
 export const inquiryCategories: InquiryCategory[] = [
@@ -1546,10 +1547,10 @@ export const mockReturnDetail: ReturnDetailInfo = {
   returnReceiptDate: "2026/3/08",
   returnReceiptNumber: "1671061x",
   pickupInfo: {
-    pickupPerson: "김○○",
-    phone: "010-6218-****",
-    contact: "010-6218-****",
-    address: "13595 경기도 성남시 분당구 황새울로258번길",
+    pickupPerson: "홍길동",
+    phone: "010-1234-5678",
+    contact: "010-1234-5678",
+    address: "서울 서초구 반포대로 333 (래미안 원베일리)",
   },
   shippingInfo: {
     carrier: "CJ대한통운",
@@ -1582,10 +1583,10 @@ export const mockExchangeDetail: ExchangeDetailInfo = {
     deliveryCarrier: "쿠친",
   },
   pickupInfo: {
-    pickupPerson: "김○○",
-    phone: "010-6218-****",
-    contact: "010-6218-****",
-    address: "13595 경기도 성남시 분당구 황새울로258번길",
+    pickupPerson: "홍길동",
+    phone: "010-1234-5678",
+    contact: "010-1234-5678",
+    address: "서울 서초구 반포대로 333 (래미안 원베일리)",
   },
   shippingInfo: {
     carrier: "쿠친",

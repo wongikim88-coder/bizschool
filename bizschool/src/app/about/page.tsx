@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   BookOpen,
-  MessageCircle,
   Users,
   ArrowRight,
   GraduationCap,
@@ -18,15 +17,6 @@ const features = [
       "세무사, 회계사 등 현직 전문가가 직접 만든 강의를 자유롭게 수강하세요. 업무에 바로 적용할 수 있는 실전 중심 커리큘럼입니다.",
     linkText: "강의 둘러보기",
     href: "/",
-  },
-  {
-    icon: MessageCircle,
-    iconBg: "bg-emerald-50 text-emerald-600",
-    title: "궁금한 건 바로 물어보세요",
-    description:
-      "업무 중 막히는 부분, 판단이 어려운 사안을 AI 전문가상담으로 해결하세요. 전문가의 경험에 기반한 답변을 빠르게 받아볼 수 있습니다.",
-    linkText: "상담 시작하기",
-    href: "/consulting",
   },
   {
     icon: Users,
@@ -156,10 +146,10 @@ export default function AboutPage() {
           비즈스쿨이 제공하는 핵심 서비스
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-center text-[var(--color-muted)]">
-          전문가의 노하우부터 AI 상담, 커뮤니티까지 — 업무 성장에 필요한 모든 것
+          전문가의 노하우부터 커뮤니티까지 — 업무 성장에 필요한 모든 것
         </p>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
           {features.map((feature) => (
             <div
               key={feature.title}

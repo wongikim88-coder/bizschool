@@ -11,6 +11,9 @@ interface MypageLayoutProps {
   page: number;
   viewId: number | null;
   writeMode: boolean;
+  expertViewId: string | null;
+  expertFilter: string;
+  expertCategory: string;
 }
 
 export default function MypageLayout({
@@ -19,6 +22,9 @@ export default function MypageLayout({
   page,
   viewId,
   writeMode,
+  expertViewId,
+  expertFilter,
+  expertCategory,
 }: MypageLayoutProps) {
   const [purchaseResetKey, setPurchaseResetKey] = useState(0);
 
@@ -46,6 +52,9 @@ export default function MypageLayout({
             writeMode={writeMode}
             purchaseResetKey={purchaseResetKey}
             onPurchaseReset={() => setPurchaseResetKey((k) => k + 1)}
+            expertViewId={expertViewId}
+            expertFilter={expertFilter}
+            expertCategory={expertCategory}
           />
         </Suspense>
       </div>
