@@ -17,6 +17,30 @@ export default function SearchBar() {
 
   const isBooks = pathname === "/books";
 
+  // Rotating placeholder
+  const placeholderTexts: Record<string, string[]> = {
+    "/": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/education": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/training": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/books": ["도서명 또는 저자를 검색하세요.", "관심있는 주제를 검색해보세요."],
+    "/community": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+  };
+  const currentTexts = placeholderTexts[pathname] || placeholderTexts["/"];
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (currentTexts.length <= 1) return;
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setPlaceholderIndex((prev) => (prev + 1) % currentTexts.length);
+        setIsAnimating(false);
+      }, 300);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [currentTexts]);
+
   // Debounce: 300ms
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -100,13 +124,11 @@ export default function SearchBar() {
     setValue("");
   };
 
-  const placeholder = isBooks
-    ? "도서명 또는 저자를 검색하세요"
-    : "배우고 싶은 강의를 검색해보세요";
+  const isFocused = useRef(false);
 
   return (
     <div className="mx-auto w-full max-w-[1440px] px-4 py-4" ref={containerRef}>
-      <div className="relative mx-auto max-w-[500px]">
+      <div className="group relative mx-auto max-w-[620px]">
         <input
           type="text"
           value={value}
@@ -114,7 +136,11 @@ export default function SearchBar() {
             setValue(e.target.value);
             setShowPanel(true);
           }}
-          onFocus={() => isBooks && setShowPanel(true)}
+          onFocus={() => {
+            isFocused.current = true;
+            if (isBooks) setShowPanel(true);
+          }}
+          onBlur={() => { isFocused.current = false; }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSearch();
@@ -122,9 +148,17 @@ export default function SearchBar() {
             }
             if (e.key === "Escape") setShowPanel(false);
           }}
-          placeholder={placeholder}
-          className="w-full rounded-full border border-[var(--color-border)] bg-[var(--color-light-bg)] py-3.5 pl-5 pr-14 text-sm text-[var(--color-dark)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+          className="w-full rounded-full border border-gray-400 bg-[var(--color-light-bg)] py-4 pl-6 pr-16 text-base text-[var(--color-dark)] transition-all duration-200 group-focus-within:border-[var(--color-dark)] group-focus-within:bg-white focus:outline-none"
         />
+        {!value && (
+          <span
+            className={`pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-base text-[var(--color-muted)] transition-all duration-300 ${
+              isAnimating ? "-translate-y-[calc(50%+8px)] opacity-0" : "-translate-y-1/2 opacity-100"
+            }`}
+          >
+            {currentTexts[placeholderIndex]}
+          </span>
+        )}
         {value ? (
           <button
             onClick={() => {
@@ -133,18 +167,18 @@ export default function SearchBar() {
                 router.push("/books");
               }
             }}
-            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-muted)] hover:text-[var(--color-dark)]"
+            className="absolute right-2.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-muted)] hover:text-[var(--color-dark)]"
             aria-label="검색어 지우기"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         ) : (
           <button
             type="button"
             onClick={() => handleSearch()}
-            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-primary)] text-white transition-opacity hover:opacity-80"
+            className="absolute right-2.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-dark)] text-white transition-all hover:opacity-90"
           >
-            <Search size={18} />
+            <Search size={20} />
           </button>
         )}
 

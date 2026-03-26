@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { Menu, X, GraduationCap, UserCircle, FileText, LogIn, UserPlus, Plus, ChevronDown, Search } from "lucide-react";
@@ -91,6 +91,31 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
   const [headerSearchValue, setHeaderSearchValue] = useState("");
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Rotating placeholder
+  const headerPlaceholderTexts: Record<string, string[]> = {
+    "/": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/education": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/training": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/books": ["도서명 또는 저자를 검색하세요.", "관심있는 주제를 검색해보세요."],
+    "/community": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+  };
+  const headerTexts = headerPlaceholderTexts[pathname] || headerPlaceholderTexts["/"];
+  const [hPlaceholderIndex, setHPlaceholderIndex] = useState(0);
+  const [hIsAnimating, setHIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (headerTexts.length <= 1) return;
+    const interval = setInterval(() => {
+      setHIsAnimating(true);
+      setTimeout(() => {
+        setHPlaceholderIndex((prev) => (prev + 1) % headerTexts.length);
+        setHIsAnimating(false);
+      }, 300);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [headerTexts]);
 
   const handleHeaderSearch = () => {
     const q = headerSearchValue.trim();
@@ -134,7 +159,7 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
             </div>
             {/* Row 2: Search bar */}
             <div className={`flex h-16 items-center justify-center ${showSearchInHeader ? "opacity-100 visible transition-opacity duration-300" : "opacity-0 invisible"}`}>
-              <div className="relative w-[500px]">
+              <div className="group relative w-[620px]">
                 <input
                   type="text"
                   value={headerSearchValue}
@@ -142,13 +167,21 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleHeaderSearch();
                   }}
-                  placeholder="배우고 싶은 강의를 검색해보세요"
-                  className="w-full rounded-full border border-[var(--color-border)] bg-[var(--color-light-bg)] py-3.5 pl-5 pr-14 text-sm text-[var(--color-dark)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-full border border-gray-400 bg-[var(--color-light-bg)] py-2.5 pl-6 pr-14 text-base text-[var(--color-dark)] transition-all duration-200 group-focus-within:border-[var(--color-dark)] group-focus-within:bg-white focus:outline-none"
                 />
+                {!headerSearchValue && (
+                  <span
+                    className={`pointer-events-none absolute left-6 top-1/2 text-base text-[var(--color-muted)] transition-all duration-300 ${
+                      hIsAnimating ? "-translate-y-[calc(50%+8px)] opacity-0" : "-translate-y-1/2 opacity-100"
+                    }`}
+                  >
+                    {headerTexts[hPlaceholderIndex]}
+                  </span>
+                )}
                 <button
                   type="button"
                   onClick={handleHeaderSearch}
-                  className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-primary)] text-white transition-opacity hover:opacity-80"
+                  className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-dark)] text-white transition-all hover:opacity-90"
                 >
                   <Search size={18} />
                 </button>
