@@ -68,7 +68,7 @@ export default function VenuePage() {
   return (
     <div>
       {/* Section 1: Page Header */}
-      <section className="mx-auto max-w-[1200px] px-4 pt-12 pb-8 md:pt-16 md:pb-10">
+      <section className="mx-auto max-w-[1440px] px-4 pt-12 pb-8 md:pt-16 md:pb-10">
         <h1 className="text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
           강의장 소개
         </h1>
@@ -80,7 +80,7 @@ export default function VenuePage() {
 
       {/* Section 2: Facilities */}
       <section id="facilities" className="bg-[var(--color-light-bg)]">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
           <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
             강의장 시설 안내
           </h2>
@@ -129,7 +129,7 @@ export default function VenuePage() {
 
       {/* Section 3: Directions */}
       <section id="directions" className="scroll-mt-20">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
           <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
             찾아오시는 길
           </h2>

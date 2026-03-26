@@ -14,7 +14,6 @@ export default function CasesTab({ page }: CasesTabProps) {
 
   return (
     <div>
-      <p className="py-3 text-sm text-[var(--color-muted)]">총 {totalPosts}개의 상담사례</p>
       <div className="divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)]">
         {paginatedPosts.map((post) => (
           <PostCard key={post.id} post={post} />

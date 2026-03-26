@@ -1,10 +1,11 @@
-import type { CourseQuestion, ConsultationCase, DiscussionPost, WeeklyActiveUser } from "@/types";
+import type { CourseQuestion, ConsultationCase, DiscussionPost, ExpertColumn, WeeklyActiveUser } from "@/types";
 
 export const communityTabs = [
-  { key: "home" as const, label: "홈" },
+  { key: "all" as const, label: "전체" },
   { key: "questions" as const, label: "강의질문" },
   { key: "cases" as const, label: "상담사례" },
   { key: "discussion" as const, label: "소통공간" },
+  { key: "column" as const, label: "전문가 컬럼" },
 ] as const;
 
 export const POSTS_PER_PAGE = 10;
@@ -13,14 +14,15 @@ export const FEED_BATCH_SIZE = 10;
 
 // ── 통합 피드 셔플링 함수 ──
 
-export function getShuffledFeed(): (CourseQuestion | ConsultationCase | DiscussionPost)[] {
+export function getShuffledFeed(): (CourseQuestion | ConsultationCase | DiscussionPost | ExpertColumn)[] {
   const questions = [...courseQuestions].sort((a, b) => b.viewCount - a.viewCount);
   const cases = [...consultationCases].sort((a, b) => b.viewCount - a.viewCount);
   const discussions = [...discussionPosts].sort((a, b) => b.viewCount - a.viewCount);
+  const columns = [...expertColumns].sort((a, b) => b.viewCount - a.viewCount);
 
-  const queues = [questions, cases, discussions];
-  const result: (CourseQuestion | ConsultationCase | DiscussionPost)[] = [];
-  const indices = [0, 0, 0];
+  const queues = [questions, cases, discussions, columns];
+  const result: (CourseQuestion | ConsultationCase | DiscussionPost | ExpertColumn)[] = [];
+  const indices = [0, 0, 0, 0];
 
   while (indices.some((idx, i) => idx < queues[i].length)) {
     for (let i = 0; i < queues.length; i++) {
@@ -49,7 +51,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 3,
     answerCount: 1,
     isAnswered: true,
-    content: "급여 분개 시 4대보험 사용자부담분과 회사부담분을 어떻게 구분하여 처리하는지 궁금합니다. 특히 건강보험과 국민연금의 경우 회사부담분은 복리후생비로 처리하는 게 맞나요?",
+    content: "급여 분개 시 4대보험 사용자부담분과 회사부담분을 어떻게 구분하여 처리하는지 궁금합니다. 특히 건강보험과 국민연금의 경우 회사부담분은 복리후생비로 처리하는 게 맞나요? 또한 고용보험과 산재보험의 경우에도 동일하게 복리후생비 계정으로 처리해야 하는지, 아니면 별도의 계정과목을 사용해야 하는지도 함께 알려주시면 감사하겠습니다. 실무에서 ERP에 입력할 때 계정과목 선택이 항상 헷갈려서 정확한 기준을 알고 싶습니다.",
   },
   {
     id: "q-2",
@@ -77,7 +79,7 @@ export const courseQuestions: CourseQuestion[] = [
     commentCount: 5,
     answerCount: 2,
     isAnswered: true,
-    content: "손익계산서의 당기순이익이 재무상태표의 이익잉여금으로 어떻게 연결되는지 이해가 잘 안 됩니다. 기초잔액과 기말잔액의 차이가 곧 당기순이익인 건가요?",
+    content: "손익계산서의 당기순이익이 재무상태표의 이익잉여금으로 어떻게 연결되는지 이해가 잘 안 됩니다. 기초잔액과 기말잔액의 차이가 곧 당기순이익인 건가요? 그리고 배당금 지급이나 자본잉여금 전입 같은 거래가 있을 때는 이익잉여금 변동표를 어떻게 작성해야 하는지도 궁금합니다. 수업에서는 간단한 예시만 다뤘는데, 실제 결산 시에는 훨씬 복잡한 상황이 발생할 것 같아서 미리 준비하고 싶습니다.",
   },
   {
     id: "q-4",
@@ -306,7 +308,7 @@ export const consultationCases: ConsultationCase[] = [
     isVerified: true,
     verifiedBy: "김세무사",
     helpfulCount: 50,
-    content: "접대비, 비영업용 소형승용차 관련 비용, 토지 관련 매입세액 등은 매입세액 불공제 항목입니다. 사업과 직접 관련 없는 지출도 불공제 대상이니 주의하세요.",
+    content: "접대비, 비영업용 소형승용차 관련 비용, 토지 관련 매입세액 등은 매입세액 불공제 항목입니다. 사업과 직접 관련 없는 지출도 불공제 대상이니 주의하세요. 특히 업무용 승용차의 경우 1,500cc 이하 경차는 매입세액 공제가 가능하지만, 그 이상의 승용차는 불공제 대상이므로 차량 구입 시 반드시 확인해야 합니다. 또한 면세사업 관련 매입세액, 사업자등록 전 매입세액도 공제가 안 되니 실무에서 자주 확인하시기 바랍니다.",
   },
   {
     id: "c-5",
@@ -489,7 +491,7 @@ export const discussionPosts: DiscussionPost[] = [
     createdAt: "2026.02.26",
     viewCount: 1245,
     commentCount: 32,
-    content: "2026년 세법 개정안에서 주요 변경사항을 정리해봤습니다. 법인세율 인하, 소규모 사업자 세액감면 확대, 연말정산 공제한도 조정 등 실무에 영향이 큰 내용 위주로 공유드립니다.",
+    content: "2026년 세법 개정안에서 주요 변경사항을 정리해봤습니다. 법인세율 인하, 소규모 사업자 세액감면 확대, 연말정산 공제한도 조정 등 실무에 영향이 큰 내용 위주로 공유드립니다. 특히 올해부터 적용되는 가상자산 과세 유예 연장, 신성장·원천기술 R&D 세액공제율 상향, 그리고 통합투자세액공제 일몰 연장 등은 기업 실무자라면 반드시 숙지해야 할 사항입니다. 각 항목별 적용 시기와 경과조치도 함께 정리했으니 참고하세요.",
   },
   {
     id: "d-3",
@@ -646,6 +648,179 @@ export const discussionPosts: DiscussionPost[] = [
     viewCount: 189,
     commentCount: 7,
     content: "세무실무 강의 절반 정도 들었는데 부가세 파트가 정말 알차네요. 실무에서 헷갈렸던 부분들이 하나씩 정리되는 느낌입니다.",
+  },
+];
+
+// ── 전문가 컬럼 데이터 ──
+
+export const expertColumns: ExpertColumn[] = [
+  {
+    id: "col-1",
+    type: "column",
+    title: "2026년 중소기업 세무 전략: 놓치기 쉬운 절세 포인트 5가지",
+    author: "김세무사",
+    expertName: "김세무사",
+    expertTitle: "세무법인 한울 대표세무사",
+    category: "세무전략",
+    createdAt: "2026.03.25",
+    viewCount: 2341,
+    commentCount: 18,
+    content: "중소기업이 놓치기 쉬운 절세 포인트를 정리했습니다. 고용증대 세액공제, R&D 세액공제, 중소기업 특별세액감면 등 실무에서 바로 활용할 수 있는 전략을 소개합니다. 첫째, 고용증대 세액공제는 청년 정규직 고용 시 1인당 최대 1,100만원까지 공제받을 수 있어 적극 활용해야 합니다. 둘째, 연구·인력개발비 세액공제는 중소기업의 경우 당기분 방식 25%의 높은 공제율이 적용됩니다. 셋째, 중소기업 특별세액감면은 업종과 지역에 따라 5~30%까지 감면받을 수 있으니 해당 여부를 반드시 확인하세요.",
+    tags: ["절세", "중소기업", "세액공제"],
+  },
+  {
+    id: "col-2",
+    type: "column",
+    title: "경리 실무자가 반드시 알아야 할 전자세금계산서 발급 실수 TOP 10",
+    author: "이회계사",
+    expertName: "이회계사",
+    expertTitle: "한국공인회계사회 정회원",
+    category: "회계실무",
+    createdAt: "2026.03.24",
+    viewCount: 1876,
+    commentCount: 14,
+    content: "전자세금계산서 발급 시 자주 발생하는 실수와 그에 따른 가산세를 정리했습니다. 공급가액 오류, 발급 기한 경과, 필수 기재사항 누락 등 실무에서 주의해야 할 사항을 알려드립니다.",
+    tags: ["전자세금계산서", "가산세", "실무팁"],
+  },
+  {
+    id: "col-3",
+    type: "column",
+    title: "퇴직연금 DC형 운용전략: 안정형 vs 수익추구형 포트폴리오 비교",
+    author: "박재무사",
+    expertName: "박재무사",
+    expertTitle: "CFP 국제재무설계사",
+    category: "재무설계",
+    createdAt: "2026.03.22",
+    viewCount: 1543,
+    commentCount: 22,
+    content: "퇴직연금 DC형 가입자를 위한 자산 배분 전략을 소개합니다. 연령대별, 위험 성향별 최적의 포트폴리오 구성 방법과 실제 수익률 비교 데이터를 공유합니다.",
+    tags: ["퇴직연금", "DC형", "자산배분"],
+  },
+  {
+    id: "col-4",
+    type: "column",
+    title: "인사담당자를 위한 2026년 노동법 개정사항 총정리",
+    author: "최노무사",
+    expertName: "최노무사",
+    expertTitle: "노무법인 정의 대표노무사",
+    category: "인사노무",
+    createdAt: "2026.03.20",
+    viewCount: 2109,
+    commentCount: 31,
+    content: "2026년에 시행되는 주요 노동법 개정사항을 정리했습니다. 최저임금 인상, 주52시간제 유연화, 육아휴직 확대 등 인사담당자가 반드시 숙지해야 할 내용을 다룹니다. 올해 최저임금은 시간당 10,620원으로 전년 대비 3.5% 인상되었고, 육아휴직 기간이 기존 1년에서 1년 6개월로 확대되었습니다. 또한 유연근무제 정산기간이 최대 6개월로 확장되어 기업의 근무 편성 자율성이 높아졌습니다. 각 개정사항의 시행일과 경과조치, 취업규칙 변경 필요사항까지 상세히 안내합니다.",
+    tags: ["노동법", "개정사항", "인사관리"],
+  },
+  {
+    id: "col-5",
+    type: "column",
+    title: "스타트업 대표가 알아야 할 법인세 기초: 첫 결산 가이드",
+    author: "정세무사",
+    expertName: "정세무사",
+    expertTitle: "스타트업 전문 세무사",
+    category: "세무전략",
+    createdAt: "2026.03.18",
+    viewCount: 1234,
+    commentCount: 9,
+    content: "처음 법인 결산을 앞둔 스타트업 대표를 위한 가이드입니다. 법인세 계산 구조, 필수 세무조정 항목, 결산 일정 등을 알기 쉽게 설명합니다.",
+    tags: ["스타트업", "법인세", "첫결산"],
+  },
+  {
+    id: "col-6",
+    type: "column",
+    title: "급여 담당자의 연말정산 완벽 체크리스트 (2026년판)",
+    author: "한경리",
+    expertName: "한경리",
+    expertTitle: "15년차 급여/인사 전문가",
+    category: "급여실무",
+    createdAt: "2026.03.16",
+    viewCount: 3201,
+    commentCount: 45,
+    content: "연말정산 시즌, 급여 담당자가 놓치지 말아야 할 체크리스트를 공유합니다. 소득공제 증빙 수집부터 원천징수 영수증 발급까지 전 과정을 단계별로 안내합니다.",
+    tags: ["연말정산", "급여실무", "체크리스트"],
+  },
+  {
+    id: "col-7",
+    type: "column",
+    title: "ERP 도입 실패 사례에서 배우는 성공적 ERP 전환 전략",
+    author: "오컨설턴트",
+    expertName: "오컨설턴트",
+    expertTitle: "IT경영 컨설턴트",
+    category: "경영전략",
+    createdAt: "2026.03.14",
+    viewCount: 987,
+    commentCount: 7,
+    content: "중소기업의 ERP 도입 실패 사례를 분석하고, 성공적인 전환을 위한 핵심 전략을 제시합니다. 현업 참여, 데이터 마이그레이션, 교육 계획 등 실전 노하우를 공유합니다.",
+    tags: ["ERP", "디지털전환", "경영혁신"],
+  },
+  {
+    id: "col-8",
+    type: "column",
+    title: "비영리법인 회계처리 특수성과 세무 신고 가이드",
+    author: "김회계사",
+    expertName: "김회계사",
+    expertTitle: "비영리법인 전문 회계사",
+    category: "회계실무",
+    createdAt: "2026.03.12",
+    viewCount: 654,
+    commentCount: 5,
+    content: "비영리법인의 회계처리는 영리법인과 다른 점이 많습니다. 수익사업과 비수익사업의 구분, 기부금 회계처리, 법인세 신고 특례 등을 상세히 설명합니다.",
+    tags: ["비영리법인", "회계처리", "기부금"],
+  },
+  {
+    id: "col-9",
+    type: "column",
+    title: "프리랜서와의 계약, 사업소득 vs 근로소득 판단 기준",
+    author: "이노무사",
+    expertName: "이노무사",
+    expertTitle: "고용노동 전문 노무사",
+    category: "인사노무",
+    createdAt: "2026.03.10",
+    viewCount: 1789,
+    commentCount: 16,
+    content: "프리랜서에게 업무를 맡길 때 사업소득과 근로소득의 판단 기준을 명확히 정리합니다. 잘못된 소득 구분에 따른 법적 리스크와 대응 방안도 함께 다룹니다.",
+    tags: ["프리랜서", "소득구분", "고용판단"],
+  },
+  {
+    id: "col-10",
+    type: "column",
+    title: "내부회계관리제도 실무 적용 가이드: 중소기업 편",
+    author: "박회계사",
+    expertName: "박회계사",
+    expertTitle: "내부회계 전문 회계사",
+    category: "회계실무",
+    createdAt: "2026.03.08",
+    viewCount: 876,
+    commentCount: 8,
+    content: "중소기업도 내부회계관리제도 운영이 의무화되었습니다. 핵심 통제 항목, 문서화 방법, 자가 점검 체크리스트 등 실무에 바로 적용할 수 있는 가이드를 제공합니다.",
+    tags: ["내부회계", "내부통제", "중소기업"],
+  },
+  {
+    id: "col-11",
+    type: "column",
+    title: "건설업 경리의 모든 것: 공사원가 계산부터 세금계산서까지",
+    author: "강세무사",
+    expertName: "강세무사",
+    expertTitle: "건설업 전문 세무사",
+    category: "세무전략",
+    createdAt: "2026.03.06",
+    viewCount: 1432,
+    commentCount: 12,
+    content: "건설업 특유의 회계처리와 세무 실무를 다룹니다. 공사진행률 계산, 하도급 세금계산서 처리, 건설근로자 원천징수 등 건설업 경리가 꼭 알아야 할 내용입니다.",
+    tags: ["건설업", "공사원가", "업종별세무"],
+  },
+  {
+    id: "col-12",
+    type: "column",
+    title: "재무제표 분석으로 읽는 기업 건전성: 실전 사례 분석",
+    author: "윤교수",
+    expertName: "윤교수",
+    expertTitle: "경영학과 교수",
+    category: "경영전략",
+    createdAt: "2026.03.04",
+    viewCount: 1098,
+    commentCount: 10,
+    content: "실제 기업의 재무제표를 분석하여 기업 건전성을 판단하는 방법을 소개합니다. 유동비율, 부채비율, ROE 등 핵심 지표의 실전 해석법을 배워보세요.",
+    tags: ["재무분석", "재무제표", "경영분석"],
   },
 ];
 

@@ -80,6 +80,7 @@ export interface Badge {
 export interface MenuItem {
   label: string;
   href: string;
+  children?: MenuItem[];
 }
 
 // ── 커뮤니티 ──
@@ -121,7 +122,14 @@ export interface WeeklyActiveUser {
   badge?: "gold" | "silver" | "bronze";
 }
 
-export type CommunityTab = "home" | "questions" | "cases" | "discussion";
+export interface ExpertColumn extends CommunityPost {
+  type: "column";
+  expertName: string;
+  expertTitle: string;
+  tags: string[];
+}
+
+export type CommunityTab = "all" | "questions" | "cases" | "discussion" | "column";
 
 // ── 전문가상담 ──
 
@@ -484,7 +492,7 @@ export interface CourseOrder {
   id: string;
   orderedAt: string;
   courseTitle: string;
-  courseType: "온라인" | "공개교육";
+  courseType: "온라인" | "현장 강의";
   price: number;
   paymentMethod: PaymentMethod;
   paymentStatus: CourseOrderPaymentStatus;
@@ -526,7 +534,7 @@ export interface CourseOrderDetailType extends CourseOrder {
   cancelReason?: string;
 }
 
-// ── 공개교육 ──
+// ── 현장 강의 ──
 
 export interface EducationCourse {
   id: number;
@@ -634,5 +642,109 @@ export interface Resource {
   fileSize: string;
   fileName: string;
   fileUrl: string;
+  createdAt: string;
+}
+
+// ── 전문가 지원 ──
+
+export interface ExpertApplication {
+  id: string;
+  name: string;
+  phone: string;
+  profileIntro: string;
+  tags: string[];
+  courseDescription: string;
+  submittedAt: string;
+  status: "pending" | "approved" | "rejected";
+}
+
+// ── 인증 ──
+
+export type SocialProvider = "naver" | "kakao" | "google" | "credentials";
+
+export type UserRole = "user" | "expert";
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  provider: SocialProvider;
+  role: UserRole;
+}
+
+// ── 전문가 스튜디오 ──
+
+export type StudioTab = "dashboard" | "courses" | "qna" | "revenue" | "guide" | "meeting";
+
+export type ExpertCourseStatus = "draft" | "under_review" | "published" | "rejected";
+
+export interface ExpertCourse {
+  id: string;
+  title: string;
+  thumbnailUrl: string;
+  category: string;
+  status: ExpertCourseStatus;
+  createdAt: string;
+  updatedAt: string;
+  studentCount: number;
+  rating: number;
+  completionRate: number;
+  totalRevenue: number;
+  rejectionReason?: string;
+}
+
+export type StudioQnaStatus = "unanswered" | "answered";
+
+export interface StudioQuestion {
+  id: string;
+  courseId: string;
+  courseTitle: string;
+  studentName: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  status: StudioQnaStatus;
+  answer?: {
+    content: string;
+    answeredAt: string;
+  };
+}
+
+export type SettlementStatus = "정산완료" | "정산예정" | "정산대기";
+
+export interface MonthlyRevenue {
+  month: string;
+  grossSales: number;
+  platformFee: number;
+  netRevenue: number;
+}
+
+export interface SettlementRecord {
+  id: string;
+  period: string;
+  amount: number;
+  status: SettlementStatus;
+  payoutDate?: string;
+}
+
+export type MeetingRequestStatus = "검토중" | "확정됨" | "완료";
+export type MeetingTopic = "콘텐츠 전략" | "수익 개선" | "강의 품질" | "기타";
+
+export interface MeetingRequest {
+  id: string;
+  topic: MeetingTopic;
+  preferredDate: string;
+  message: string;
+  requestedAt: string;
+  status: MeetingRequestStatus;
+}
+
+export type ActivityType = "new_question" | "new_enrollment" | "course_published" | "settlement_completed";
+
+export interface RecentActivity {
+  id: string;
+  type: ActivityType;
+  description: string;
   createdAt: string;
 }

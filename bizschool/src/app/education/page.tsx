@@ -5,9 +5,9 @@ import MonthSelector from "@/components/education/MonthSelector";
 import CourseTable from "@/components/education/CourseTable";
 
 export const metadata: Metadata = {
-  title: "공개교육 | BIZSCHOOL",
+  title: "현장 강의 | BIZSCHOOL",
   description:
-    "월별 공개교육 일정을 확인하고 수강신청하세요. 세무회계, 재산제세, 특강 등 전문가 교육과정을 제공합니다.",
+    "월별 현장 강의 일정을 확인하고 수강신청하세요. 세무회계, 재산제세, 특강 등 전문가 교육과정을 제공합니다.",
 };
 
 interface EducationPageProps {
@@ -56,7 +56,7 @@ export default async function EducationPage({ searchParams }: EducationPageProps
 
         <div className="relative z-10 mx-auto max-w-3xl">
           <h1 className="text-2xl font-bold leading-tight text-white md:text-3xl lg:text-4xl">
-            공개교육
+            현장 강의
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 md:text-lg">
             세무실무 전문가들의 교육과정을 만나보세요.
@@ -67,7 +67,7 @@ export default async function EducationPage({ searchParams }: EducationPageProps
       </section>
 
       {/* Content */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-16">
+      <div className="mx-auto max-w-[1440px] px-4 pb-16">
         <Suspense>
           <MonthSelector currentYear={year} currentMonth={month} />
         </Suspense>

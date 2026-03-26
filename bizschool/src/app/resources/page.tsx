@@ -31,7 +31,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Content */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-16">
+      <div className="mx-auto max-w-[1440px] px-4 pb-16">
         <Suspense>
           <ResourcePageContent resources={resources} />
         </Suspense>

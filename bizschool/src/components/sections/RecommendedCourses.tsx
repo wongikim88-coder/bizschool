@@ -5,7 +5,7 @@ import type { Course } from "@/types";
 
 export default function RecommendedCourses({ courses }: { courses: Course[] }) {
   return (
-    <section className="mx-auto max-w-[1200px] px-4 py-12">
+    <section className="mx-auto max-w-[1440px] px-4 py-12">
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-[var(--color-dark-navy)]">추천강의</h2>

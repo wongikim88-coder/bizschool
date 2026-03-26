@@ -115,7 +115,7 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
   const search = params.search || "";
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 pb-12">
+    <div className="mx-auto max-w-[1440px] px-4 pb-12">
       <BookBanner />
       <BooksContent page={page} category={category} search={search} />
     </div>

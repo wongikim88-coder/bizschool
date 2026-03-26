@@ -105,12 +105,8 @@ export default function SearchBar() {
     : "배우고 싶은 강의를 검색해보세요";
 
   return (
-    <div className="mx-auto max-w-[800px] px-4 py-4" ref={containerRef}>
-      <div className="relative">
-        <Search
-          size={20}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-muted)]"
-        />
+    <div className="mx-auto w-full max-w-[1440px] px-4 py-4" ref={containerRef}>
+      <div className="relative mx-auto max-w-[500px]">
         <input
           type="text"
           value={value}
@@ -127,9 +123,9 @@ export default function SearchBar() {
             if (e.key === "Escape") setShowPanel(false);
           }}
           placeholder={placeholder}
-          className="w-full rounded-full border border-[var(--color-border)] bg-[var(--color-light-bg)] py-3.5 pl-12 pr-10 text-sm text-[var(--color-dark)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+          className="w-full rounded-full border border-[var(--color-border)] bg-[var(--color-light-bg)] py-3.5 pl-5 pr-14 text-sm text-[var(--color-dark)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
         />
-        {value && (
+        {value ? (
           <button
             onClick={() => {
               setValue("");
@@ -137,10 +133,18 @@ export default function SearchBar() {
                 router.push("/books");
               }
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-[var(--color-muted)] hover:text-[var(--color-dark)]"
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-muted)] hover:text-[var(--color-dark)]"
             aria-label="검색어 지우기"
           >
             <X size={16} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => handleSearch()}
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-primary)] text-white transition-opacity hover:opacity-80"
+          >
+            <Search size={18} />
           </button>
         )}
 

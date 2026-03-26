@@ -57,7 +57,7 @@ export default async function BookDetailPage({ params }: BookDetailProps) {
   const hasDiscount = book.originalPrice && book.discountRate;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-8 pb-24 md:py-12 md:pb-28">
+    <div className="mx-auto max-w-[1440px] px-4 py-8 pb-24 md:py-12 md:pb-28">
       {/* ── 상단: 도서 정보 ── */}
       <div className="flex flex-col gap-6 md:flex-row md:gap-20">
         {/* Cover + Preview */}

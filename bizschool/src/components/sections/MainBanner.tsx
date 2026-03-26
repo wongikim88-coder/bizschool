@@ -82,7 +82,7 @@ export default function MainBanner() {
   }, [isHovered]);
 
   return (
-    <section className="mx-auto max-w-[1200px] px-4 pt-2 pb-2">
+    <section className="pt-2 pb-2">
       <div
         className="relative overflow-hidden rounded-2xl"
         onMouseEnter={() => setIsHovered(true)}

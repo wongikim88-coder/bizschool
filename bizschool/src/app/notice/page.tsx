@@ -44,7 +44,7 @@ export default async function NoticePage({ searchParams }: NoticePageProps) {
       </section>
 
       {/* Content */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-16">
+      <div className="mx-auto max-w-[1440px] px-4 pb-16">
         <div className="mt-8">
           <NoticeTable notices={paginatedNotices} />
         </div>

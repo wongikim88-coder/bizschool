@@ -141,7 +141,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 2: Features */}
-      <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+      <section className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
         <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
           비즈스쿨이 제공하는 핵심 서비스
         </h2>
@@ -180,7 +180,7 @@ export default function AboutPage() {
 
       {/* Section 3: Cycle (circular diagram) */}
       <section className="bg-[var(--color-light-bg)]">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
           <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
             배우고, 나누고, 함께 성장합니다.
           </h2>
@@ -300,7 +300,7 @@ export default function AboutPage() {
       </section>
 
       {/* Section 4: 연혁 */}
-      <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+      <section className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
         <h2 className="text-center text-2xl font-bold text-[var(--color-dark)] md:text-3xl">
           비즈스쿨 연혁
         </h2>

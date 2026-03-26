@@ -6,13 +6,14 @@ import HomeTab from "@/components/community/HomeTab";
 import QuestionsTab from "@/components/community/QuestionsTab";
 import CasesTab from "@/components/community/CasesTab";
 import DiscussionTab from "@/components/community/DiscussionTab";
+import ColumnTab from "@/components/community/ColumnTab";
 
 export const metadata: Metadata = {
   title: "커뮤니티 - BIZSCHOOL",
   description: "BIZSCHOOL 커뮤니티에서 강의질문, 상담사례, 자유토론을 나눠보세요.",
 };
 
-const validTabs: CommunityTab[] = ["home", "questions", "cases", "discussion"];
+const validTabs: CommunityTab[] = ["all", "questions", "cases", "discussion", "column"];
 
 export default async function CommunityPage({
   searchParams,
@@ -22,17 +23,21 @@ export default async function CommunityPage({
   const params = await searchParams;
   const tab: CommunityTab = validTabs.includes(params.tab as CommunityTab)
     ? (params.tab as CommunityTab)
-    : "home";
+    : "all";
   const page = Math.max(1, parseInt(params.page || "1", 10) || 1);
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-6">
+    <div className="mx-auto max-w-[1440px] px-4 py-6">
       <Suspense>
         <CommunityTabs currentTab={tab} />
       </Suspense>
 
       <div className="mt-4">
-        {tab === "home" && <HomeTab />}
+        {tab === "all" && (
+          <Suspense>
+            <HomeTab />
+          </Suspense>
+        )}
 
         {tab === "questions" && (
           <Suspense>
@@ -49,6 +54,12 @@ export default async function CommunityPage({
         {tab === "discussion" && (
           <Suspense>
             <DiscussionTab page={page} />
+          </Suspense>
+        )}
+
+        {tab === "column" && (
+          <Suspense>
+            <ColumnTab page={page} />
           </Suspense>
         )}
       </div>

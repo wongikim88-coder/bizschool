@@ -48,7 +48,7 @@ export default function Footer() {
   return (
     <footer className="bg-[var(--color-dark-navy)] text-white">
       {/* Main footer content */}
-      <div className="mx-auto max-w-[1200px] px-4 py-12">
+      <div className="mx-auto max-w-[1440px] px-4 py-12">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-6">
           {/* Logo & Description */}
           <div className="col-span-2">
@@ -122,7 +122,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-[1200px] px-4 py-6">
+        <div className="mx-auto max-w-[1440px] px-4 py-6">
           {/* Legal links */}
           <div className="flex flex-wrap gap-4">
             {legalLinks.map((link, i) => (

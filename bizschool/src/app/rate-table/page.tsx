@@ -30,7 +30,7 @@ export default function RateTablePage() {
       </section>
 
       {/* Content */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-16">
+      <div className="mx-auto max-w-[1440px] px-4 pb-16">
         {/* Notice Banner */}
         <div className="mt-8 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4">
           <p className="text-sm font-medium text-amber-800">

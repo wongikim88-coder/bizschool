@@ -83,7 +83,7 @@ const checklistItems = [
 
 export default function ProgramGuide() {
   return (
-    <section className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+    <section className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
       {/* 프로그램 설명 */}
       <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-primary-light)] p-6 md:p-8">
         <h2 className="text-lg font-bold text-[var(--color-dark)] md:text-xl">

@@ -1,23 +1,26 @@
 import MainBanner from "@/components/sections/MainBanner";
-import CourseCard from "@/components/cards/CourseCard";
+import RecommendedCourses from "@/components/sections/RecommendedCourses";
+import RecommendedBooks from "@/components/sections/RecommendedBooks";
+import OnlineCourses from "@/components/sections/OnlineCourses";
 import { sampleCourses } from "@/data/courses";
+import { sampleBooks } from "@/data/books";
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-[1200px] px-4 pb-12">
-      <MainBanner />
+    <div>
+      {/* 섹션 1: 메인 배너 (기존 캐러셀) */}
+      <div className="mx-auto max-w-[1440px] px-4">
+        <MainBanner />
+      </div>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-bold text-[var(--color-dark)]">전체 강의</h2>
-        <p className="mt-1 text-sm text-[var(--color-muted)]">
-          총 {sampleCourses.length}개의 강의
-        </p>
-        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {sampleCourses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
-      </section>
+      {/* 섹션 2: 추천강의 (4개/1줄) */}
+      <RecommendedCourses courses={sampleCourses} />
+
+      {/* 섹션 3: 추천도서 (5개/1줄) */}
+      <RecommendedBooks books={sampleBooks} />
+
+      {/* 섹션 4: 온라인 강의 (16개/페이지 + 페이지네이션) */}
+      <OnlineCourses courses={sampleCourses} />
     </div>
   );
 }

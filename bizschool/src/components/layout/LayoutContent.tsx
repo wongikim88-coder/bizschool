@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import SearchBar from "@/components/layout/SearchBar";
@@ -13,16 +13,27 @@ export default function LayoutContent({
 }) {
   const pathname = usePathname();
   const isCoursePlayer = pathname.startsWith("/course/");
-  const hideSearchBar = pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname.startsWith("/notice") || pathname.startsWith("/resources") || pathname.startsWith("/expert-consultation") || /^\/books\/.+/.test(pathname);
+  const hideSearchBar = pathname === "/login" || pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname === "/expert" || pathname.startsWith("/notice") || pathname.startsWith("/resources") || pathname.startsWith("/expert-consultation") || pathname.startsWith("/expert/center") || /^\/books\/.+/.test(pathname);
 
-  // 강의 플레이어 페이지: 헤더/푸터 없이 전체 화면
-  if (isCoursePlayer) {
+  const [searchInHeader, setSearchInHeader] = useState(false);
+
+  useEffect(() => {
+    if (hideSearchBar) return;
+    const handleScroll = () => {
+      setSearchInHeader(window.scrollY > 60);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hideSearchBar]);
+
+  // 헤더/푸터 없이 전체 화면: 강의 플레이어, 로그인 페이지
+  if (isCoursePlayer || pathname === "/login") {
     return <>{children}</>;
   }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <Header showSearchInHeader={!hideSearchBar && searchInHeader} />
       {!hideSearchBar && (
         <Suspense>
           <SearchBar />

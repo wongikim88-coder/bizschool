@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Squada_One, Noto_Sans_KR } from "next/font/google";
 import LayoutContent from "@/components/layout/LayoutContent";
+import AuthProvider from "@/contexts/AuthProvider";
 import "./globals.css";
 
 const squadaOne = Squada_One({
@@ -30,7 +31,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${squadaOne.variable} ${notoSansKR.variable} antialiased`}>
-        <LayoutContent>{children}</LayoutContent>
+        <AuthProvider>
+          <LayoutContent>{children}</LayoutContent>
+        </AuthProvider>
       </body>
     </html>
   );

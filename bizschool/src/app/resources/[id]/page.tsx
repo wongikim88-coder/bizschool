@@ -35,7 +35,7 @@ export default async function ResourceDetailPage({
       : resource.fileUrl;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-8 md:py-12">
+    <div className="mx-auto max-w-[1440px] px-4 py-8 md:py-12">
       {/* Header */}
       <div className="border-b border-[var(--color-border)] pb-6">
         <span className="mb-3 inline-block text-sm text-[var(--color-muted)]">

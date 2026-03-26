@@ -445,7 +445,7 @@ export default function CourseOrderSection({
     }
 
     if (courseTypeFilter !== "전체") {
-      const typeMap = { 온라인: "온라인", 현장: "공개교육" } as const;
+      const typeMap = { 온라인: "온라인", 현장: "현장 강의" } as const;
       orders = orders.filter(
         (o) => o.courseType === typeMap[courseTypeFilter],
       );

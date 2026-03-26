@@ -32,7 +32,7 @@ export default async function NoticeDetailPage({ params }: NoticeDetailProps) {
     currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 py-8 md:py-12">
+    <div className="mx-auto max-w-[1440px] px-4 py-8 md:py-12">
       {/* Header */}
       <div className="border-b border-[var(--color-border)] pb-6">
         {notice.isImportant && (

@@ -19,7 +19,7 @@ export default function BookStickyBar({ price, isSoldOut, book }: BookStickyBarP
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--color-border)] bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-4 py-3 md:gap-6 md:py-4">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 py-3 md:gap-6 md:py-4">
         {/* Left: Total + Quantity */}
         <div className="flex items-center gap-3 md:gap-6">
           {/* Quantity Selector */}

@@ -7,7 +7,7 @@ const programIcons: LucideIcon[] = [Calculator, FileCheck, Building2, Landmark];
 export default function CourseIntro() {
   return (
     <section className="bg-[var(--color-light-bg)]">
-      <div className="mx-auto max-w-[1200px] px-4 py-16 md:py-24">
+      <div className="mx-auto max-w-[1440px] px-4 py-16 md:py-24">
         <h2 className="text-center text-xl font-bold text-[var(--color-dark)] md:text-2xl">
           과정소개
         </h2>

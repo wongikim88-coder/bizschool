@@ -32,7 +32,7 @@ export default function HomeTab() {
   }, [displayCount, hasMore]);
 
   return (
-    <div className="flex gap-6">
+    <div className="flex items-start gap-6">
       {/* 메인 피드 */}
       <div className="min-w-0 flex-1">
         <div className="divide-y divide-[var(--color-border)] rounded-lg border border-[var(--color-border)]">
@@ -66,7 +66,7 @@ export default function HomeTab() {
       </div>
 
       {/* 우측 사이드바 - 데스크톱 */}
-      <div className="hidden w-[280px] shrink-0 lg:block">
+      <div className="sticky top-20 hidden w-[280px] shrink-0 lg:block">
         <WeeklyTopUsers users={weeklyTopUsers} />
       </div>
     </div>
