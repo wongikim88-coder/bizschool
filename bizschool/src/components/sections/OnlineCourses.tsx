@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CourseCard from "@/components/cards/CourseCard";
 import type { Course } from "@/types";
 
 const ITEMS_PER_PAGE = 16;
 
-export default function OnlineCourses({ courses }: { courses: Course[] }) {
-  const [currentPage, setCurrentPage] = useState(1);
+interface OnlineCoursesProps {
+  courses: Course[];
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
 
+export default function OnlineCourses({ courses, currentPage, onPageChange }: OnlineCoursesProps) {
   const totalPages = Math.ceil(courses.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedCourses = courses.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -39,7 +42,7 @@ export default function OnlineCourses({ courses }: { courses: Course[] }) {
       {totalPages > 1 && (
         <div className="mt-10 flex items-center justify-center gap-2">
           <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)] disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="이전 페이지"
@@ -50,7 +53,7 @@ export default function OnlineCourses({ courses }: { courses: Course[] }) {
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              onClick={() => setCurrentPage(page)}
+              onClick={() => onPageChange(page)}
               className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
                 page === currentPage
                   ? "bg-[var(--color-primary)] text-white"
@@ -64,7 +67,7 @@ export default function OnlineCourses({ courses }: { courses: Course[] }) {
           ))}
 
           <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)] disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="다음 페이지"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import type { ExpertConsultation, ExpertConsultationCategory } from "@/types";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 interface ExpertWriteFormProps {
   onSubmit: (consultation: ExpertConsultation) => void;
@@ -13,7 +14,8 @@ const categories: ExpertConsultationCategory[] = [
   "회계",
   "세무",
   "4대보험",
-  "인사·총무",
+  "인사",
+  "총무",
 ];
 
 export default function ExpertWriteForm({
@@ -26,6 +28,7 @@ export default function ExpertWriteForm({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const { addNotification } = useNotifications();
 
   const isDirty = title.trim().length > 0 || content.trim().length > 0;
 
@@ -43,19 +46,59 @@ export default function ExpertWriteForm({
   const handleSubmit = () => {
     if (!isValid) return;
 
+    const trimmedTitle = title.trim();
+    const trimmedContent = content.trim();
+    const category = selectedCategory as ExpertConsultationCategory;
+
     const newConsultation: ExpertConsultation = {
       id: `ec-${Date.now()}`,
-      title: title.trim(),
-      content: content.trim(),
+      title: trimmedTitle,
+      content: trimmedContent,
       author: "김비즈",
       authorId: "user-001",
-      category: selectedCategory as ExpertConsultationCategory,
+      category,
       createdAt: new Date().toISOString().split("T")[0].replace(/-/g, "."),
+      createdTime: new Date().toTimeString().slice(0, 5),
       viewCount: 0,
       status: "pending",
     };
 
+    // Submit immediately, then fetch AI answer in the background
     onSubmit(newConsultation);
+
+    fetch("/api/expert-consultation/ai-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        category,
+        title: trimmedTitle,
+        content: trimmedContent,
+      }),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data) return;
+        const now = new Date();
+        newConsultation.aiAnswer = {
+          content: data.answer,
+          answeredAt: now.toISOString().split("T")[0].replace(/-/g, "."),
+          answeredTime: now.toTimeString().slice(0, 5),
+          model: data.model || "gpt-4o-mini",
+          citations: data.citations ?? [],
+          citedBooks: data.citedBooks ?? [],
+          relatedQuestions: data.relatedQuestions ?? [],
+          relatedLaws: data.relatedLaws ?? [],
+        };
+        addNotification({
+          type: "ai-answer",
+          title: "AI 답변이 도착했습니다",
+          message: `[${category}] ${trimmedTitle}`,
+          href: `/mypage?tab=expert&id=${newConsultation.id}`,
+        });
+      })
+      .catch((error) => {
+        console.error("[ExpertWriteForm] AI answer failed:", error);
+      });
   };
 
   return (
@@ -77,7 +120,8 @@ export default function ExpertWriteForm({
                 e.target.value as ExpertConsultationCategory | ""
               )
             }
-            className="mt-1.5 w-full rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-body)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+
+            className="mt-1.5 w-full rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-body)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] disabled:opacity-50"
           >
             <option value="">분야를 선택해주세요</option>
             {categories.map((cat) => (
@@ -98,7 +142,8 @@ export default function ExpertWriteForm({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="상담 제목을 입력해주세요"
-            className="mt-1.5 w-full rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-body)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+
+            className="mt-1.5 w-full rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-body)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] disabled:opacity-50"
           />
         </div>
 
@@ -111,7 +156,8 @@ export default function ExpertWriteForm({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="상담 내용을 상세히 입력해주세요"
-            className="mt-1.5 min-h-[160px] w-full resize-none rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-body)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+
+            className="mt-1.5 min-h-[160px] w-full resize-none rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-body)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] disabled:opacity-50"
           />
         </div>
 
@@ -119,7 +165,8 @@ export default function ExpertWriteForm({
         <div className="flex items-center justify-center gap-3 pt-2">
           <button
             onClick={handleCancel}
-            className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+
+            className="flex items-center gap-1 rounded-lg border border-[var(--color-border)] px-6 py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <ArrowLeft size={16} />
             상담 목록

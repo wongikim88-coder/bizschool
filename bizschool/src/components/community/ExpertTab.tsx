@@ -7,7 +7,7 @@ import ExpertPostCard from "./ExpertPostCard";
 import { expertConsultations, EXPERT_POSTS_PER_PAGE } from "@/data/expert-consultation";
 import type { ExpertConsultationCategory } from "@/types";
 
-const validCategories: ExpertConsultationCategory[] = ["회계", "세무", "4대보험", "인사·총무"];
+const validCategories: ExpertConsultationCategory[] = ["회계", "세무", "4대보험", "인사", "총무"];
 
 interface ExpertTabProps {
   page: number;

@@ -13,6 +13,7 @@ const MOCK_USERS = [
     email: "test@bizschool.com",
     image: undefined,
     role: "user" as UserRole,
+    hasPurchasedConsultation: true,
   },
   {
     id: "expert",
@@ -21,6 +22,7 @@ const MOCK_USERS = [
     email: "expert@bizschool.com",
     image: undefined,
     role: "expert" as UserRole,
+    hasPurchasedConsultation: false,
   },
 ];
 
@@ -87,6 +89,7 @@ const config: NextAuthConfig = {
           email: user.email,
           image: user.image,
           role: user.role,
+          hasPurchasedConsultation: user.hasPurchasedConsultation,
         };
       },
     }),
@@ -111,6 +114,9 @@ const config: NextAuthConfig = {
       if (user && "role" in user) {
         token.role = (user as any).role as UserRole;
       }
+      if (user && "hasPurchasedConsultation" in user) {
+        token.hasPurchasedConsultation = (user as any).hasPurchasedConsultation as boolean;
+      }
       return token;
     },
     async session({ session, token }) {
@@ -119,6 +125,9 @@ const config: NextAuthConfig = {
       }
       if (token.role) {
         session.user.role = token.role as UserRole;
+      }
+      if (token.hasPurchasedConsultation !== undefined) {
+        session.user.hasPurchasedConsultation = token.hasPurchasedConsultation as boolean;
       }
       return session;
     },

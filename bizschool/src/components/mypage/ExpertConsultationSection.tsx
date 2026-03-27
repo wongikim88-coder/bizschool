@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { ExpertConsultation } from "@/types";
 import { expertConsultations, EXPERT_POSTS_PER_PAGE } from "@/data/expert-consultation";
 import { mockUser } from "@/data/mypage";
@@ -15,12 +16,21 @@ import ExpertWriteForm from "./expert-consultation/ExpertWriteForm";
 
 type ViewMode = "list" | "detail" | "write";
 
-export default function ExpertConsultationSection() {
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+export default function ExpertConsultationSection({ initialDetailId }: { initialDetailId?: string | null }) {
+  const router = useRouter();
+  const [viewMode, setViewMode] = useState<ViewMode>(initialDetailId ? "detail" : "list");
+  const [selectedId, setSelectedId] = useState<string | null>(initialDetailId ?? null);
   const [allConsultations, setAllConsultations] = useState<ExpertConsultation[]>(
     () => expertConsultations.filter((c) => c.authorId === mockUser.id)
   );
+
+  // React to initialDetailId prop changes (e.g. notification click while already on page)
+  useEffect(() => {
+    if (initialDetailId) {
+      setSelectedId(initialDetailId);
+      setViewMode("detail");
+    }
+  }, [initialDetailId]);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<ExpertStatusFilter>("all");
@@ -89,6 +99,7 @@ export default function ExpertConsultationSection() {
   const handleBackToList = () => {
     setViewMode("list");
     setSelectedId(null);
+    router.replace("/mypage?tab=expert", { scroll: false });
   };
 
   const handleWriteClick = () => {
@@ -121,14 +132,12 @@ export default function ExpertConsultationSection() {
     setCurrentPage(1);
   };
 
-  // Detail view
+  // Detail view — fall through to list if consultation not found
   if (viewMode === "detail" && selectedId) {
     const selected = allConsultations.find((c) => c.id === selectedId);
-    if (!selected) {
-      setViewMode("list");
-      return null;
+    if (selected) {
+      return <ExpertDetail consultation={selected} onBack={handleBackToList} />;
     }
-    return <ExpertDetail consultation={selected} onBack={handleBackToList} />;
   }
 
   // Write view

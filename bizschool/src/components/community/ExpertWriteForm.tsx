@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { ExpertConsultationCategory } from "@/types";
 
-const categories: ExpertConsultationCategory[] = ["회계", "세무", "4대보험", "인사·총무"];
+const categories: ExpertConsultationCategory[] = ["회계", "세무", "4대보험", "인사", "총무"];
 const MAX_CONTENT_LENGTH = 2000;
 
 export default function ExpertWriteForm() {

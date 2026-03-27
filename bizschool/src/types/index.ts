@@ -141,20 +141,59 @@ export interface ExpertConsultation {
   authorId: string;
   category: ExpertConsultationCategory;
   createdAt: string;
+  createdTime?: string;
   viewCount: number;
   status: "pending" | "answered";
-  answer?: ExpertAnswer;
+  answers?: ExpertAnswer[];
+  aiAnswer?: AiAnswer;
 }
 
 export interface ExpertAnswer {
   id: string;
   expertName: string;
   expertTitle: string;
+  expertAvatar?: string;
   content: string;
   answeredAt: string;
+  replies?: ExpertReply[];
 }
 
-export type ExpertConsultationCategory = "회계" | "세무" | "4대보험" | "인사·총무";
+export interface ExpertReply {
+  id: string;
+  authorName: string;
+  authorAvatar?: string;
+  isExpert?: boolean;
+  content: string;
+  repliedAt: string;
+}
+
+export interface AiCitation {
+  title: string;
+  url?: string;
+}
+
+export interface AiCitedBook {
+  bookId: string;
+  title: string;
+  author: string;
+  cover: string;
+  pageFrom: number;
+  pageTo: number;
+  excerpt: string;
+}
+
+export interface AiAnswer {
+  content: string;
+  answeredAt: string;
+  answeredTime?: string;
+  model: string;
+  citations?: AiCitation[];
+  citedBooks?: AiCitedBook[];
+  relatedQuestions?: string[];
+  relatedLaws?: string[];
+}
+
+export type ExpertConsultationCategory = "회계" | "세무" | "4대보험" | "인사" | "총무";
 
 export type ExpertSortOption = "latest" | "views";
 

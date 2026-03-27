@@ -13,3 +13,5 @@
 | expert-studio | Completed (Do) | 2026-03-26 | plan, design |
 | header-search-scroll | Completed (Do) | 2026-03-26 | report |
 | expert-column | Completed (Do) | 2026-03-26 | report |
+| brand-logo-image | Completed (Do) | 2026-03-27 | plan, summary |
+| expert-consultation-ai-response | Completed (Do) | 2026-03-27 | plan, design |

@@ -7,6 +7,7 @@ import QuestionsTab from "@/components/community/QuestionsTab";
 import CasesTab from "@/components/community/CasesTab";
 import DiscussionTab from "@/components/community/DiscussionTab";
 import ColumnTab from "@/components/community/ColumnTab";
+import WritePostFAB from "@/components/community/WritePostFAB";
 
 export const metadata: Metadata = {
   title: "커뮤니티 - BIZSCHOOL",
@@ -63,6 +64,8 @@ export default async function CommunityPage({
           </Suspense>
         )}
       </div>
+
+      <WritePostFAB />
     </div>
   );
 }

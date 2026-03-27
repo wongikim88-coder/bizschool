@@ -1,0 +1,234 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "BIZSCHOOL BIZSCHOOL" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "BIZSCHOOL" [ref=e6]
+          - generic [ref=e7]: BIZSCHOOL
+        - navigation [ref=e11]:
+          - link "강의" [ref=e12] [cursor=pointer]:
+            - /url: /
+          - link "교육일정" [ref=e13] [cursor=pointer]:
+            - /url: /education
+          - link "근로자 주도훈련" [ref=e14] [cursor=pointer]:
+            - /url: /training
+          - link "도서" [ref=e15] [cursor=pointer]:
+            - /url: /books
+          - link "전문가상담" [ref=e16] [cursor=pointer]:
+            - /url: /mypage?tab=expert
+          - link "커뮤니티" [ref=e17] [cursor=pointer]:
+            - /url: /community
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - link "조견표 신청" [ref=e20] [cursor=pointer]:
+              - /url: /rate-table
+              - img [ref=e21]
+              - generic [ref=e24]: 조견표 신청
+            - link "전문가지원" [ref=e25] [cursor=pointer]:
+              - /url: /expert
+              - img [ref=e26]
+              - generic [ref=e29]: 전문가지원
+          - generic [ref=e30]:
+            - button "알림" [ref=e32] [cursor=pointer]:
+              - img [ref=e33]
+              - generic [ref=e343]: "1"
+            - button "장바구니" [ref=e36] [cursor=pointer]:
+              - img [ref=e37]
+            - button "계정 메뉴" [ref=e42] [cursor=pointer]:
+              - img [ref=e43]
+    - main [ref=e47]:
+      - generic [ref=e48]:
+        - heading "마이페이지" [level=1] [ref=e49]
+        - generic [ref=e50]:
+          - generic [ref=e53]:
+            - button "내 정보" [ref=e54] [cursor=pointer]:
+              - img [ref=e55]
+              - text: 내 정보
+            - button "1:1 문의" [ref=e58] [cursor=pointer]:
+              - img [ref=e59]
+              - text: 1:1 문의
+            - button "내 학습" [ref=e61] [cursor=pointer]:
+              - img [ref=e62]
+              - text: 내 학습
+            - button "구매내역" [ref=e64] [cursor=pointer]:
+              - img [ref=e65]
+              - text: 구매내역
+            - button "취소/반품/교환/환불" [ref=e68] [cursor=pointer]:
+              - img [ref=e69]
+              - text: 취소/반품/교환/환불
+            - button "전문가상담" [ref=e72] [cursor=pointer]:
+              - img [ref=e73]
+              - text: 전문가상담
+          - generic [ref=e255]:
+            - generic [ref=e256]:
+              - generic [ref=e257]:
+                - generic [ref=e258]:
+                  - button "전체(6)" [ref=e259] [cursor=pointer]
+                  - button "대기중(3)" [ref=e260] [cursor=pointer]
+                  - button "AI 답변(2)" [ref=e261] [cursor=pointer]
+                  - button "답변완료(1)" [ref=e262] [cursor=pointer]
+                - button "상담 신청" [ref=e263] [cursor=pointer]:
+                  - img [ref=e264]
+                  - text: 상담 신청
+              - generic [ref=e267]:
+                - combobox [ref=e268]:
+                  - option "전체 분야" [selected]
+                  - option "회계"
+                  - option "세무"
+                  - option "4대보험"
+                  - option "인사"
+                  - option "총무"
+                - generic [ref=e269]:
+                  - textbox "제목 검색" [ref=e270]
+                  - button [ref=e271]:
+                    - img [ref=e272]
+            - table [ref=e276]:
+              - rowgroup [ref=e282]:
+                - row "분야 제목 작성일 상태" [ref=e283]:
+                  - columnheader "분야" [ref=e284]
+                  - columnheader "제목" [ref=e285]
+                  - columnheader "작성일" [ref=e286]
+                  - columnheader "상태" [ref=e287]
+              - rowgroup [ref=e288]:
+                - row "세무 테스트 상담 제목 2026.03.27 대기중" [ref=e289] [cursor=pointer]:
+                  - cell "세무" [ref=e290]
+                  - cell "테스트 상담 제목" [ref=e291]
+                  - cell "2026.03.27" [ref=e292]
+                  - cell "대기중" [ref=e293]:
+                    - generic [ref=e294]:
+                      - img [ref=e295]
+                      - text: 대기중
+                - row "세무 부가세 예정신고 누락 시 가산세는 어떻게 계산하나요? 2026.03.23 답변완료" [ref=e298] [cursor=pointer]:
+                  - cell "세무" [ref=e299]
+                  - cell "부가세 예정신고 누락 시 가산세는 어떻게 계산하나요?" [ref=e300]
+                  - cell "2026.03.23" [ref=e301]
+                  - cell "답변완료" [ref=e302]:
+                    - generic [ref=e303]:
+                      - img [ref=e304]
+                      - text: 답변완료
+                - row "세무 법인세 중간예납 계산 방법 문의 2026.03.21 AI 답변" [ref=e307] [cursor=pointer]:
+                  - cell "세무" [ref=e308]
+                  - cell "법인세 중간예납 계산 방법 문의" [ref=e309]
+                  - cell "2026.03.21" [ref=e310]
+                  - cell "AI 답변" [ref=e311]:
+                    - generic [ref=e312]:
+                      - img [ref=e313]
+                      - text: AI 답변
+                - row "인사 수습기간 중 급여를 90%만 지급해도 되나요? 2026.03.20 AI 답변" [ref=e316] [cursor=pointer]:
+                  - cell "인사" [ref=e317]
+                  - cell "수습기간 중 급여를 90%만 지급해도 되나요?" [ref=e318]
+                  - cell "2026.03.20" [ref=e319]
+                  - cell "AI 답변" [ref=e320]:
+                    - generic [ref=e321]:
+                      - img [ref=e322]
+                      - text: AI 답변
+                - row "4대보험 해고예고수당 지급 기준 2026.03.18 대기중" [ref=e325] [cursor=pointer]:
+                  - cell "4대보험" [ref=e326]
+                  - cell "해고예고수당 지급 기준" [ref=e327]
+                  - cell "2026.03.18" [ref=e328]
+                  - cell "대기중" [ref=e329]:
+                    - generic [ref=e330]:
+                      - img [ref=e331]
+                      - text: 대기중
+                - row "회계 재고자산 평가방법 변경 절차 2026.03.17 대기중" [ref=e334] [cursor=pointer]:
+                  - cell "회계" [ref=e335]
+                  - cell "재고자산 평가방법 변경 절차" [ref=e336]
+                  - cell "2026.03.17" [ref=e337]
+                  - cell "대기중" [ref=e338]:
+                    - generic [ref=e339]:
+                      - img [ref=e340]
+                      - text: 대기중
+    - contentinfo [ref=e159]:
+      - generic [ref=e161]:
+        - generic [ref=e162]:
+          - generic [ref=e163]:
+            - img "BIZSCHOOL" [ref=e164]
+            - generic [ref=e165]: BIZSCHOOL
+          - paragraph [ref=e166]:
+            - text: 비즈니스 성장을 위한 온라인 교육 플랫폼.
+            - text: 전문가가 직접 전하는 실무 중심의 강의와 도서로
+            - text: 당신의 커리어를 한 단계 업그레이드하세요.
+          - generic [ref=e167]:
+            - link "YouTube" [ref=e168] [cursor=pointer]:
+              - /url: https://youtube.com
+              - img [ref=e169]
+            - link "Instagram" [ref=e171] [cursor=pointer]:
+              - /url: https://instagram.com
+              - img [ref=e172]
+            - link "Blog" [ref=e174] [cursor=pointer]:
+              - /url: https://blog.naver.com
+              - text: B
+        - generic [ref=e175]:
+          - heading "더존비즈스쿨" [level=3] [ref=e176]
+          - list [ref=e177]:
+            - listitem [ref=e178]:
+              - link "비즈스쿨 소개" [ref=e179] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e180]:
+              - link "강의장 소개" [ref=e181] [cursor=pointer]:
+                - /url: /venue
+            - listitem [ref=e182]:
+              - link "찾아오시는 길" [ref=e183] [cursor=pointer]:
+                - /url: /venue#directions
+        - generic [ref=e184]:
+          - heading "강의" [level=3] [ref=e185]
+          - list [ref=e186]:
+            - listitem [ref=e187]:
+              - link "전체강의" [ref=e188] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e189]:
+              - link "추천강의" [ref=e190] [cursor=pointer]:
+                - /url: /?filter=recommended
+            - listitem [ref=e191]:
+              - link "신규강의" [ref=e192] [cursor=pointer]:
+                - /url: /?filter=new
+            - listitem [ref=e193]:
+              - link "무료강의" [ref=e194] [cursor=pointer]:
+                - /url: /?filter=free
+        - generic [ref=e195]:
+          - heading "도서" [level=3] [ref=e196]
+          - list [ref=e197]:
+            - listitem [ref=e198]:
+              - link "전체도서" [ref=e199] [cursor=pointer]:
+                - /url: /books
+            - listitem [ref=e200]:
+              - link "추천도서" [ref=e201] [cursor=pointer]:
+                - /url: /books?filter=recommended
+            - listitem [ref=e202]:
+              - link "신간도서" [ref=e203] [cursor=pointer]:
+                - /url: /books?filter=new
+            - listitem [ref=e204]:
+              - link "베스트셀러" [ref=e205] [cursor=pointer]:
+                - /url: /books?filter=best
+        - generic [ref=e206]:
+          - heading "고객지원" [level=3] [ref=e207]
+          - list [ref=e208]:
+            - listitem [ref=e209]:
+              - link "FAQ" [ref=e210] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=e211]:
+              - link "1:1 문의" [ref=e212] [cursor=pointer]:
+                - /url: /contact
+            - listitem [ref=e213]:
+              - link "공지사항" [ref=e214] [cursor=pointer]:
+                - /url: /notice
+            - listitem [ref=e215]:
+              - link "자료실" [ref=e216] [cursor=pointer]:
+                - /url: /resources
+      - generic [ref=e218]:
+        - generic [ref=e219]:
+          - link "이용약관" [ref=e220] [cursor=pointer]:
+            - /url: /terms
+          - link "개인정보처리방침" [ref=e221] [cursor=pointer]:
+            - /url: /privacy
+          - link "저작권 정책" [ref=e222] [cursor=pointer]:
+            - /url: /copyright
+        - generic [ref=e223]:
+          - paragraph [ref=e224]: "(주)비즈스쿨 | 대표: 홍길동 | 사업자등록번호: 123-45-67890"
+          - paragraph [ref=e225]: "통신판매업 신고번호: 제2026-서울강남-12345호 | 이메일: support@bizschool.co.kr"
+          - paragraph [ref=e226]: "주소: 서울특별시 강남구 테헤란로 123, 비즈타워 10층"
+        - paragraph [ref=e227]: © 2026 BIZSCHOOL. ALL RIGHTS RESERVED.
+  - button "Open Next.js Dev Tools" [ref=e233] [cursor=pointer]:
+    - img [ref=e234]
+  - alert [ref=e237]

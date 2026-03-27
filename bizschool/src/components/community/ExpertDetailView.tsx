@@ -71,21 +71,21 @@ export default function ExpertDetailView({ consultation }: ExpertDetailViewProps
 
         <hr className="my-4 border-[var(--color-border)]" />
 
-        {consultation.status === "answered" && consultation.answer ? (
+        {consultation.status === "answered" && consultation.answers?.[0] ? (
           <>
             <div className="flex items-center gap-2">
               <span className="font-bold text-[var(--color-dark)]">
-                {consultation.answer.expertName}
+                {consultation.answers[0].expertName}
               </span>
               <span className="text-sm font-medium text-[var(--color-primary)]">
-                {consultation.answer.expertTitle}
+                {consultation.answers[0].expertTitle}
               </span>
               <span className="text-sm text-[var(--color-muted)]">
-                · {consultation.answer.answeredAt}
+                · {consultation.answers[0].answeredAt}
               </span>
             </div>
             <div className="mt-4 text-[15px] leading-relaxed text-[var(--color-body)] whitespace-pre-wrap">
-              {consultation.answer.content}
+              {consultation.answers[0].content}
             </div>
           </>
         ) : (

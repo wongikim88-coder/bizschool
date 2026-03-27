@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>BIZSCHOOL Logo Options</title>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; padding: 40px; gap: 32px; }
+    h1 { font-size: 20px; color: #333; margin: 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px; width: 100%; }
+    .card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+    .card h2 { font-size: 13px; color: #155dfc; margin: 0 0 4px; font-weight: 700; }
+    .card p { font-size: 12px; color: #999; margin: 0 0 16px; }
+    .preview-row { display: flex; align-items: center; justify-content: center; gap: 24px; margin-top: 12px; }
+    .lockup { display: flex; align-items: center; gap: 10px; }
+    .lockup-text { font-family: 'Squada One', cursive; font-size: 28px; color: #282c34; }
+    .dark-box { background: #1e1e1e; border-radius: 8px; padding: 16px 24px; }
+    .dark-box .lockup-text { color: #fff; }
+    .size-row { display: flex; align-items: end; gap: 16px; justify-content: center; margin-top: 16px; }
+    .size-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .size-item span { font-size: 10px; color: #bbb; }
+    .full-width { grid-column: 1 / -1; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Squada+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>BIZSCHOOL Logo Options</h1>
+
+  <!-- CURRENT -->
+  <div class="grid">
+    <div class="card">
+      <h2>CURRENT</h2>
+      <p>2x2 Grid (right pair touching)</p>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="140" height="140">
+        <polygon points="30,12 48,30 30,48 12,30" fill="#155dfc"/>
+        <polygon points="30,52 48,70 30,88 12,70" fill="#f5a623"/>
+        <polygon points="70,14 88,32 70,50 52,32" fill="#6abf4b"/>
+        <polygon points="70,50 88,68 70,86 52,68" fill="#3db5b5"/>
+      </svg>
+      <div class="lockup" style="justify-content:center; margin-top:12px;">
+        <svg viewBox="0 0 100 100" width="32" height="32">
+          <polygon points="30,12 48,30 30,48 12,30" fill="#155dfc"/>
+          <polygon points="30,52 48,70 30,88 12,70" fill="#f5a623"/>
+          <polygon points="70,14 88,32 70,50 52,32" fill="#6abf4b"/>
+          <polygon points="70,50 88,68 70,86 52,68" fill="#3db5b5"/>
+        </svg>
+        <span class="lockup-text">BIZSCHOOL</span>
+      </div>
+    </div>
+
+    <!-- OPTION A: D-Constellation -->
+    <div class="card">
+      <h2>A: D Constellation</h2>
+      <p>D outline path, equal size, eye connects the dots</p>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="140" height="140">
+        <polygon points="28,4 40,16 28,28 16,16" fill="#155dfc"/>
+        <polygon points="74,22 86,34 74,46 62,34" fill="#6abf4b"/>
+        <polygon points="74,54 86,66 74,78 62,66" fill="#3db5b5"/>
+        <polygon points="28,72 40,84 28,96 16,84" fill="#f5a623"/>
+      </svg>
+      <div class="lockup" style="justify-content:center; margin-top:12px;">
+        <svg viewBox="0 0 100 100" width="32" height="32">
+          <polygon points="28,4 40,16 28,28 16,16" fill="#155dfc"/>
+          <polygon points="74,22 86,34 74,46 62,34" fill="#6abf4b"/>
+          <polygon points="74,54 86,66 74,78 62,66" fill="#3db5b5"/>
+          <polygon points="28,72 40,84 28,96 16,84" fill="#f5a623"/>
+        </svg>
+        <span class="lockup-text">BIZSCHOOL</span>
+      </div>
+    </div>
+
+    <!-- OPTION B: Stem & Bowl -->
+    <div class="card">
+      <h2>B: Stem & Bowl</h2>
+      <p>Small stem pair + large bowl pair, size contrast = D</p>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="140" height="140">
+        <!-- stem (small, r=10) -->
+        <polygon points="18,8 28,18 18,28 8,18" fill="#155dfc"/>
+        <polygon points="18,72 28,82 18,92 8,82" fill="#f5a623"/>
+        <!-- bowl (large, r=20, touching at center) -->
+        <polygon points="64,10 84,30 64,50 44,30" fill="#6abf4b"/>
+        <polygon points="64,50 84,70 64,90 44,70" fill="#3db5b5"/>
+      </svg>
+      <div class="lockup" style="justify-content:center; margin-top:12px;">
+        <svg viewBox="0 0 100 100" width="32" height="32">
+          <polygon points="18,8 28,18 18,28 8,18" fill="#155dfc"/>
+          <polygon points="18,72 28,82 18,92 8,82" fill="#f5a623"/>
+          <polygon points="64,10 84,30 64,50 44,30" fill="#6abf4b"/>
+          <polygon points="64,50 84,70 64,90 44,70" fill="#3db5b5"/>
+        </svg>
+        <span class="lockup-text">BIZSCHOOL</span>
+      </div>
+    </div>
+
+    <!-- OPTION C: Connected D-Chain -->
+    <div class="card">
+      <h2>C: D-Chain</h2>
+      <p>Shared vertices form connected D path, open left = D counter</p>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="140" height="140">
+        <!-- top-left corner -->
+        <polygon points="38,5 53,20 38,35 23,20" fill="#155dfc"/>
+        <!-- right-upper bowl -->
+        <polygon points="53,20 68,35 53,50 38,35" fill="#6abf4b"/>
+        <!-- right-lower bowl -->
+        <polygon points="53,50 68,65 53,80 38,65" fill="#3db5b5"/>
+        <!-- bottom-left corner -->
+        <polygon points="38,65 53,80 38,95 23,80" fill="#f5a623"/>
+      </svg>
+      <div class="lockup" style="justify-content:center; margin-top:12px;">
+        <svg viewBox="0 0 100 100" width="32" height="32">
+          <polygon points="38,5 53,20 38,35 23,20" fill="#155dfc"/>
+          <polygon points="53,20 68,35 53,50 38,35" fill="#6abf4b"/>
+          <polygon points="53,50 68,65 53,80 38,65" fill="#3db5b5"/>
+          <polygon points="38,65 53,80 38,95 23,80" fill="#f5a623"/>
+        </svg>
+        <span class="lockup-text">BIZSCHOOL</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Size comparison for all options -->
+  <div class="grid">
+    <div class="card full-width">
+      <h2>Small Size Comparison (32px)</h2>
+      <div style="display:flex; gap:48px; justify-content:center; align-items:center; margin-top:8px;">
+        <div style="text-align:center;">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="30,12 48,30 30,48 12,30" fill="#155dfc"/>
+            <polygon points="30,52 48,70 30,88 12,70" fill="#f5a623"/>
+            <polygon points="70,14 88,32 70,50 52,32" fill="#6abf4b"/>
+            <polygon points="70,50 88,68 70,86 52,68" fill="#3db5b5"/>
+          </svg>
+          <div style="font-size:10px;color:#aaa;margin-top:4px;">Current</div>
+        </div>
+        <div style="text-align:center;">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="28,4 40,16 28,28 16,16" fill="#155dfc"/>
+            <polygon points="74,22 86,34 74,46 62,34" fill="#6abf4b"/>
+            <polygon points="74,54 86,66 74,78 62,66" fill="#3db5b5"/>
+            <polygon points="28,72 40,84 28,96 16,84" fill="#f5a623"/>
+          </svg>
+          <div style="font-size:10px;color:#aaa;margin-top:4px;">A</div>
+        </div>
+        <div style="text-align:center;">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="18,8 28,18 18,28 8,18" fill="#155dfc"/>
+            <polygon points="18,72 28,82 18,92 8,82" fill="#f5a623"/>
+            <polygon points="64,10 84,30 64,50 44,30" fill="#6abf4b"/>
+            <polygon points="64,50 84,70 64,90 44,70" fill="#3db5b5"/>
+          </svg>
+          <div style="font-size:10px;color:#aaa;margin-top:4px;">B</div>
+        </div>
+        <div style="text-align:center;">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="38,5 53,20 38,35 23,20" fill="#155dfc"/>
+            <polygon points="53,20 68,35 53,50 38,35" fill="#6abf4b"/>
+            <polygon points="53,50 68,65 53,80 38,65" fill="#3db5b5"/>
+            <polygon points="38,65 53,80 38,95 23,80" fill="#f5a623"/>
+          </svg>
+          <div style="font-size:10px;color:#aaa;margin-top:4px;">C</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card full-width">
+      <h2>Dark Background</h2>
+      <div class="dark-box" style="display:flex; gap:48px; justify-content:center; align-items:center;">
+        <div class="lockup">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="28,4 40,16 28,28 16,16" fill="#155dfc"/>
+            <polygon points="74,22 86,34 74,46 62,34" fill="#6abf4b"/>
+            <polygon points="74,54 86,66 74,78 62,66" fill="#3db5b5"/>
+            <polygon points="28,72 40,84 28,96 16,84" fill="#f5a623"/>
+          </svg>
+          <span class="lockup-text">A</span>
+        </div>
+        <div class="lockup">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="18,8 28,18 18,28 8,18" fill="#155dfc"/>
+            <polygon points="18,72 28,82 18,92 8,82" fill="#f5a623"/>
+            <polygon points="64,10 84,30 64,50 44,30" fill="#6abf4b"/>
+            <polygon points="64,50 84,70 64,90 44,70" fill="#3db5b5"/>
+          </svg>
+          <span class="lockup-text">B</span>
+        </div>
+        <div class="lockup">
+          <svg viewBox="0 0 100 100" width="32" height="32">
+            <polygon points="38,5 53,20 38,35 23,20" fill="#155dfc"/>
+            <polygon points="53,20 68,35 53,50 38,35" fill="#6abf4b"/>
+            <polygon points="53,50 68,65 53,80 38,65" fill="#3db5b5"/>
+            <polygon points="38,65 53,80 38,95 23,80" fill="#f5a623"/>
+          </svg>
+          <span class="lockup-text">C</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

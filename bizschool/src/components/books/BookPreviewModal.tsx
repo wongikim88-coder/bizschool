@@ -20,12 +20,27 @@ import BookPreviewViewer from "./BookPreviewViewer";
 export default function BookPreviewModal({
   book,
   onClose,
+  pageRange,
 }: {
   book: Book;
   onClose: () => void;
+  pageRange?: { from: number; to: number };
 }) {
-  const preview = book.preview!;
-  const [viewMode, setViewMode] = useState<PreviewViewMode>("spread");
+  const fullPreview = book.preview!;
+
+  // If pageRange is provided, generate pages for the cited range
+  const preview = pageRange
+    ? {
+        ...fullPreview,
+        pages: Array.from(
+          { length: pageRange.to - pageRange.from + 1 },
+          (_, i) => ({ pageNumber: pageRange.from + i })
+        ),
+        totalPages: pageRange.to - pageRange.from + 1,
+      }
+    : fullPreview;
+
+  const [viewMode, setViewMode] = useState<PreviewViewMode>(pageRange ? "single" : "spread");
   const [currentPage, setCurrentPage] = useState(1);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [pageInput, setPageInput] = useState("1");
@@ -108,10 +123,15 @@ export default function BookPreviewModal({
         {/* ── Header ── */}
         <div className="flex h-12 flex-shrink-0 items-center gap-2 border-b bg-white px-4 md:rounded-t-2xl">
           <span className="rounded-full border border-gray-300 px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-muted)]">
-            도서
+            {pageRange ? "발췌" : "도서"}
           </span>
           <h2 className="min-w-0 flex-1 truncate text-base font-bold text-[var(--color-dark)]">
             {book.title}
+            {pageRange && (
+              <span className="ml-2 text-sm font-normal text-[var(--color-muted)]">
+                p.{pageRange.from}~{pageRange.to}
+              </span>
+            )}
           </h2>
           <button
             onClick={onClose}

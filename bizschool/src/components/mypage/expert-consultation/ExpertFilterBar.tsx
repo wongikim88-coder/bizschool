@@ -30,7 +30,8 @@ const categoryOptions: { key: ExpertCategoryFilter; label: string }[] = [
   { key: "회계", label: "회계" },
   { key: "세무", label: "세무" },
   { key: "4대보험", label: "4대보험" },
-  { key: "인사·총무", label: "인사·총무" },
+  { key: "인사", label: "인사" },
+  { key: "총무", label: "총무" },
 ];
 
 export default function ExpertFilterBar({

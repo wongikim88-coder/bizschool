@@ -62,7 +62,7 @@ export default function PricingCard() {
       <ul className="space-y-2.5 text-sm text-[var(--color-body)]">
         <li className="flex items-center gap-2">
           <CheckCircle size={15} className="shrink-0 text-[var(--color-primary)]" />
-          회계, 세무, 4대보험, 인사·총무 전 분야 이용
+          회계, 세무, 4대보험, 인사, 총무 전 분야 이용
         </li>
         <li className="flex items-center gap-2">
           <CheckCircle size={15} className="shrink-0 text-[var(--color-primary)]" />

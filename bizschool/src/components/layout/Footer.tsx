@@ -52,7 +52,10 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-6">
           {/* Logo & Description */}
           <div className="col-span-2">
-            <span className="font-logo text-xl text-white">BIZSCHOOL</span>
+            <span className="flex items-center gap-2">
+              <img src="/images/logo.svg" alt="BIZSCHOOL" width={31} height={31} />
+              <span className="font-logo text-2xl text-white">BIZSCHOOL</span>
+            </span>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/50">
               비즈니스 성장을 위한 온라인 교육 플랫폼.
               <br />

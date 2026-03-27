@@ -20,6 +20,7 @@ export default async function MypagePage({
     view?: string;
     write?: string;
     category?: string;
+    id?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -32,6 +33,7 @@ export default async function MypagePage({
   const page = Math.max(1, parseInt(params.page || "1", 10) || 1);
   const view = params.view ? parseInt(params.view, 10) || null : null;
   const write = params.write === "true";
+  const expertId = params.id || null;
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 py-8">
@@ -45,6 +47,7 @@ export default async function MypagePage({
         page={page}
         viewId={view}
         writeMode={write}
+        expertId={expertId}
       />
     </div>
   );

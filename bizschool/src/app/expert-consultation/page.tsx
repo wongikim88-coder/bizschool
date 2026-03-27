@@ -5,7 +5,7 @@ import HeroStats from "@/components/expert-consultation/HeroStats";
 
 export const metadata: Metadata = {
   title: "전문가상담 - BIZSCHOOL",
-  description: "회계, 세무, 4대보험, 인사·총무 전문가에게 1:1 맞춤 상담을 받아보세요.",
+  description: "회계, 세무, 4대보험, 인사, 총무 전문가에게 1:1 맞춤 상담을 받아보세요.",
 };
 
 const categories = [
@@ -26,8 +26,13 @@ const categories = [
   },
   {
     icon: Briefcase,
-    title: "인사·총무",
-    description: "채용, 평가, 보상체계, 총무 업무 등 인사·총무 전반에 대한 전문 상담",
+    title: "인사",
+    description: "채용, 평가, 보상체계 등 인사 전반에 대한 전문 상담",
+  },
+  {
+    icon: Briefcase,
+    title: "총무",
+    description: "사무 관리, 비품, 시설, 자산 관리 등 총무 업무에 대한 전문 상담",
   },
 ];
 
@@ -66,12 +71,12 @@ export default function ExpertConsultationPage() {
 
         {/* Description */}
         <p className="relative mt-4 text-base leading-relaxed text-white/90 sm:text-lg">
-          회계, 세무, 4대보험, 인사·총무 분야 전문가가<br className="sm:hidden" /> 맞춤 답변을 드립니다.
+          회계, 세무, 4대보험, 인사, 총무 분야 전문가가<br className="sm:hidden" /> 맞춤 답변을 드립니다.
         </p>
 
         {/* Category chips */}
         <div className="relative mt-7 flex flex-wrap justify-center gap-2">
-          {["회계", "세무", "4대보험", "인사·총무"].map((label) => (
+          {["회계", "세무", "4대보험", "인사", "총무"].map((label) => (
             <span
               key={label}
               className="rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90 backdrop-blur-sm"
@@ -145,7 +150,7 @@ export default function ExpertConsultationPage() {
           <div className="pointer-events-none absolute left-[calc(16.67%+24px)] right-[calc(16.67%+24px)] top-8 hidden h-0.5 bg-gradient-to-r from-[var(--color-primary)]/20 via-[var(--color-primary)]/40 to-[var(--color-primary)]/20 sm:block" />
 
           {([
-            { step: "1", title: "상담 분야 선택", desc: <>회계, 세무, 4대보험, 인사·총무 중<br />원하는 분야를 선택합니다.</> },
+            { step: "1", title: "상담 분야 선택", desc: <>회계, 세무, 4대보험, 인사, 총무 중<br />원하는 분야를 선택합니다.</> },
             { step: "2", title: "질문 내용 작성", desc: "궁금한 내용을 구체적으로 작성하여 등록합니다." },
             { step: "3", title: "전문가 답변 확인", desc: <>영업일 1~2일 이내<br />전문가의 맞춤 답변을 확인합니다.</> },
           ] as const).map((item) => (

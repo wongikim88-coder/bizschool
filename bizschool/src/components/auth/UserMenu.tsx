@@ -31,7 +31,7 @@ export default function UserMenu({ user }: UserMenuProps) {
         aria-haspopup="true"
         aria-expanded={isOpen}
         aria-label="계정 메뉴"
-        className="flex h-9 w-9 cursor-pointer items-center justify-center"
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[var(--color-border)] transition-colors hover:bg-[var(--color-light-bg)]"
       >
         {user.image ? (
           <img

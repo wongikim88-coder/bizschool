@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { Menu, X, GraduationCap, UserCircle, FileText, LogIn, UserPlus, Plus, ChevronDown, Search } from "lucide-react";
+import { Menu, X, GraduationCap, UserCircle, FileText, LogIn, UserPlus, Plus, ChevronDown, Search, Bell, ShoppingCart, Bot, MessageCircle, MoreVertical, Trash2, CheckCheck } from "lucide-react";
 import type { MenuItem } from "@/types";
 import UserMenu from "@/components/auth/UserMenu";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 const menuItems: MenuItem[] = [
   { label: "강의", href: "/" },
@@ -33,7 +34,7 @@ function DropdownMenu({ item }: { item: MenuItem }) {
     <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <Link
         href={item.href}
-        className="flex items-center gap-1 text-base font-medium text-[var(--color-dark)] transition-colors hover:text-[var(--color-primary)]"
+        className="flex items-center gap-1 text-base font-medium text-black transition-colors hover:text-[var(--color-primary)]"
       >
         {item.label}
         <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
@@ -62,7 +63,7 @@ function MobileDropdown({ item, onClose }: { item: MenuItem; onClose: () => void
   return (
     <div>
       <button
-        className="flex w-full items-center justify-between py-3 text-base font-medium text-[var(--color-dark)]"
+        className="flex w-full items-center justify-between py-3 text-base font-medium text-black"
         onClick={() => setOpen(!open)}
       >
         {item.label}
@@ -86,18 +87,52 @@ function MobileDropdown({ item, onClose }: { item: MenuItem; onClose: () => void
   );
 }
 
+function formatTimeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const sec = Math.floor(diff / 1000);
+  if (sec < 60) return "방금 전";
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}분 전`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}시간 전`;
+  const day = Math.floor(hr / 24);
+  return `${day}일 전`;
+}
+
 export default function Header({ showSearchInHeader = false }: { showSearchInHeader?: boolean }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerSearchValue, setHeaderSearchValue] = useState("");
+  const [bellOpen, setBellOpen] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [notifMenuId, setNotifMenuId] = useState<string | null>(null);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const bellRef = useRef<HTMLDivElement>(null);
   const { data: session, status } = useSession();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification, clearAll } = useNotifications();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Close bell dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setBellOpen(false);
+      }
+    };
+    if (bellOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      setNotifMenuId(null);
+      setHeaderMenuOpen(false);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [bellOpen]);
 
   // Rotating placeholder
   const headerPlaceholderTexts: Record<string, string[]> = {
     "/": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
     "/education": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
-    "/training": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
+    "/training": ["근로자 주도훈련 과정을 검색해보세요.", "관심있는 주제를 검색해보세요."],
     "/books": ["도서명 또는 저자를 검색하세요.", "관심있는 주제를 검색해보세요."],
     "/community": ["배우고 싶은 강의를 검색해보세요.", "관심있는 주제를 검색해보세요."],
   };
@@ -117,6 +152,14 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
     return () => clearInterval(interval);
   }, [headerTexts]);
 
+  // 결제 회원은 전문가상담 대시보드로 이동
+  const getMenuHref = (item: MenuItem) => {
+    if (item.href === "/expert-consultation" && session?.user?.hasPurchasedConsultation) {
+      return "/mypage?tab=expert";
+    }
+    return item.href;
+  };
+
   const handleHeaderSearch = () => {
     const q = headerSearchValue.trim();
     if (!q) return;
@@ -128,8 +171,9 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
     <header className={`sticky top-0 z-50 bg-white transition-[border-color] duration-300 ${showSearchInHeader ? "border-b border-[var(--color-border)]" : "border-b border-transparent"}`}>
       <div className="relative mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="relative z-10 shrink-0 font-logo text-2xl text-[var(--color-dark)]">
-          BIZSCHOOL
+        <Link href="/" className="relative z-10 flex shrink-0 items-center gap-2">
+          <img src="/images/logo.svg" alt="BIZSCHOOL" width={36} height={36} />
+          <span className="font-logo text-3xl text-[var(--color-dark)]">BIZSCHOOL</span>
         </Link>
 
         {/* Slide container: Nav ↔ Search (desktop only) — absolutely centered on page */}
@@ -148,8 +192,8 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
                   ) : (
                     <Link
                       key={item.href}
-                      href={item.href}
-                      className="whitespace-nowrap text-base font-medium text-[var(--color-dark)] transition-colors hover:text-[var(--color-primary)]"
+                      href={getMenuHref(item)}
+                      className="whitespace-nowrap text-base font-medium text-black transition-colors hover:text-[var(--color-primary)]"
                     >
                       {item.label}
                     </Link>
@@ -191,35 +235,180 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
         </div>
 
         {/* Right Actions */}
-        <div className="relative z-10 hidden shrink-0 items-center gap-6 md:flex">
+        <div className="relative z-10 hidden shrink-0 items-center gap-3 md:flex">
+          {/* 텍스트 링크 그룹 */}
           {status === "authenticated" && (
-            <Link
-              href="/rate-table"
-              className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-            >
-              <FileText size={18} />
-              <span>조견표 신청</span>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/rate-table"
+                className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
+              >
+                <FileText size={18} />
+                <span>조견표 신청</span>
+              </Link>
+              {session?.user?.role === "expert" ? (
+                <Link
+                  href="/expert/upload"
+                  className="flex items-center gap-1 rounded-full border border-[var(--color-dark)] px-3 py-2 text-xs font-medium text-[var(--color-dark)] transition-colors hover:bg-[var(--color-dark)] hover:text-white"
+                >
+                  <Plus size={20} strokeWidth={2.5} />
+                  <span className="text-sm">콘텐츠 업로드</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/expert"
+                  className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
+                >
+                  <GraduationCap size={18} />
+                  <span>전문가지원</span>
+                </Link>
+              )}
+            </div>
           )}
-          {session?.user?.role === "expert" ? (
-            <Link
-              href="/expert/upload"
-              className="flex items-center gap-1 rounded-full border border-[var(--color-dark)] px-3 py-2 text-xs font-medium text-[var(--color-dark)] transition-colors hover:bg-[var(--color-dark)] hover:text-white"
-            >
-              <Plus size={20} strokeWidth={2.5} />
-              <span className="text-sm">콘텐츠 업로드</span>
-            </Link>
-          ) : status === "authenticated" ? (
-            <Link
-              href="/expert"
-              className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-            >
-              <GraduationCap size={18} />
-              <span>전문가지원</span>
-            </Link>
-          ) : null}
+          {/* 아이콘 버튼 그룹 */}
           {status === "authenticated" && session?.user ? (
-            <UserMenu user={session.user} />
+            <div className="flex items-center gap-3">
+              <div className="relative" ref={bellRef}>
+                <button
+                  onClick={() => setBellOpen((o) => !o)}
+                  className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-dark)] transition-colors hover:bg-[var(--color-light-bg)]"
+                  aria-label="알림"
+                >
+                  <Bell size={22} />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+                {bellOpen && (
+                  <div className="absolute right-0 top-full z-50 mt-2 w-80 rounded-xl border border-[var(--color-border)] bg-white shadow-lg">
+                    <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
+                      <span className="text-sm font-bold text-[var(--color-dark)]">알림</span>
+                      {notifications.length > 0 && (
+                        <div className="relative">
+                          <button
+                            onClick={() => setHeaderMenuOpen((o) => !o)}
+                            className={`flex h-6 w-6 items-center justify-center rounded-full text-[var(--color-muted)] transition-colors hover:bg-gray-200 ${headerMenuOpen ? "bg-gray-200" : ""}`}
+                            aria-label="알림 더보기"
+                          >
+                            <MoreVertical size={14} />
+                          </button>
+                          {headerMenuOpen && (
+                            <div className="absolute right-0 top-full z-10 mt-1 w-28 overflow-hidden rounded-lg border border-[var(--color-border)] bg-white shadow-lg">
+                              {unreadCount > 0 && (
+                                <button
+                                  onClick={() => { markAllAsRead(); setHeaderMenuOpen(false); }}
+                                  className="flex w-full items-center gap-1.5 px-3 py-2 text-xs text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+                                >
+                                  <CheckCheck size={13} />
+                                  모두 읽음
+                                </button>
+                              )}
+                              <button
+                                onClick={() => { setShowClearConfirm(true); setHeaderMenuOpen(false); }}
+                                className="flex w-full items-center gap-1.5 px-3 py-2 text-xs text-red-500 transition-colors hover:bg-[var(--color-light-bg)]"
+                              >
+                                <Trash2 size={13} />
+                                전체 삭제
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="px-4 py-8 text-center text-sm text-[var(--color-muted)]">
+                          알림이 없습니다.
+                        </div>
+                      ) : (
+                        notifications.map((n) => (
+                          <div key={n.id}>
+                            <div
+                              className="group flex w-full cursor-pointer items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[var(--color-light-bg)]"
+                              onClick={() => {
+                                markAsRead(n.id);
+                                setBellOpen(false);
+                                setNotifMenuId(null);
+                                if (n.href) router.push(n.href);
+                              }}
+                            >
+                              <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${n.type === "community-reply" ? "bg-emerald-100 text-emerald-600" : "bg-violet-100 text-violet-600"}`}>
+                                {n.type === "community-reply" ? <MessageCircle size={16} /> : <Bot size={16} />}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className={`truncate text-sm ${!n.read ? "font-semibold text-[var(--color-dark)]" : "text-[var(--color-body)]"}`}>
+                                  {n.title}
+                                </p>
+                                <p className="mt-0.5 truncate text-xs text-[var(--color-muted)]">
+                                  {n.message}
+                                </p>
+                                <p className="mt-1 text-[10px] text-[var(--color-muted)]">
+                                  {formatTimeAgo(n.createdAt)}
+                                </p>
+                              </div>
+                              {!n.read && notifMenuId !== n.id && (
+                                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-500 group-hover:hidden" />
+                              )}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setNotifMenuId(notifMenuId === n.id ? null : n.id);
+                                }}
+                                className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[var(--color-muted)] transition-colors hover:bg-gray-200 ${notifMenuId === n.id ? "bg-gray-200" : "opacity-0 group-hover:opacity-100"}`}
+                                aria-label="더보기"
+                              >
+                                <MoreVertical size={14} />
+                              </button>
+                            </div>
+                            {notifMenuId === n.id && (
+                              <div
+                                className="flex items-center divide-x divide-gray-200 border-y border-gray-200 bg-gray-100"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {!n.read && (
+                                  <button
+                                    onClick={() => { markAsRead(n.id); setNotifMenuId(null); }}
+                                    className="flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-medium text-gray-600 transition-colors hover:bg-white hover:text-[var(--color-primary)]"
+                                  >
+                                    <CheckCheck size={13} />
+                                    읽음 처리
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => { removeNotification(n.id); setNotifMenuId(null); }}
+                                  className="flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-medium text-red-500 transition-colors hover:bg-white hover:text-red-600"
+                                >
+                                  <Trash2 size={13} />
+                                  삭제
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    {notifications.length > 0 && (
+                      <Link
+                        href="/mypage?tab=expert"
+                        onClick={() => setBellOpen(false)}
+                        className="block border-t border-[var(--color-border)] px-4 py-2.5 text-center text-xs text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)] hover:text-[var(--color-primary)]"
+                      >
+                        전체 알림 보기
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </div>
+              <button
+                className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-dark)] transition-colors hover:bg-[var(--color-light-bg)]"
+                aria-label="장바구니"
+              >
+                <ShoppingCart size={22} />
+              </button>
+              <UserMenu user={session.user} />
+            </div>
           ) : (
             <>
               <div className="flex items-center gap-2">
@@ -260,8 +449,8 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
               ) : (
                 <Link
                   key={item.href}
-                  href={item.href}
-                  className="block py-3 text-base font-medium text-[var(--color-dark)]"
+                  href={getMenuHref(item)}
+                  className="block py-3 text-base font-medium text-black"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -314,6 +503,46 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
               )}
             </div>
           </nav>
+        </div>
+      )}
+      {/* 전체 삭제 확인 모달 */}
+      {showClearConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowClearConfirm(false)}
+        >
+          <div
+            className="mx-4 w-full max-w-xs rounded-lg bg-white p-6"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <p className="mb-2 text-center font-medium text-[var(--color-dark)]">
+              알림을 모두 삭제하시겠습니까?
+            </p>
+            <p className="mb-6 text-center text-sm text-[var(--color-muted)]">
+              삭제된 알림은 복구할 수 없습니다.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(false)}
+                className="flex-1 rounded-lg border border-[var(--color-border)] py-2.5 text-sm font-medium text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)]"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  clearAll();
+                  setShowClearConfirm(false);
+                }}
+                className="flex-1 rounded-lg bg-red-500 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-600"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </header>

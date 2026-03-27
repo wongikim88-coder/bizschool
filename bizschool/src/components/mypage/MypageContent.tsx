@@ -21,6 +21,7 @@ interface MypageContentProps {
   writeMode: boolean;
   purchaseResetKey: number;
   onPurchaseReset: () => void;
+  expertId?: string | null;
 }
 
 export default function MypageContent({
@@ -31,6 +32,7 @@ export default function MypageContent({
   writeMode,
   purchaseResetKey,
   onPurchaseReset,
+  expertId,
 }: MypageContentProps) {
   const router = useRouter();
   const [inquiries, setInquiries] = useState<Inquiry[]>(mockInquiries);
@@ -117,7 +119,7 @@ export default function MypageContent({
 
         {currentTab === "claims" && <ClaimsSection />}
 
-        {currentTab === "expert" && <ExpertConsultationSection />}
+        {currentTab === "expert" && <ExpertConsultationSection initialDetailId={expertId} />}
       </div>
     </div>
   );
