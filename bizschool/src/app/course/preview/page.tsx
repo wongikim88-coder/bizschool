@@ -1,22 +1,26 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import type { LectureDetail } from "@/types";
-import LectureDetailContent from "@/components/lectures/LectureDetailContent";
+import type { MyCourse, CourseSection } from "@/types";
+import CoursePlayerLayout from "@/components/course/CoursePlayerLayout";
 
-export default function LecturePreviewPage() {
-  const [lecture, setLecture] = useState<LectureDetail | null>(null);
+interface CoursePreviewData {
+  course: MyCourse;
+  sections: CourseSection[];
+}
+
+export default function CoursePreviewPage() {
+  const [data, setData] = useState<CoursePreviewData | null>(null);
   const [error, setError] = useState(false);
 
   const loadPreview = useCallback(() => {
     try {
-      const raw = localStorage.getItem("lecture-preview");
+      const raw = localStorage.getItem("course-preview");
       if (!raw) {
         setError(true);
         return;
       }
-      const data = JSON.parse(raw) as LectureDetail;
-      setLecture(data);
+      setData(JSON.parse(raw) as CoursePreviewData);
       setError(false);
     } catch {
       setError(true);
@@ -26,7 +30,6 @@ export default function LecturePreviewPage() {
   useEffect(() => {
     loadPreview();
 
-    // BroadcastChannel로 업로드 페이지에서 변경사항 수신
     const channel = new BroadcastChannel("lecture-preview");
     channel.onmessage = (e) => {
       if (e.data?.type === "lecture-preview-update") loadPreview();
@@ -47,7 +50,7 @@ export default function LecturePreviewPage() {
     );
   }
 
-  if (!lecture) {
+  if (!data) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--color-primary)]" />
@@ -55,5 +58,13 @@ export default function LecturePreviewPage() {
     );
   }
 
-  return <LectureDetailContent key={lecture.title} lecture={lecture} hideBackButton />;
+  return (
+    <CoursePlayerLayout
+      course={data.course}
+      sections={data.sections}
+      materials={[]}
+      qnas={[]}
+      backHref="/lectures/preview"
+    />
+  );
 }

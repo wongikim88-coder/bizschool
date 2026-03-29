@@ -20,6 +20,7 @@ interface CoursePlayerLayoutProps {
   sections: CourseSection[];
   materials: CourseMaterial[];
   qnas: CourseQna[];
+  backHref?: string;
 }
 
 const sidebarTabs: { id: CoursePlayerTab; label: string; icon: typeof ListOrdered }[] = [
@@ -39,6 +40,7 @@ export default function CoursePlayerLayout({
   sections,
   materials,
   qnas,
+  backHref = "/mypage?tab=courses",
 }: CoursePlayerLayoutProps) {
   const [activeTab, setActiveTab] = useState<CoursePlayerTab>("curriculum");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -50,9 +52,9 @@ export default function CoursePlayerLayout({
         {/* Top bar */}
         <div className="flex h-14 shrink-0 items-center gap-3 bg-[var(--color-light-bg)] px-4">
           <Link
-            href="/mypage?tab=courses"
+            href={backHref}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-muted)] transition-colors hover:bg-[var(--color-light-bg)] hover:text-[var(--color-dark)]"
-            aria-label="내 학습으로 돌아가기"
+            aria-label="뒤로가기"
           >
             <ArrowLeft size={20} />
           </Link>

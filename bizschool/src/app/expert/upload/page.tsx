@@ -20,7 +20,7 @@ import {
   Loader2,
   ChevronRight,
 } from "lucide-react";
-import type { LectureDetail } from "@/types";
+import type { LectureDetail, MyCourse, CourseSection } from "@/types";
 import ContentTypeCard from "@/components/expert/ContentTypeCard";
 import type { RichTextEditorHandle } from "@/components/expert/RichTextEditor";
 import dynamic from "next/dynamic";
@@ -169,7 +169,7 @@ function generateFromConcept(concept: string, lessonCount: number) {
       `시험 준비 또는 자격증 취득을 목표로 하는 분`,
     ],
     tags: keywords.slice(0, 5).concat(["실무", "강의"]).filter((v, i, a) => a.indexOf(v) === i),
-    courseDetail: `<h3>강의 소개</h3><p>${concept}에 대해 현장 실무자가 반드시 알아야 할 핵심 내용을 체계적으로 다룹니다.</p><h3>커리큘럼 구성</h3><ul>${lessonTitles.map((t) => `<li>${t}</li>`).join("")}</ul><h3>수강 전 안내</h3><ul><li>별도의 사전 지식 없이도 수강 가능합니다.</li><li>실무 서식 및 참고 자료를 함께 제공합니다.</li><li>각 강의 후 핵심 정리 자료가 포함되어 있습니다.</li></ul>`,
+    courseDetail: `<h3>커리큘럼 구성</h3><ul>${lessonTitles.map((t) => `<li>${t}</li>`).join("")}</ul><h3>수강 전 안내</h3><ul><li>별도의 사전 지식 없이도 수강 가능합니다.</li><li>실무 서식 및 참고 자료를 함께 제공합니다.</li><li>각 강의 후 핵심 정리 자료가 포함되어 있습니다.</li></ul>`,
     lessonTitles,
   };
 }
@@ -505,10 +505,18 @@ export default function ContentUploadPage() {
     setTimeout(() => aiChatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   }, [aiConcept, aiGenerating, lessons]);
 
-  // 미리보기: 폼 데이터 → LectureDetail 변환 후 새 창 열기
-  const handlePreview = useCallback(() => {
+  // BroadcastChannel로 탭 간 실시간 동기화
+  const previewChannelRef = useRef<BroadcastChannel | null>(null);
+  useEffect(() => {
+    previewChannelRef.current = new BroadcastChannel("lecture-preview");
+    return () => previewChannelRef.current?.close();
+  }, []);
+
+  // 미리보기 데이터 빌드
+  const buildPreviewData = useCallback(() => {
     const previewData: LectureDetail = {
       id: "preview",
+      courseId: "mc-preview",
       title: courseTitle.trim() || "강의 제목 미입력",
       description: courseDescription.trim() || "강의 소개 미입력",
       categories: selectedCategories,
@@ -528,21 +536,70 @@ export default function ContentUploadPage() {
       rating: 0,
       reviewCount: 0,
       studentCount: 0,
-      totalDuration: `${lessons.length}강`,
+      totalDuration: "0분",
       lessonCount: lessons.length,
       level: "입문",
       updatedAt: new Date().toISOString().slice(0, 10),
       reviews: [],
       faqs: [],
     };
-    sessionStorage.setItem("lecture-preview", JSON.stringify(previewData));
+
+    const coursePreview: MyCourse = {
+      id: "mc-preview",
+      title: courseTitle.trim() || "강의 제목 미입력",
+      thumbnailUrl: "",
+      category: "온라인 강의",
+      totalLessons: lessons.length,
+      completedLessons: 0,
+      progressPercent: 0,
+      learningStatus: "수강 중",
+      periodLabel: "무제한",
+      instructorName: session?.user?.name ?? "전문가",
+    };
+
+    const courseSections: CourseSection[] = [
+      {
+        id: "sec-preview",
+        title: courseTitle.trim() || "강의 제목 미입력",
+        totalDuration: "0분",
+        lessons: lessons.map((l, idx) => ({
+          id: `lesson-preview-${idx}`,
+          title: l.lessonTitle.trim() || "수업 제목 미입력",
+          duration: "00:00",
+          isCompleted: false,
+        })),
+      },
+    ];
+
+    return { previewData, coursePreview, courseSections };
+  }, [courseTitle, courseDescription, selectedCategories, tags, learningPoints, targetAudience, courseDetail, lessons, session]);
+
+  // 미리보기 데이터 동기화 (localStorage + BroadcastChannel)
+  const syncPreviewData = useCallback(() => {
+    const { previewData, coursePreview, courseSections } = buildPreviewData();
+    localStorage.setItem("lecture-preview", JSON.stringify(previewData));
+    localStorage.setItem("course-preview", JSON.stringify({ course: coursePreview, sections: courseSections }));
+    previewChannelRef.current?.postMessage({ type: "lecture-preview-update" });
+  }, [buildPreviewData]);
+
+  // 폼 변경 시 열려있는 미리보기 탭에 실시간 반영 (미리보기 탭 열린 적 있을 때만)
+  const previewOpenedRef = useRef(false);
+  useEffect(() => {
+    if (!previewOpenedRef.current) return;
+    const timer = setTimeout(syncPreviewData, 300);
+    return () => clearTimeout(timer);
+  }, [syncPreviewData]);
+
+  // 미리보기 버튼 클릭: 데이터 동기화 + 탭 열기/포커스
+  const handlePreview = useCallback(() => {
+    previewOpenedRef.current = true;
+    syncPreviewData();
     if (previewWindowRef.current && !previewWindowRef.current.closed) {
-      previewWindowRef.current.location.reload();
       previewWindowRef.current.focus();
     } else {
       previewWindowRef.current = window.open("/lectures/preview", "_blank");
     }
-  }, [courseTitle, courseDescription, selectedCategories, tags, learningPoints, targetAudience, courseDetail, lessons, session]);
+  }, [syncPreviewData]);
 
   const handleStep4Next = useCallback(() => {
     if (courseTitle.trim() === "") {

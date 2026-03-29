@@ -14,7 +14,7 @@ export default function LayoutContent({
   const pathname = usePathname();
   const isCoursePlayer = pathname.startsWith("/course/");
   const hideFooter = pathname.startsWith("/expert/upload");
-  const hideSearchBar = pathname === "/login" || pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname === "/expert" || pathname.startsWith("/notice") || pathname.startsWith("/resources") || pathname.startsWith("/expert-consultation") || pathname.startsWith("/expert/center") || pathname.startsWith("/expert/upload") || /^\/books\/.+/.test(pathname);
+  const hideSearchBar = pathname === "/login" || pathname === "/about" || pathname === "/directions" || pathname === "/venue" || pathname === "/mypage" || pathname === "/expert" || pathname === "/lectures/preview" || pathname.startsWith("/notice") || pathname.startsWith("/resources") || pathname.startsWith("/expert-consultation") || pathname.startsWith("/expert/center") || pathname.startsWith("/expert/upload") || /^\/books\/.+/.test(pathname);
 
   const [searchInHeader, setSearchInHeader] = useState(false);
 

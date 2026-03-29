@@ -817,6 +817,7 @@ export interface LectureCurriculumItem {
 
 export interface LectureDetail {
   id: string;
+  courseId?: string;
   title: string;
   description: string;
   categories: { main: string; sub: string }[];

@@ -3,6 +3,7 @@ import type { LectureDetail } from "@/types";
 export const allLectures: LectureDetail[] = [
   {
     id: "lec-001",
+    courseId: "mc-001",
     title: "세무 실무 마스터클래스 - 법인세부터 부가세까지",
     description:
       "본 강의는 세무 분야의 핵심 실무 지식을 체계적으로 다루며, 실제 사례 중심으로 현장에서 바로 활용할 수 있는 내용을 제공합니다.",
@@ -128,6 +129,7 @@ export const allLectures: LectureDetail[] = [
   },
   {
     id: "lec-002",
+    courseId: "mc-002",
     title: "인사노무 핵심 실무 과정 - 채용부터 퇴직까지",
     description:
       "인사관리와 노무관리의 핵심 실무를 체계적으로 학습하여, HR 전문가로 성장할 수 있는 종합 과정입니다.",
@@ -224,6 +226,7 @@ export const allLectures: LectureDetail[] = [
   },
   {
     id: "lec-003",
+    courseId: "mc-003",
     title: "4대보험 완전정복 - 실무자를 위한 핵심 가이드",
     description:
       "4대 사회보험(국민연금, 건강보험, 고용보험, 산재보험)의 취득·상실 신고부터 보수총액 정산까지 완벽 마스터합니다.",
