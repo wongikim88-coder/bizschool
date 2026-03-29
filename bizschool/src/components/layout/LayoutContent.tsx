@@ -28,7 +28,7 @@ export default function LayoutContent({
   }, [hideSearchBar]);
 
   // 헤더/푸터 없이 전체 화면: 강의 플레이어, 로그인 페이지
-  if (isCoursePlayer || pathname === "/login") {
+  if (isCoursePlayer || pathname === "/login" || pathname.startsWith("/expert/upload")) {
     return <>{children}</>;
   }
 

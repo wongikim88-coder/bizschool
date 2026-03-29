@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, X, FileText } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { allBooks, bookCategories } from "@/data/books";
 import SearchAutocomplete from "@/components/books/SearchAutocomplete";
 
@@ -10,7 +12,9 @@ export default function SearchBar() {
   const [value, setValue] = useState("");
   const [showPanel, setShowPanel] = useState(false);
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [bubbleDismissed, setBubbleDismissed] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -128,88 +132,115 @@ export default function SearchBar() {
 
   return (
     <div className="mx-auto w-full max-w-[1440px] px-4 py-4" ref={containerRef}>
-      <div className="group relative mx-auto max-w-[620px]">
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setShowPanel(true);
-          }}
-          onFocus={() => {
-            isFocused.current = true;
-            if (isBooks) setShowPanel(true);
-          }}
-          onBlur={() => { isFocused.current = false; }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-              setShowPanel(false);
-            }
-            if (e.key === "Escape") setShowPanel(false);
-          }}
-          className="w-full rounded-full border border-gray-400 bg-[var(--color-light-bg)] py-4 pl-6 pr-16 text-base text-[var(--color-dark)] transition-all duration-200 group-focus-within:border-[var(--color-dark)] group-focus-within:bg-white focus:outline-none"
-        />
-        {!value && (
-          <span
-            className={`pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-base text-[var(--color-muted)] transition-all duration-300 ${
-              isAnimating ? "-translate-y-[calc(50%+8px)] opacity-0" : "-translate-y-1/2 opacity-100"
-            }`}
-          >
-            {currentTexts[placeholderIndex]}
-          </span>
-        )}
-        {value ? (
-          <button
-            onClick={() => {
-              setValue("");
-              if (isBooks && searchParams.has("search")) {
-                router.push("/books");
-              }
+      <div className="relative flex items-center">
+        <div className="group relative mx-auto w-full max-w-[620px]">
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setShowPanel(true);
             }}
-            className="absolute right-2.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-muted)] hover:text-[var(--color-dark)]"
-            aria-label="검색어 지우기"
-          >
-            <X size={18} />
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => handleSearch()}
-            className="absolute right-2.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-dark)] text-white transition-all hover:opacity-90"
-          >
-            <Search size={20} />
-          </button>
-        )}
-
-        {/* 자동완성 드롭다운 — 검색어 입력 시 */}
-        {showAutocomplete && (
-          <SearchAutocomplete
-            books={filteredBooks}
-            query={debouncedQuery}
-            onSelect={handleSelect}
+            onFocus={() => {
+              isFocused.current = true;
+              if (isBooks) setShowPanel(true);
+            }}
+            onBlur={() => { isFocused.current = false; }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+                setShowPanel(false);
+              }
+              if (e.key === "Escape") setShowPanel(false);
+            }}
+            className="w-full rounded-full border border-gray-400 bg-[var(--color-light-bg)] py-4 pl-6 pr-16 text-base text-[var(--color-dark)] transition-all duration-200 group-focus-within:border-[var(--color-dark)] group-focus-within:bg-white focus:outline-none"
           />
-        )}
+          {!value && (
+            <span
+              className={`pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-base text-[var(--color-muted)] transition-all duration-300 ${
+                isAnimating ? "-translate-y-[calc(50%+8px)] opacity-0" : "-translate-y-1/2 opacity-100"
+              }`}
+            >
+              {currentTexts[placeholderIndex]}
+            </span>
+          )}
+          {value ? (
+            <button
+              onClick={() => {
+                setValue("");
+                if (isBooks && searchParams.has("search")) {
+                  router.push("/books");
+                }
+              }}
+              className="absolute right-2.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-muted)] hover:text-[var(--color-dark)]"
+              aria-label="검색어 지우기"
+            >
+              <X size={18} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleSearch()}
+              className="absolute right-2.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-dark)] text-white transition-all hover:opacity-90"
+            >
+              <Search size={20} />
+            </button>
+          )}
 
-        {/* Browse Panel — 검색어 없을 때 카테고리 둘러보기 */}
-        {showBrowse && (
-          <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-[var(--color-border)] bg-white p-4 shadow-lg">
-            <p className="mb-3 text-xs font-semibold text-[var(--color-muted)]">
-              둘러보기
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {bookCategories.map((cat) => (
-                <button
-                  key={cat.key}
-                  onClick={() => handleCategoryClick(cat.key)}
-                  className="rounded-full border border-[var(--color-border)] px-4 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)] hover:text-[var(--color-dark)]"
-                >
-                  {cat.label}
-                </button>
-              ))}
+          {/* 자동완성 드롭다운 — 검색어 입력 시 */}
+          {showAutocomplete && (
+            <SearchAutocomplete
+              books={filteredBooks}
+              query={debouncedQuery}
+              onSelect={handleSelect}
+            />
+          )}
+
+          {/* Browse Panel — 검색어 없을 때 카테고리 둘러보기 */}
+          {showBrowse && (
+            <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-[var(--color-border)] bg-white p-4 shadow-lg">
+              <p className="mb-3 text-xs font-semibold text-[var(--color-muted)]">
+                둘러보기
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {bookCategories.map((cat) => (
+                  <button
+                    key={cat.key}
+                    onClick={() => handleCategoryClick(cat.key)}
+                    className="rounded-full border border-[var(--color-border)] px-4 py-1.5 text-sm text-[var(--color-body)] transition-colors hover:bg-[var(--color-light-bg)] hover:text-[var(--color-dark)]"
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+          {status === "authenticated" && isBooks && !bubbleDismissed && (
+            <div
+              className={`absolute left-full top-1/2 ml-3 flex -translate-y-1/2 items-center gap-1 whitespace-nowrap rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary-light)] pl-4 pr-1.5 py-1.5 text-sm font-medium text-[var(--color-primary)] shadow-md transition-all duration-300 ${showPanel ? "pointer-events-none opacity-0" : "animate-[bubbleIn_0.5s_ease-out]"}`}
+            >
+              {/* 말풍선 꼬리 */}
+              <span className="absolute -left-[6px] top-1/2 -translate-y-1/2 border-y-[6px] border-r-[6px] border-y-transparent border-r-[var(--color-primary-light)]" />
+              <Link
+                href="/rate-table"
+                className="flex items-center gap-1.5 py-1.5 pr-1 transition-opacity hover:opacity-70"
+              >
+                <span className="text-base">📋</span>
+                <span>조견표가 필요하신가요?</span>
+              </Link>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setBubbleDismissed(true);
+                }}
+                className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-[var(--color-primary)]/40 transition-colors hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)]"
+                aria-label="닫기"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

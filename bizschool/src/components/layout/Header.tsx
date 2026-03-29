@@ -239,13 +239,6 @@ export default function Header({ showSearchInHeader = false }: { showSearchInHea
           {/* 텍스트 링크 그룹 */}
           {status === "authenticated" && (
             <div className="flex items-center gap-4">
-              <Link
-                href="/rate-table"
-                className="flex items-center gap-1.5 text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-dark)]"
-              >
-                <FileText size={18} />
-                <span>조견표 신청</span>
-              </Link>
               {session?.user?.role === "expert" ? (
                 <Link
                   href="/expert/upload"

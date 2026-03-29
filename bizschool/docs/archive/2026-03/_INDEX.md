@@ -15,3 +15,6 @@
 | expert-column | Completed (Do) | 2026-03-26 | report |
 | brand-logo-image | Completed (Do) | 2026-03-27 | plan, summary |
 | expert-consultation-ai-response | Completed (Do) | 2026-03-27 | plan, design |
+| content-upload | Completed (Do) | 2026-03-27 | plan, design |
+| lecture-upload-steps | Completed (Do) | 2026-03-27 | report |
+| lecture-course-info | Completed (Do) | 2026-03-27 | plan, design |

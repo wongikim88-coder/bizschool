@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 자동작성 버튼 색상 비교</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Pretendard', sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  .header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
+  .header svg { width: 28px; height: 28px; }
+  .header span { font-size: 22px; font-weight: 700; }
+  .container { max-width: 900px; margin: 40px auto; padding: 0 24px; }
+  h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+  .subtitle { color: #6b7280; margin-bottom: 32px; }
+  .palette { display: flex; gap: 8px; margin-bottom: 32px; align-items: center; }
+  .palette span { font-size: 14px; font-weight: 600; color: #6b7280; margin-right: 8px; }
+  .swatch { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .swatch-label { font-size: 11px; color: #fff; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .card { background: #fff; border-radius: 16px; border: 2px solid #e5e7eb; padding: 28px; transition: border-color 0.2s; }
+  .card:hover { border-color: #155dfc; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .card-title { font-size: 16px; font-weight: 700; }
+  .card-badge { font-size: 12px; padding: 2px 10px; border-radius: 20px; background: #f3f4f6; color: #6b7280; font-weight: 500; }
+  .card-desc { font-size: 13px; color: #6b7280; margin-bottom: 20px; line-height: 1.5; }
+  .btn-preview { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fafafa; border-radius: 12px; margin-bottom: 16px; }
+  .ai-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px 12px 16px; border-radius: 9999px; color: #fff; font-size: 14px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.15s, opacity 0.15s; }
+  .ai-btn:hover { transform: scale(1.05); }
+  .ai-btn:active { transform: scale(0.95); }
+  .ai-btn svg { width: 18px; height: 18px; }
+  .color-info { display: flex; gap: 6px; flex-wrap: wrap; }
+  .color-tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; background: #f3f4f6; color: #374151; font-family: monospace; }
+
+  /* Button variants */
+  .btn-a { background: linear-gradient(135deg, #155dfc, #1447e6); }
+  .btn-b { background: linear-gradient(135deg, #155dfc, #3db5b5); }
+  .btn-c { background: linear-gradient(135deg, #1a1a1a, #374151); }
+  .btn-d { background: linear-gradient(135deg, #6abf4b, #3db5b5); }
+  .btn-e { background: #155dfc; }
+  .btn-f { background: linear-gradient(135deg, #155dfc, #6abf4b); }
+
+  .sparkle-icon { fill: currentColor; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <polygon points="37,0 53,16 37,32 21,16" fill="#155dfc"/>
+    <polygon points="63,18 79,34 63,50 47,34" fill="#6abf4b"/>
+    <polygon points="63,50 79,66 63,82 47,66" fill="#3db5b5"/>
+    <polygon points="37,68 53,84 37,100 21,84" fill="#f5a623"/>
+  </svg>
+  <span>BIZSCHOOL</span>
+</div>
+
+<div class="container">
+  <h1>AI 자동작성 버튼 — 색상 비교</h1>
+  <p class="subtitle">비즈스쿨 로고 색상과 조화를 이루는 6가지 안</p>
+
+  <!-- Logo palette -->
+  <div class="palette">
+    <span>로고 팔레트:</span>
+    <div class="swatch" style="background:#155dfc;"><span class="swatch-label">B</span></div>
+    <div class="swatch" style="background:#6abf4b;"><span class="swatch-label">G</span></div>
+    <div class="swatch" style="background:#3db5b5;"><span class="swatch-label">T</span></div>
+    <div class="swatch" style="background:#f5a623;"><span class="swatch-label">O</span></div>
+  </div>
+
+  <div class="grid">
+
+    <!-- A -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">A. 프라이머리 블루</span>
+        <span class="card-badge">브랜드 일관성</span>
+      </div>
+      <p class="card-desc">로고 메인 컬러(파랑)를 그대로 사용. 브랜드 통일감이 가장 강합니다.</p>
+      <div class="btn-preview">
+        <button class="ai-btn btn-a">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/><path d="M19 14l.9 3.1L23 18l-3.1.9L19 22l-.9-3.1L15 18l3.1-.9L19 14z" stroke-width="1.5"/></svg>
+          AI 자동작성
+        </button>
+      </div>
+      <div class="color-info">
+        <span class="color-tag">#155dfc → #1447e6</span>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">B. 블루 → 청록</span>
+        <span class="card-badge">추천</span>
+      </div>
+      <p class="card-desc">로고의 파랑과 청록을 연결하는 그라데이션. AI 느낌 + 브랜드 조화 모두 잡습니다.</p>
+      <div class="btn-preview">
+        <button class="ai-btn btn-b">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/><path d="M19 14l.9 3.1L23 18l-3.1.9L19 22l-.9-3.1L15 18l3.1-.9L19 14z" stroke-width="1.5"/></svg>
+          AI 자동작성
+        </button>
+      </div>
+      <div class="color-info">
+        <span class="color-tag">#155dfc → #3db5b5</span>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">C. 다크 모노톤</span>
+        <span class="card-badge">모던</span>
+      </div>
+      <p class="card-desc">차분한 다크 톤으로 폼 UI와 자연스럽게 어울립니다. 고급스러운 느낌.</p>
+      <div class="btn-preview">
+        <button class="ai-btn btn-c">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/><path d="M19 14l.9 3.1L23 18l-3.1.9L19 22l-.9-3.1L15 18l3.1-.9L19 14z" stroke-width="1.5"/></svg>
+          AI 자동작성
+        </button>
+      </div>
+      <div class="color-info">
+        <span class="color-tag">#1a1a1a → #374151</span>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">D. 그린 → 청록</span>
+        <span class="card-badge">자연스러움</span>
+      </div>
+      <p class="card-desc">로고의 초록과 청록 조합. 프라이머리 블루와 구분되면서 로고와 조화를 이룹니다.</p>
+      <div class="btn-preview">
+        <button class="ai-btn btn-d">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/><path d="M19 14l.9 3.1L23 18l-3.1.9L19 22l-.9-3.1L15 18l3.1-.9L19 14z" stroke-width="1.5"/></svg>
+          AI 자동작성
+        </button>
+      </div>
+      <div class="color-info">
+        <span class="color-tag">#6abf4b → #3db5b5</span>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">E. 솔리드 블루</span>
+        <span class="card-badge">심플</span>
+      </div>
+      <p class="card-desc">그라데이션 없이 프라이머리 단색. 가장 깔끔하고 사이트 전체 버튼과 톤이 맞습니다.</p>
+      <div class="btn-preview">
+        <button class="ai-btn btn-e">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/><path d="M19 14l.9 3.1L23 18l-3.1.9L19 22l-.9-3.1L15 18l3.1-.9L19 14z" stroke-width="1.5"/></svg>
+          AI 자동작성
+        </button>
+      </div>
+      <div class="color-info">
+        <span class="color-tag">#155dfc (solid)</span>
+      </div>
+    </div>
+
+    <!-- F -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">F. 블루 → 그린</span>
+        <span class="card-badge">활기</span>
+      </div>
+      <p class="card-desc">로고의 파랑과 초록을 이어주는 그라데이션. 밝고 활기찬 인상을 줍니다.</p>
+      <div class="btn-preview">
+        <button class="ai-btn btn-f">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/><path d="M19 14l.9 3.1L23 18l-3.1.9L19 22l-.9-3.1L15 18l3.1-.9L19 14z" stroke-width="1.5"/></svg>
+          AI 자동작성
+        </button>
+      </div>
+      <div class="color-info">
+        <span class="color-tag">#155dfc → #6abf4b</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

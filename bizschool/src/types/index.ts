@@ -787,3 +787,57 @@ export interface RecentActivity {
   description: string;
   createdAt: string;
 }
+
+// ── 강의 상세페이지 (수강 전 랜딩) ──
+
+export type LectureLevel = "입문" | "초급" | "중급" | "고급";
+
+export interface LectureReview {
+  reviewer: string;
+  rating: number;
+  date: string;
+  content: string;
+}
+
+export interface LectureFaq {
+  question: string;
+  answer: string;
+}
+
+export interface LectureInstructor {
+  name: string;
+  bio: string;
+  profileImage?: string;
+}
+
+export interface LectureCurriculumItem {
+  title: string;
+  duration: string;
+}
+
+export interface LectureDetail {
+  id: string;
+  title: string;
+  description: string;
+  categories: { main: string; sub: string }[];
+  tags: string[];
+  learningPoints: string[];
+  targetAudience: string[];
+  detail: string;
+  curriculum: LectureCurriculumItem[];
+  instructor: LectureInstructor;
+  price: number;
+  originalPrice?: number;
+  discountRate?: number;
+  rating: number;
+  reviewCount: number;
+  studentCount: number;
+  totalDuration: string;
+  lessonCount: number;
+  level: LectureLevel;
+  updatedAt: string;
+  reviews: LectureReview[];
+  faqs: LectureFaq[];
+}
+
+export type LectureTab = "intro" | "curriculum" | "reviews" | "faq";
